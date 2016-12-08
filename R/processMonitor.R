@@ -69,7 +69,6 @@ processMonitor <- function(data,
     nonSPEFlaggedObs <- faultObj[faultObj$SPE_flag == FALSE, ]
     nonFlaggedObs <- nonSPEFlaggedObs[nonSPEFlaggedObs$T2_flag == FALSE, ]
     unflaggedObs[(nrow(unflaggedObs) + 1):(nrow(unflaggedObs) + nrow(nonFlaggedObs)),] <- data[rownames(data) == rownames(nonFlaggedObs),]
-    12
   }
 
 }
