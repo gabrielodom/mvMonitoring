@@ -1,9 +1,9 @@
 #' Title
 #'
-#' @param data
-#' @param trainObs
+#' @param data A data frame with row names as a POSIX date time label
+#' @param trainObs How many train observations will be used
 #' @param ...
-#' @param updateFreq
+#' @param updateFreq How many non-flagged rows to collect before we update
 #'
 #' @return
 #' @export
@@ -12,7 +12,8 @@
 #' @importFrom lazyeval lazy_eval
 #'
 #' @examples processMonitor(MASS::mvrnorm(100, mu = c(0,0,0),
-#' Sigma = toeplitz(c(1, 0.5, 0.1))), trainObs = 20, updateFreq = 5, var.amnt = 0.8)
+#'                                        Sigma = toeplitz(c(1, 0.5, 0.1))),
+#'                          trainObs = 20, updateFreq = 5, var.amnt = 0.8)
 processMonitor <- function(data,
                            trainObs,
                            updateFreq = cieling(0.2 * trainObs),
@@ -30,7 +31,8 @@ processMonitor <- function(data,
     trainData <- ifelse(nrow(unflaggedObs) < trainObs,
                         rbind(data[(1 + nrow(unflaggedObs)):trainObs,],
                               unflaggedObs),
-                        unflaggedObs[(nrow(unflaggedObs) - trainObs):nrow(unflaggedObs),])
+                        unflaggedObs[(nrow(unflaggedObs) -
+                                        trainObs):nrow(unflaggedObs),])
     muTrain <- colMeans(trainData)
     sigmaTrain <- cov(trainData)
     sigmaInvTrain <- solve(sigmaTrain)
@@ -42,11 +44,16 @@ processMonitor <- function(data,
 
     while(continueSPE && continueT2){
       # browser()
-      pcaObj <- do.call(pca, args = c(list(data = scaledTrainData), lazy_eval(ls)))
-      thresholdObj <- do.call(threshold, args = c(list(pca_object = pcaObj), lazy_eval(ls)))
+      pcaObj <- do.call(pca,
+                        args = c(list(data = scaledTrainData), lazy_eval(ls)))
+      thresholdObj <- do.call(threshold,
+                              args = c(list(pca_object = pcaObj),
+                                       lazy_eval(ls)))
+      scaledObs <- sigmaInvTrain %*%
+                      t(as.matrix(data[(trainObs + iter),]) - muTrain)
       faultObj[iter,] <- do.call(faultDetect,
                                  args = c(list(threshold_object = thresholdObj,
-                                               observation = t(sigmaInvTrain %*% t(as.matrix(data[(trainObs + iter),]) - muTrain))),
+                                               observation = t(scaledObs)),
                                           lazy_eval(ls)))
 
       nonflaggedSPEObs <- nrow(faultObj[faultObj$SPE_flag == FALSE,])
@@ -54,10 +61,14 @@ processMonitor <- function(data,
       nonflaggedT2Obs <- nrow(faultObj[faultObj$T2_flag == FALSE,])
       continueT2 <- nonflaggedT2Obs < updateFreq
 
-      if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 2]) == TRUE) warning("SPE detects process fault.", immediate. = TRUE)
-      if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 4]) == TRUE) warning("T2 detects process fault.", immediate. = TRUE)
+      if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 2]) == TRUE){
+        warning("SPE detects process fault.", immediate. = TRUE)
+      }
+      if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 4]) == TRUE){
+        warning("T2 detects process fault.", immediate. = TRUE)
+      }
 
-      # we need an escape clause that says "if we run out of data, stop the while() loop"
+
       if(trainObs + iter == nrow(data)){
         print("End of Data Frame Reached")
         break()
@@ -65,11 +76,15 @@ processMonitor <- function(data,
       iter <- iter + 1
     }
     # browser()
-    rownames(faultObj) <- rownames(data[(trainObs + 1):(trainObs + nrow(faultObj)),])
-    # dplyr::filter does not preserve row names, and Hadley has no intention of fixing this problem.
+    rownames(faultObj) <-
+                    rownames(data[(trainObs + 1):(trainObs + nrow(faultObj)),])
+    # dplyr::filter does not preserve row names, and Hadley has no intention of
+    #     fixing this problem.
     nonSPEFlaggedObs <- faultObj[faultObj$SPE_flag == FALSE, ]
     nonFlaggedObs <- nonSPEFlaggedObs[nonSPEFlaggedObs$T2_flag == FALSE, ]
-    unflaggedObs[(nrow(unflaggedObs) + 1):(nrow(unflaggedObs) + nrow(nonFlaggedObs)),] <- data[rownames(data) == rownames(nonFlaggedObs),]
+    n <- nrow(unflaggedObs)
+    unflaggedObs[(n + 1):(n + nrow(nonFlaggedObs)),] <-
+                               data[rownames(data) == rownames(nonFlaggedObs),]
   }
 
 }
