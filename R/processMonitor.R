@@ -27,7 +27,11 @@ processMonitor <- function(data,
   unflaggedObs <- data[0,]
 
   while(nrow(faultObj) < (nrow(data) - trainObs)){
+<<<<<<< HEAD
     n <- nrow(unflaggedObs)
+=======
+    browser()
+>>>>>>> 261781b85f89f44ca563a1b2ad07964a8bfdcd75
     if(n < trainObs){
       trainData <- rbind(data[(1 + n):trainObs,], unflaggedObs)
       }else{
@@ -79,11 +83,16 @@ processMonitor <- function(data,
     nonSPEFlaggedObs <- faultObj[faultObj$SPE_flag == FALSE, ]
     nonFlaggedObs <- nonSPEFlaggedObs[nonSPEFlaggedObs$T2_flag == FALSE, ]
 
+<<<<<<< HEAD
     browser()
     newObs <- !(rownames(nonFlaggedObs) %in% rownames(unflaggedObs))
     newObs <- rownames(nonFlaggedObs[newObs,])
     unflaggedObs[(n + 1):(n + length(newObs)),] <-
                                data[rownames(data) %in% newObs,]
+=======
+    unflaggedObs[(n + 1):(n + nrow(nonFlaggedObs)),] <-
+                               data[rownames(data) %in% rownames(nonFlaggedObs),]
+>>>>>>> 261781b85f89f44ca563a1b2ad07964a8bfdcd75
   }
   list(FaultChecks = faultObj,
        Non_Flagged_Obs = unflaggedObs)
