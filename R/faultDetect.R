@@ -44,5 +44,6 @@ faultDetect.threshold <- function(threshold_object, observation, ...){
                        SPE_flag = SPE_flag,
                        T2 = T2,
                        T2_flag = T2_flag)
+  class(object) <- "faultDF"
   object
 }

@@ -9,4 +9,7 @@ rownames(warningData) <- seq.POSIXt(from = as.POSIXct(Sys.Date()),
                                     by = "hour",
                                     length.out = nrow(warningData))
 
-processMonitor(warningData, trainObs = 100, updateFreq = 50, var.amnt = 0.8)
+monit <- processMonitor(warningData,
+                        trainObs = 100,
+                        updateFreq = 50,
+                        var.amnt = 0.8)

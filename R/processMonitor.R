@@ -18,17 +18,16 @@ processMonitor <- function(data,
                            trainObs,
                            updateFreq = cieling(0.2 * trainObs),
                            ...){
-  browser()
+
   ls <- lazy_dots(...)
   faultObj <- data.frame(SPE = integer(0),
                          SPE_flag = logical(0),
                          T2 = integer(0),
                          T2_flag = logical(0))
   unflaggedObs <- data[0,]
-  n <- nrow(unflaggedObs)
 
   while(nrow(faultObj) < (nrow(data) - trainObs)){
-    browser()
+    n <- nrow(unflaggedObs)
     if(n < trainObs){
       trainData <- rbind(data[(1 + n):trainObs,], unflaggedObs)
       }else{
@@ -39,12 +38,11 @@ processMonitor <- function(data,
     sigmaInvTrain <- solve(sigmaTrain)
     scaledTrainData <- scale(trainData)
 
-    iter <- 1
+    iter <- 1 + nrow(faultObj)
     continueSPE <- TRUE
     continueT2 <- TRUE
 
     while(continueSPE && continueT2){
-      # browser()
       pcaObj <- do.call(pca,
                         args = c(list(data = scaledTrainData), lazy_eval(ls)))
       thresholdObj <- do.call(threshold,
@@ -76,18 +74,18 @@ processMonitor <- function(data,
       }
       iter <- iter + 1
     }
-    # browser()
     rownames(faultObj) <-
                     rownames(data[(trainObs + 1):(trainObs + nrow(faultObj)),])
-    # dplyr::filter does not preserve row names, and Hadley has no intention of
-    #     fixing this problem.
     nonSPEFlaggedObs <- faultObj[faultObj$SPE_flag == FALSE, ]
     nonFlaggedObs <- nonSPEFlaggedObs[nonSPEFlaggedObs$T2_flag == FALSE, ]
 
-    unflaggedObs[(n + 1):(n + nrow(nonFlaggedObs)),] <-
-                               data[rownames(data) %in% rownames(nonFlaggedObs),]
+    browser()
+    newObs <- !(rownames(nonFlaggedObs) %in% rownames(unflaggedObs))
+    newObs <- rownames(nonFlaggedObs[newObs,])
+    unflaggedObs[(n + 1):(n + length(newObs)),] <-
+                               data[rownames(data) %in% newObs,]
   }
-
-
+  list(FaultChecks = faultObj,
+       Non_Flagged_Obs = unflaggedObs)
 }
 

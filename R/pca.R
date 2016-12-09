@@ -28,9 +28,9 @@ pca.matrix <- function(data, var.amnt = 0.9, ...){
 
 
 
-        P <- evecR[, 1:comps] # Transformation matrix
+        P <- as.matrix(evecR[, 1:comps]) # Transformation matrix
 
-        Lambda <- diag(evalR[1:comps])
+        Lambda <- diag(evalR[1:comps], ncol = length(1:comps))
 
 
         # Rotated Matrix
