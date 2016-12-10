@@ -1,5 +1,3 @@
-
-
 #' Title
 #'
 #' @param updateFreq
@@ -13,7 +11,6 @@
 #' @importFrom lazyeval lazy_eval
 #'
 #' @examples
-
 faultFilter <- function(trainData,
                         testData,
                         updateFreq,
