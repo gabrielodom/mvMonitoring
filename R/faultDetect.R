@@ -34,16 +34,14 @@ faultDetect.threshold <- function(threshold_object, observation, ...){
 
   # Squared prediction error monitoring statistic
   SPE <- diag(E %*% t(E))
-  SPE_flag <- SPE > SPEthreshold
+  SPE_flag <- as.numeric(SPE > SPEthreshold)
 
   # Hotelling's T^2 monitoring statistic
   T2 <- diag(proj_observation %*% LambdaInv %*% t(proj_observation))
-  T2_flag <- T2 > T2threshold
+  T2_flag <- as.numeric(T2 > T2threshold)
 
-  object <- data.frame(SPE = SPE,
-                       SPE_flag = SPE_flag,
-                       T2 = T2,
-                       T2_flag = T2_flag)
-  class(object) <- "faultDF"
+  object <- matrix(c(SPE, SPE_flag, T2, T2_flag), nrow = 1)
+  colnames(object) <- c("SPE", "SPE_Flag", "T2", "T2_Flag")
+
   object
 }

@@ -10,13 +10,19 @@
 #' @export
 #'
 #' @importFrom lazyeval lazy_eval
+#' @importFrom lazyeval lazy_dots
+#' @importFrom zoo index
+#' @importFrom xts xts
 #'
 #' @examples
 faultFilter <- function(trainData,
                         testData,
                         updateFreq,
                         ...){
+
   browser()
+
+  ls <- lazy_dots(...)
   muTrain <- colMeans(trainData)
   sigmaTrain <- cov(trainData)
   sigmaInvTrain <- solve(sigmaTrain)
@@ -31,25 +37,18 @@ faultFilter <- function(trainData,
   faultObj <- lapply(1:nrow(scaledTest), function(i){
     do.call(faultDetect,
             args = c(list(threshold_object = thresholdObj,
-                          observation = scaledObs[i,]),
+                          observation = scaledTest[i,]),
                      lazy_eval(ls)))
   })
+  faultObj <- do.call(rbind, faultObj)
+  faultObj <- xts(faultObj, order.by = index(testData))
 
-  nonflaggedSPEObs <- nrow(faultObj[faultObj$SPE_flag == FALSE,])
-  continueSPE <- nonflaggedSPEObs < updateFreq
-  nonflaggedT2Obs <- nrow(faultObj[faultObj$T2_flag == FALSE,])
-  continueT2 <- nonflaggedT2Obs < updateFreq
+  nonSPEFlaggedObs <- faultObj[faultObj[,2] == FALSE, ]
+  nonFlaggedObs <- nonSPEFlaggedObs[nonSPEFlaggedObs[,4] == FALSE, ]
+  keptObsIndex <- head(index(nonFlaggedObs), n = updateFreq)
 
-  if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 2]) == TRUE){
-    warning("SPE detects process fault.", immediate. = TRUE)
-  }
-  if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 4]) == TRUE){
-    warning("T2 detects process fault.", immediate. = TRUE)
-  }
+  keptObs <- testData[keptObsIndex]
 
-
-  if(trainObs + iter == nrow(data)){
-    print("End of Data Frame Reached")
-    break()
-  }
+  list(faultObj = faultObj,
+       nonFlaggedTestObs = keptObs)
 }

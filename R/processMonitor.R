@@ -40,20 +40,30 @@ processMonitor <- function(data,
     continueT2 <- TRUE
 
     while(continueSPE && continueT2){
-
+      # FUNCTION HERE
       iter <- iter + 1
     }
+    # if the number of observations kept returned by the above function is less
+    # than updateFreq, then we know that there are no more good observations
+    # left in that section of testData. We then reset trainData to include the
+    # good observations, and start the next draw of n = trainObs rows from the
+    # remaining observations
+
+    if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 2]) == TRUE){
+      warning("SPE detects process fault.", immediate. = TRUE)
+    }
+    if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 4]) == TRUE){
+      warning("T2 detects process fault.", immediate. = TRUE)
+
     rownames(faultObj) <-
                     rownames(data[(trainObs + 1):(trainObs + nrow(faultObj)),])
-    nonSPEFlaggedObs <- faultObj[faultObj$SPE_flag == FALSE, ]
-    nonFlaggedObs <- nonSPEFlaggedObs[nonSPEFlaggedObs$T2_flag == FALSE, ]
-
 
     newObs <- !(rownames(nonFlaggedObs) %in% rownames(unflaggedObs))
     newObs <- rownames(nonFlaggedObs[newObs,])
     unflaggedObs[(n + 1):(n + length(newObs)),] <-
                                data[rownames(data) %in% newObs,]
 
+    }
   }
   list(FaultChecks = faultObj,
        Non_Flagged_Obs = unflaggedObs)

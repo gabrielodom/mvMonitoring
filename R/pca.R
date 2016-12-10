@@ -57,3 +57,10 @@ pca.matrix <- function(data, var.amnt = 0.9, ...){
         class(object) <- "pca"
         object
 }
+
+
+#' @keywords internal
+#' @export
+#'
+#'
+pca.xts <- pca.matrix

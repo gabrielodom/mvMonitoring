@@ -2,6 +2,7 @@
 
 S3method(faultDetect,threshold)
 S3method(pca,matrix)
+S3method(pca,xts)
 S3method(threshold,pca)
 export(faultDetect)
 export(faultFilter)
@@ -11,3 +12,5 @@ export(threshold)
 importFrom(BMS,quantile.density)
 importFrom(lazyeval,lazy_dots)
 importFrom(lazyeval,lazy_eval)
+importFrom(xts,xts)
+importFrom(zoo,index)
