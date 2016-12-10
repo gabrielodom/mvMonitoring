@@ -7,12 +7,18 @@
 processMonitor(data, trainObs, updateFreq = cieling(0.2 * trainObs), ...)
 }
 \arguments{
-\item{updateFreq}{}
+\item{data}{A data frame with row names as a POSIX date time label}
+
+\item{trainObs}{How many train observations will be used}
+
+\item{updateFreq}{How many non-flagged rows to collect before we update}
 }
 \description{
 Title
 }
 \examples{
-processMonitor(MASS::mvrnorm(100, mu = c(0,0,0), Sigma = toeplitz(c(1, 0.5, 0.1))), trainObs = 20, updateFreq = 5, var.amnt = 0.8)
+processMonitor(MASS::mvrnorm(100, mu = c(0,0,0),
+                                       Sigma = toeplitz(c(1, 0.5, 0.1))),
+                         trainObs = 20, updateFreq = 5, var.amnt = 0.8)
 }
 
