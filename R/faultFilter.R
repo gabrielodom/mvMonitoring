@@ -20,8 +20,6 @@ faultFilter <- function(trainData,
                         updateFreq,
                         ...){
 
-  browser()
-
   ls <- lazy_dots(...)
   muTrain <- colMeans(trainData)
   sigmaTrain <- cov(trainData)

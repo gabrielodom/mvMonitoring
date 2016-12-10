@@ -20,13 +20,16 @@ processMonitor <- function(data,
                            ...){
 
   ls <- lazy_dots(...)
-  faultObj <- data.frame(SPE = integer(0),
-                         SPE_flag = logical(0),
-                         T2 = integer(0),
-                         T2_flag = logical(0))
-  unflaggedObs <- data[0,]
 
-  while(nrow(faultObj) < (nrow(data) - trainObs)){
+  browser()
+
+  faultObj_ls <- faultFilter(trainData = data[1:trainObs,],
+                             testData = data[(trainObs + 1):nrow(data)],
+                             updateFreq = updateFreq)
+  fault_xts <- faultObj_ls$faultObj
+  obsToKeep <- faultObj_ls$nonFlaggedTestObs
+
+  while(nrow(obsToKeep) < updateFreq){
 
     n <- nrow(unflaggedObs)
     if(n < trainObs){
