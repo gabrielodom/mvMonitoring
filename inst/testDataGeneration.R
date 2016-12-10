@@ -9,6 +9,15 @@ rownames(warningData) <- seq.POSIXt(from = as.POSIXct(Sys.Date()),
                                     by = "hour",
                                     length.out = nrow(warningData))
 
+# Test the faultFilter function
+faultFilter(trainingData = warningData[1:100,],
+            testingData = warningData[101:225,],
+            updateFreq = 50,
+            var.amnt = 0.8)
+
+
+
+# Test the processMonitor function
 monit <- processMonitor(warningData,
                         trainObs = 100,
                         updateFreq = 50,

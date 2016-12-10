@@ -2,23 +2,22 @@
 
 #' Title
 #'
-#' @param trainingData
 #' @param updateFreq
-#' @param testingData
 #' @param ...
+#' @param trainData
+#' @param testData
 #'
 #' @return
-#' @exportfrom lazyeval lazy_eval
+#' @export
+#'
+#' @importFrom lazyeval lazy_eval
 #'
 #' @examples
-faultFilter <- function(trainingData, testingData, updateFreq, ...){
-  UseMethod("faultFilter")
-}
 
-faultFilter.training <- function(trainingData,
-                                 testingData,
-                                 updateFreq,
-                                 ...){
+faultFilter <- function(trainData,
+                        testData,
+                        updateFreq,
+                        ...){
   browser()
   muTrain <- colMeans(trainData)
   sigmaTrain <- cov(trainData)
@@ -30,8 +29,8 @@ faultFilter.training <- function(trainingData,
   pcaObj <- do.call(pca, args = c(list(data = scaledTrainData), lazy_eval(ls)))
   thresholdObj <- do.call(threshold, args = c(list(pca_object = pcaObj),
                                               lazy_eval(ls)))
-  scaledTest <- as.matrix(testingData - muTrain) %*% sigmaInvTrain
-  faultObj <- lapply(i in 1:nrow(scaledTest), function(i){
+  scaledTest <- as.matrix(testData - muTrain) %*% sigmaInvTrain
+  faultObj <- lapply(1:nrow(scaledTest), function(i){
     do.call(faultDetect,
             args = c(list(threshold_object = thresholdObj,
                           observation = scaledObs[i,]),
