@@ -23,6 +23,9 @@ mspMonitor <- function(data,
                        updateFreq = cieling(0.2 * trainObs),
                        faultsToTriggerAlarm = 3,
                        ...){
+
+
+
   ls <- lazy_dots(...)
   classes <- unique(labelVector)
   classData <- cbind(labelVector, data)
