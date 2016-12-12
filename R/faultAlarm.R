@@ -10,6 +10,9 @@
 #' @return
 #' @export
 #'
+#' @importFrom xts xts
+#' @importFrom xts index
+#'
 #' @examples
 faultAlarm <- function(faultDF, faultsToTrigger = 3, faultObs = NULL){
   if(is.null(faultObs)){

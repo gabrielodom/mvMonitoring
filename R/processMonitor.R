@@ -22,6 +22,7 @@ processMonitor <- function(data,
                            ...){
 
   ls <- lazy_dots(...)
+
   faultObj_ls <- do.call(faultFilter,
                          args = c(list(trainData = data[1:trainObs,],
                                        testData = data[(trainObs + 1):nrow(data)],
