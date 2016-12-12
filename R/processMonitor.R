@@ -4,6 +4,7 @@
 #' @param trainObs How many train observations will be used
 #' @param ...
 #' @param updateFreq How many non-flagged rows to collect before we update
+#' @param faultsToTriggerAlarm
 #'
 #' @return
 #' @export
@@ -17,6 +18,7 @@
 processMonitor <- function(data,
                            trainObs,
                            updateFreq = cieling(0.2 * trainObs),
+                           faultsToTriggerAlarm = 3,
                            ...){
 
   ls <- lazy_dots(...)
@@ -52,9 +54,12 @@ processMonitor <- function(data,
 
   # browser()
 
-  faultAlarm(fault_xts)
+  alarms_xts <- faultAlarm(fault_xts,
+                           faultsToTrigger = faultsToTriggerAlarm,
+                           faultObs = NULL)
 
   list(FaultChecks = fault_xts,
-       Non_Flagged_Obs = obsToKeep)
+       Non_Flagged_Obs = obsToKeep,
+       Alarms = alarms_xts)
 }
 

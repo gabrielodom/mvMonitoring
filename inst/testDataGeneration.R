@@ -17,9 +17,11 @@ faultFilter(trainData = warningData[1:100,],
             var.amnt = 0.8)
 
 
-
 # Test the processMonitor function
 monit <- processMonitor(warningData,
-                        trainObs = 25,
-                        updateFreq = 5,
+                        trainObs = 50,
+                        updateFreq = 25,
                         var.amnt = 0.8)
+
+# Test the faultAlarm function
+faultAlarm(monit$FaultChecks)

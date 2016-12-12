@@ -4,7 +4,8 @@
 \alias{processMonitor}
 \title{Title}
 \usage{
-processMonitor(data, trainObs, updateFreq = cieling(0.2 * trainObs), ...)
+processMonitor(data, trainObs, updateFreq = cieling(0.2 * trainObs),
+  faultsToTriggerAlarm = 3, ...)
 }
 \arguments{
 \item{data}{A data frame with row names as a POSIX date time label}
@@ -12,6 +13,8 @@ processMonitor(data, trainObs, updateFreq = cieling(0.2 * trainObs), ...)
 \item{trainObs}{How many train observations will be used}
 
 \item{updateFreq}{How many non-flagged rows to collect before we update}
+
+\item{faultsToTriggerAlarm}{}
 }
 \description{
 Title
