@@ -47,6 +47,8 @@ faultFilter <- function(trainData,
 
   keptObs <- testData[keptObsIndex]
 
-  list(faultObj = faultObj,
-       nonFlaggedTestObs = keptObs)
+  object <- list(faultObj = faultObj,
+                 nonFlaggedTestObs = keptObs)
+  class(object) <- "faultDF"
+  object
 }

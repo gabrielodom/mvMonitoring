@@ -24,13 +24,10 @@ processMonitor <- function(data,
                              testData = data[(trainObs + 1):nrow(data)],
                              updateFreq = updateFreq)
   fault_xts <- faultObj_ls$faultObj
-  obsToKeep <- faultObj_ls$nonFlaggedTestObs
+  obsToKeep <- obsToKeepNew <- faultObj_ls$nonFlaggedTestObs
 
-  while(nrow(obsToKeep) >= updateFreq){
-
-    browser()
-
-    n <- nrow(obsToKeep)
+  while(nrow(obsToKeepNew) == updateFreq){
+    n <- nrow(obsToKeepNew)
     if(n < trainObs){
       trainData <- rbind(data[(n + 1):trainObs,], obsToKeep)
       }else{
@@ -41,15 +38,11 @@ processMonitor <- function(data,
                                testData = data[paste0(testTime, "/")],
                                updateFreq = updateFreq)
     fault_xts <- faultObj_ls$faultObj
-    obsToKeep <- rbind(obsToKeep, faultObj_ls$nonFlaggedTestObs)
+    obsToKeepNew <- faultObj_ls$nonFlaggedTestObs
+    obsToKeep <- rbind(obsToKeep, obsToKeepNew)
   }
 
-  if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 2]) == TRUE){
-    warning("SPE detects process fault.", immediate. = TRUE)
-  }
-  if(nrow(faultObj) >= 3 && all(faultObj[(iter - 2):iter, 4]) == TRUE){
-    warning("T2 detects process fault.", immediate. = TRUE)
-  }
+  # alarm_function()
 
   list(FaultChecks = faultObj,
        Non_Flagged_Obs = unflaggedObs)
