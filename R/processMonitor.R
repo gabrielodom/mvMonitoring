@@ -20,11 +20,14 @@ processMonitor <- function(data,
                            ...){
 
   ls <- lazy_dots(...)
-  faultObj_ls <- faultFilter(trainData = data[1:trainObs,],
-                             testData = data[(trainObs + 1):nrow(data)],
-                             updateFreq = updateFreq)
+  faultObj_ls <- do.call(faultFilter,
+                         args = c(list(trainData = data[1:trainObs,],
+                                       testData = data[(trainObs + 1):nrow(data)],
+                                       updateFreq = updateFreq),
+                                  lazy_eval(ls)))
   fault_xts <- faultObj_ls$faultObj
-  obsToKeep <- obsToKeepNew <- faultObj_ls$nonFlaggedTestObs
+  obsToKeepNew <- faultObj_ls$nonFlaggedTestObs
+  obsToKeep <- faultObj_ls$nonFlaggedTestObs
 
   while(nrow(obsToKeepNew) == updateFreq){
     n <- nrow(obsToKeepNew)
@@ -33,18 +36,25 @@ processMonitor <- function(data,
       }else{
         trainData <- head(obsToKeep[(n - trainObs + 1):n,], n = trainObs)
       }
+
     testTime <- index(obsToKeep[nrow(obsToKeep)])
-    faultObj_ls <- faultFilter(trainData = trainData,
-                               testData = data[paste0(testTime, "/")],
-                               updateFreq = updateFreq)
-    fault_xts <- faultObj_ls$faultObj
+    faultObj_ls <- do.call(faultFilter, args = c(list(trainData = trainData,
+                                                      testData = data[paste0(testTime, "/")],
+                                                      updateFreq = updateFreq),
+                                                 lazy_eval(ls)))
+
+    fault_xts[index(faultObj_ls$faultObj),] <- faultObj_ls$faultObj
     obsToKeepNew <- faultObj_ls$nonFlaggedTestObs
-    obsToKeep <- rbind(obsToKeep, obsToKeepNew)
+    if(nrow(obsToKeepNew) != 0){
+      obsToKeep <- rbind(obsToKeep, obsToKeepNew)
+    }
   }
 
-  # alarm_function()
+  # browser()
 
-  list(FaultChecks = faultObj,
-       Non_Flagged_Obs = unflaggedObs)
+  faultAlarm(fault_xts)
+
+  list(FaultChecks = fault_xts,
+       Non_Flagged_Obs = obsToKeep)
 }
 

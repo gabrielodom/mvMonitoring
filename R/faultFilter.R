@@ -41,8 +41,7 @@ faultFilter <- function(trainData,
   faultObj <- do.call(rbind, faultObj)
   faultObj <- xts(faultObj, order.by = index(testData))
 
-  nonSPEFlaggedObs <- faultObj[faultObj[,2] == FALSE, ]
-  nonFlaggedObs <- nonSPEFlaggedObs[nonSPEFlaggedObs[,4] == FALSE, ]
+  nonFlaggedObs <- faultObj[faultObj[,2] == FALSE & faultObj[,4] == FALSE, ]
   keptObsIndex <- head(index(nonFlaggedObs), n = updateFreq)
 
   keptObs <- testData[keptObsIndex]
