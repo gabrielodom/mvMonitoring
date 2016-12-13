@@ -530,5 +530,5 @@ faults_ls$fault3B$z %>% plot.xts()
 ######  AD-PCA Implementation  ################################################
 mspMonitor(data = faults_ls$normal[,2:4],
            labelVector = faults_ls$normal[,1],
-           trainObs = 720,
+           trainObs = 360,
            updateFreq = 180)

@@ -37,7 +37,7 @@ mspMonitor <- function(data,
 
   monitorResults <- lapply(classes, function(i){
     do.call(processMonitor,
-            args = c(list(data = data_ls[[i]],
+            args = c(list(data = data_ls[[1]],
                           trainObs = trainObs,
                           updateFreq = updateFreq,
                           faultsToTriggerAlarm = faultsToTriggerAlarm),

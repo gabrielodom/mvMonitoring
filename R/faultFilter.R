@@ -21,9 +21,11 @@ faultFilter <- function(trainData,
                         ...){
 
   ls <- lazy_dots(...)
+  browser()
   muTrain <- colMeans(trainData)
   sigmaTrain <- cov(trainData)
-  sigmaInvTrain <- solve(sigmaTrain)
+  stdDevs <- sqrt(diag(sigmaTrain))
+  precisRootMat <- diag(1 / stdDevs, ncol = ncol(sigmaTrain))
 
   scaledTrainData <- scale(trainData)
 
@@ -31,7 +33,10 @@ faultFilter <- function(trainData,
   pcaObj <- do.call(pca, args = c(list(data = scaledTrainData), lazy_eval(ls)))
   thresholdObj <- do.call(threshold, args = c(list(pca_object = pcaObj),
                                               lazy_eval(ls)))
-  scaledTest <- as.matrix(testData - muTrain) %*% sigmaInvTrain
+  scaledTest <- as.matrix(testData - muTrain) %*% precisRootMat
+  scaledTest <- xts(scaledTest, order.by = index(testData))
+  names(scaledTest) <- names(testData)
+
   faultObj <- lapply(1:nrow(scaledTest), function(i){
     do.call(faultDetect,
             args = c(list(threshold_object = thresholdObj,
