@@ -24,14 +24,16 @@ mspMonitor <- function(data,
                        faultsToTriggerAlarm = 3,
                        ...){
 
-
+  # browser()
 
   ls <- lazy_dots(...)
   classes <- unique(labelVector)
   classData <- cbind(labelVector, data)
   data_ls <- lapply(1:length(classes), function(i){
-    classData[classData[,1] == classes[i],]
+    data_df <- classData[classData[,1] == classes[i],]
+    data_df[, -1]
   })
+  names(data_ls) <- classes
 
   monitorResults <- lapply(classes, function(i){
     do.call(processMonitor,
@@ -42,6 +44,6 @@ mspMonitor <- function(data,
                      lazy_eval(ls)))
   })
 
+  names(monitorResults) <- classes
   monitorResults
-
 }
