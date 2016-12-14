@@ -21,22 +21,24 @@ faultFilter <- function(trainData,
                         ...){
 
   ls <- lazy_dots(...)
-  browser()
   muTrain <- colMeans(trainData)
   sigmaTrain <- cov(trainData)
   stdDevs <- sqrt(diag(sigmaTrain))
   precisRootMat <- diag(1 / stdDevs, ncol = ncol(sigmaTrain))
 
   scaledTrainData <- scale(trainData)
-  scaledTrainData2 <- as.matrix(trainData - muTrain) %*% precisRootMat
-  scaledTrainData2 <- xts(scaledTrainData2, order.by = index(trainData))
-  names(scaledTrainData2) <- names(trainData)
-
+  # muTrain_mat <- rep(1, nrow(trainData)) %*% t(muTrain)
+  # scaledTrainData2 <- (trainData - muTrain_mat) %*% precisRootMat
+  # scaledTrainData2 <- xts(scaledTrainData2, order.by = index(trainData))
+  # names(scaledTrainData2) <- names(trainData)
+  # plot.xts(scaledTrainData2$x)
 
   pcaObj <- do.call(pca, args = c(list(data = scaledTrainData), lazy_eval(ls)))
   thresholdObj <- do.call(threshold, args = c(list(pca_object = pcaObj),
                                               lazy_eval(ls)))
-  scaledTest <- as.matrix(testData - muTrain) %*% precisRootMat
+
+  muTrain_mat <- rep(1, nrow(testData)) %*% t(muTrain)
+  scaledTest <- as.matrix(testData - muTrain_mat) %*% precisRootMat
   scaledTest <- xts(scaledTest, order.by = index(testData))
   names(scaledTest) <- names(testData)
 

@@ -32,17 +32,17 @@ cor(t_err[2:omega], t_err[1:(omega - 1)])
 pacf(t_err)
 # Our error vector looks good.
 
-# TEST: create a t vector without the sinusoidal component
-t_star <- t_err
+# # TEST: create a t vector without the sinusoidal component
+# t_star <- t_err
 
-# # Now we create the t vector. Our three features are parametric in t, so we
-# # install a nonstationary structure to the ts, to further compound the AR error
-# t_star <- vector(length = omega)
-# t_star[1] <- -cos(2 * pi / omega) + t_err[1]
-# for(s in 2:omega){
-#   t_star[s] <- -cos(2 * pi * s / omega) +
-#     phi * t_err[(s - 1)] + (1 - phi) * t_err[s]
-# }
+# Now we create the t vector. Our three features are parametric in t, so we
+# install a nonstationary structure to the ts, to further compound the AR error
+t_star <- vector(length = omega)
+t_star[1] <- -cos(2 * pi / omega) + t_err[1]
+for(s in 2:omega){
+  t_star[s] <- -cos(2 * pi * s / omega) +
+    phi * t_err[(s - 1)] + (1 - phi) * t_err[s]
+}
 # Now we scale the ts to match the ts from the Unif(0.01,2) used in Kazor et al
 t_star_adj <- ((b - a) * (t_star - min(t_star))) /
   (max(t_star) - min(t_star)) + a
@@ -531,7 +531,9 @@ faults_ls$fault3B$z %>% plot.xts()
 
 
 ######  AD-PCA Implementation  ################################################
-mspMonitor(data = faults_ls$normal[,2:4],
-           labelVector = faults_ls$normal[,1],
-           trainObs = 360,
-           updateFreq = 180)
+Sys.time()
+results_ls <- mspMonitor(data = faults_ls$normal[,2:4],
+                         labelVector = faults_ls$normal[,1],
+                         trainObs = 720,
+                         updateFreq = 360)
+Sys.time() # 14 seconds for 720 train, 360 update

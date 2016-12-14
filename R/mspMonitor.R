@@ -37,7 +37,7 @@ mspMonitor <- function(data,
 
   monitorResults <- lapply(classes, function(i){
     do.call(processMonitor,
-            args = c(list(data = data_ls[[1]],
+            args = c(list(data = data_ls[[i]],
                           trainObs = trainObs,
                           updateFreq = updateFreq,
                           faultsToTriggerAlarm = faultsToTriggerAlarm),
@@ -45,5 +45,6 @@ mspMonitor <- function(data,
   })
 
   names(monitorResults) <- classes
+  browser()
   monitorResults
 }
