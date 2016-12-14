@@ -45,6 +45,24 @@ mspMonitor <- function(data,
   })
 
   names(monitorResults) <- classes
-  browser()
-  monitorResults
+
+  FaultChecks <- lapply(classes, function(i){
+    monitorResults[[i]]$FaultChecks
+  })
+  FaultChecks <- do.call(rbind, FaultChecks)
+
+  Non_Flagged_Obs <- lapply(classes, function(i){
+    monitorResults[[i]]$Non_Flagged_Obs
+  })
+  Non_Flagged_Obs <- do.call(rbind, Non_Flagged_Obs)
+
+  Alarms <- lapply(classes, function(i){
+    monitorResults[[i]]$Alarms
+  })
+  Alarms <- do.call(rbind, Alarms)
+
+
+  list(FaultChecks = FaultChecks,
+       Non_Flagged_Obs = Non_Flagged_Obs,
+       Alarms = Alarms)
 }

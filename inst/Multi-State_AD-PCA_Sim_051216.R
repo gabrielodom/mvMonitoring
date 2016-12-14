@@ -530,10 +530,20 @@ faults_ls$fault3B$y %>% plot.xts()
 faults_ls$fault3B$z %>% plot.xts()
 
 
-######  AD-PCA Implementation  ################################################
+######  MSAD-PCA Implementation  ##############################################
 Sys.time()
 results_ls <- mspMonitor(data = faults_ls$normal[,2:4],
                          labelVector = faults_ls$normal[,1],
-                         trainObs = 720,
-                         updateFreq = 360)
-Sys.time() # 14 seconds for 720 train, 360 update
+                         trainObs = 2880,
+                         updateFreq = 1440)
+Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
+# 1 second for 2880 train (two days), and 1440 update (one day).
+
+falseAlarmRate_SPE <- sum(results_ls$Alarms[,1] == "Alarm") /
+  nrow(results_ls$Alarms)
+falseAlarmRate_T2 <- sum(results_ls$Alarms[,2] == "Alarm") /
+  nrow(results_ls$Alarms)
+
+faultTime <- zoo::index(faults_ls$normal[faultStart,])
+# Why don't we have 10080 - 2880 rows in the Alarm matrix??
+str(results_ls$Alarms)
