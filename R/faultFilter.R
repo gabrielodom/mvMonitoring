@@ -28,6 +28,9 @@ faultFilter <- function(trainData,
   precisRootMat <- diag(1 / stdDevs, ncol = ncol(sigmaTrain))
 
   scaledTrainData <- scale(trainData)
+  scaledTrainData2 <- as.matrix(trainData - muTrain) %*% precisRootMat
+  scaledTrainData2 <- xts(scaledTrainData2, order.by = index(trainData))
+  names(scaledTrainData2) <- names(trainData)
 
 
   pcaObj <- do.call(pca, args = c(list(data = scaledTrainData), lazy_eval(ls)))
