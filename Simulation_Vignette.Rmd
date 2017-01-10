@@ -93,16 +93,18 @@ normal_df %<>% mutate(x = t + err1,
 # plot(normal_df$x)
 # plot(normal_df$y)
 # plot(normal_df$z)
-# scatterplot3d(x = normal_df$x,
-#               y = normal_df$y,
-#               z = normal_df$x)
 # # It checks out
 
 orig_state_mat <- normal_df %>% select(x,y,z) %>% as.matrix
 ```
+Let's take a look at our 3D scatterplot:
+```{r state1_scatter}
+scatterplot3d(x = normal_df$x,
+              y = normal_df$y,
+              z = normal_df$x)
+```
 
-Now we can create data for our other two states. These states will be scaled rotations of the current $<x,y,z>$ set. Thus, we need the `rot_and_scale3d()` function from the `Rotation_Playground.R` file.
-
+Now we can create data for our other two states. These states will be scaled rotations of the current $<x,y,z>$ set. Thus, we need the `rot_and_scale3d()` function from the `Rotation_Playground.R` file. The first state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2).
 ```{r state_2_init}
 source("inst/Rotation_Playground.R")
 
@@ -113,8 +115,13 @@ state2_angles <- list(yaw = 0,
 state2_scales <- c(1,0.5,2)
 state2_mat <- orig_state_mat %*% rot_and_scale3d(rot_angles = state2_angles,
                                                scale_factors = state2_scales)
+```
+We can see the effects of the rotation and scaling.
+```{r state_2_scatter}
 scatterplot3d(state2_mat)
-
+```
+The second state is yaw, pitch, and roll rotated by (90, 0, -30) degrees, and the scales are multiplied by (0.25, 0.1, 0.75).
+```{r state_3_init}
 ###  State 3  ###
 state3_angles <- list(yaw = 90,
                       pitch = 0,
@@ -122,8 +129,14 @@ state3_angles <- list(yaw = 90,
 state3_scales <- c(0.25,0.1,0.75)
 state3_mat <- orig_state_mat %*% rot_and_scale3d(rot_angles = state3_angles,
                                                scale_factors = state3_scales)
+```
+We can see the difference that State 3 creates.
+```{r state_3_scatter}
 scatterplot3d(state3_mat)
+```
 
+Now, let's combine all these state observations into one data frame, which we will then subset based on the state indicator.
+```{r combine_state_data}
 ###  Combination and Cleaning  ###
 # Now concatenate these vectors
 normal_df$xState2 <- state2_mat[,1]
@@ -154,6 +167,10 @@ state3_df <- normal_df %>%
   select(dateTime, state, x = xState3, y = yState3, z = zState3)
 normal_switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
   arrange(dateTime)
+```
+
+Let's take 
+```{r}
 
 normal_switch_df %>%
   filter(state == 3) %>%
