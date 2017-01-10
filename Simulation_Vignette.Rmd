@@ -1,16 +1,28 @@
-# This is our simulation file to replicate the simulation done in Kazor et al
-# (2016), section 3.
+---
+title: "MSAD_PCA_Walkthrough"
+author: "Gabriel Odom"
+date: "January 9, 2017"
+output: html_document
+---
 
-######  Generate the t vector  ################################################
-omega <- 60 * 24 * 7 # One week of minute-level observations
-phi <- 0.75 # autocorrelation coefficient
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
+## Multi-State Adaptive-Dynamic PCA Simulation
+
+We create this package, `mvMonitor`, from the foundation laid by Kazor et al (2016). The `mvMonitor` package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.
+
+### The Interval Vector
+We begin by simulating an autocorrelated interval-step vector $t$, where the autocorrelated errors of $t$ have initial value $\epsilon_1 \sim \mathcal{U}_{[a,b]}$, where $a = 0.01$ and $b = 2$. This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations) and autocorrelation component $\phi = 0.75$.
+```{r t_vec_initialized}
+omega <- 60 * 24 * 7
+phi <- 0.75
 a <- 0.01; b <- 2
-# See Kazor et al pp 1533. These are the mean and variance of a Unif(0.01,2).
-mean_t_err <- 0.5 * (a + b)
-var_t_err <- (b - a) / 12
+mean_t_err <- 0.5 * (a + b) # mean of Uniform(0.01,2)
+var_t_err <- (b - a) / 12 # variance of Uniform(0.01,2)
 
-# We will create an autocorrelated vector of errors
+# Create an autocorrelated vector of errors for the random variable t
 t_err <- vector(length = omega)
 # Initialise the errors so that the overall mean and variance match the sim of
 # Kazor et al.
@@ -23,37 +35,46 @@ for(s in 2:omega){
                       mean = mean_t_err * (1 - phi),
                       sd = sqrt(var_t_err * (1 - phi ^ 2)))
 }
-# We will inspect our error vector.
-plot(t_err)
-mean(t_err); var(t_err)
-cor(t_err[2:omega], t_err[1:(omega - 1)])
-# I used a Durbin-Watson test, but the p-value was 0.4 for data with phi = 0.95
-# dwtest is useless
-pacf(t_err)
-# Our error vector looks good.
 
+# Now for the vector itself
 t_star <- vector(length = omega)
 t_star[1] <- -cos(2 * pi / omega) + t_err[1]
 for(s in 2:omega){
   t_star[s] <- -cos(2 * pi * s / omega) +
     phi * t_err[(s - 1)] + (1 - phi) * t_err[s]
 }
-# Now we scale the ts to match the ts from the Unif(0.01,2) used in Kazor et al
+# Now we scale the ts to match the ts from the Unif(0.01,2)
 t_star_adj <- ((b - a) * (t_star - min(t_star))) /
   (max(t_star) - min(t_star)) + a
+```
+Now that we have created the underlying autocorrelated and non-stationary process vector $t$, we perform some simple confirmatory graphing techniques.
 
-# Inspect our t vector
-plot(t_star_adj, type = "l")
+```{r t_vec_graphs, echo = FALSE}
+plot(t_star_adj,
+     type = "l",
+     main = "Plot of t Scaled to [0.1,2]",
+     xlab = "t")
+pacf(t_star,
+     main = "Partial ACF for the Series t")
+```
+```{r t_vec_summary}
 mean(t_star); var(t_star)
 cor(t_star_adj[2:omega], t_star_adj[1:(omega - 1)])
 lmtest::dwtest(t_star_adj[2:omega] ~ t_star_adj[1:(omega - 1)])
-pacf(t_star)
-# Looks great
+```
 
-######  Features and State Features  ##########################################
-# We will use <x(t), y(t), z(t)> instead of the <x_1(t), x_2(t), x_3(t)>
-# notation used in Kazor et al. This will assist us when we introduce feature
-# states. Our state notation will be <x_k(t), y_k(t), z_k(t)> for State k.
+###  Features and State Features
+We will simulate three features, with each feaure operating under $k$ different states. We will use $<x(t), y(t), z(t)>$ instead of the $<x_1(t), x_2(t), x_3(t)>$ notation used in Kazor et al. This will assist us when we introduce feature states. Our state notation will be $<x_k(t), y_k(t), z_k(t)>$ for State $k$.
+
+We create the three features under State 1 (normal operating conditions, or \emph{NOC}) as three functions of $t$:
+\begin{align}
+\textbf{x}(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
+\textbf{y}(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
+\textbf{z}(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3,
+\end{align}
+where $\varepsilon_i \sim N(0, 0.01)$.
+
+```{r state_1_init}
 library(scatterplot3d)
 library(magrittr)
 library(dplyr)
@@ -78,11 +99,11 @@ normal_df %<>% mutate(x = t + err1,
 # # It checks out
 
 orig_state_mat <- normal_df %>% select(x,y,z) %>% as.matrix
+```
 
+Now we can create data for our other two states. These states will be scaled rotations of the current $<x,y,z>$ set. Thus, we need the `rot_and_scale3d()` function from the `Rotation_Playground.R` file.
 
-# Now we can create data for our other two states. These states will be scaled
-# rotations of the current <x,y,z> set. Thus, we need "rot_and_scale3d()" from
-# the "Rotation_Playground.R" file
+```{r state_2_init}
 source("inst/Rotation_Playground.R")
 
 ###  State 2  ###
@@ -526,19 +547,21 @@ faults_ls$fault3B$z %>% plot.xts()
 
 
 ######  MSAD-PCA Implementation  ##############################################
-Sys.time()
-results_ls <- mspMonitor(data = faults_ls$normal[,2:4],
-                         labelVector = faults_ls$normal[,1],
-                         trainObs = 2880,
-                         updateFreq = 1440)
-Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
-# 1 second for 2880 train (two days), and 1440 update (one day).
+# Sys.time()
+# results_ls <- mspMonitor(data = faults_ls$normal[,2:4],
+#                          labelVector = faults_ls$normal[,1],
+#                          trainObs = 2880,
+#                          updateFreq = 1440)
+# Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
+# # 1 second for 2880 train (two days), and 1440 update (one day).
+# 
+# falseAlarmRate_SPE <- sum(results_ls$Alarms[,1] == "Alarm") /
+#   nrow(results_ls$Alarms)
+# falseAlarmRate_T2 <- sum(results_ls$Alarms[,2] == "Alarm") /
+#   nrow(results_ls$Alarms)
+# 
+# faultTime <- zoo::index(faults_ls$normal[faultStart,])
+# # Why don't we have 10080 - 2880 rows in the Alarm matrix??
+# str(results_ls$Alarms)
 
-falseAlarmRate_SPE <- sum(results_ls$Alarms[,1] == "Alarm") /
-  nrow(results_ls$Alarms)
-falseAlarmRate_T2 <- sum(results_ls$Alarms[,2] == "Alarm") /
-  nrow(results_ls$Alarms)
-
-faultTime <- zoo::index(faults_ls$normal[faultStart,])
-# Why don't we have 10080 - 2880 rows in the Alarm matrix??
-str(results_ls$Alarms)
+```
