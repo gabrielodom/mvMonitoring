@@ -169,8 +169,22 @@ normal_switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
   arrange(dateTime)
 ```
 
-Let's take 
-```{r}
+Let's take a look at the individual states, and their combined product.
+```{r state_scatterplots}
+
+normal_switch_df %>%
+  filter(state == 1) %>%
+  select(x, y, z) %>%
+  scatterplot3d(xlim = c(-2, 3),
+                ylim = c(-3, 1),
+                zlim = c(-1, 5))
+
+normal_switch_df %>%
+  filter(state == 2) %>%
+  select(x, y, z) %>%
+  scatterplot3d(xlim = c(-2, 3),
+                ylim = c(-3, 1),
+                zlim = c(-1, 5))
 
 normal_switch_df %>%
   filter(state == 3) %>%
@@ -184,8 +198,13 @@ normal_switch_df %>%
   scatterplot3d(xlim = c(-2, 3),
                 ylim = c(-3, 1),
                 zlim = c(-1, 5))
+```
 
-######  Fault Introduction  ###################################################
+
+
+###  Fault Introduction
+We now create the faults for individual states and all states. We will introduce these faults 1000 time units after the end of training (to evauluate false positive rates). The first fault is to add 2 to each $<\textbf{x}(\textbf{t}), \textbf{y}(\textbf{t}), \textbf{z}(\textbf{t})>$.
+```{r fault1A_intro}
 faultStart <- 8500
 
 ###  Fault 1A  ###
@@ -230,12 +249,15 @@ fault1A_switch_df <- bind_rows(fault1A_state1_df,
                                fault1A_state2_df,
                                fault1A_state3_df) %>%
   arrange(dateTime)
-
+```
+Now, let's take a look at our process after introducing fault 1A.
+```{r fault1A_scatter}
 fault1A_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
-
-
+```
+The second fault (Fault 1B) is to add 2 to feature $<\textbf{x}(\textbf{t})>$ only.
+```{r fault1B_intro}
 ###  Fault 1B  ###
 # Shift each x by 2
 fault1B_df <- normal_df %>%
@@ -275,11 +297,16 @@ fault1B_switch_df <- bind_rows(fault1B_state1_df,
                                fault1B_state2_df,
                                fault1B_state3_df) %>%
   arrange(dateTime)
-
+```
+We now look at the effect of Fault 1B on the scatterplot of the process.
+```{r fault1B_scatter}
 fault1B_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
+```
 
+The third fault we introduce (Fault 2A) is a drift in each feature by $10 ^ {-3} * (\text{step} - 8500)$.
+```{r fault2A_intro}
 ###  Fault 2A  ###
 # Drift each <x, y, z> by (step - faultStart) / 10 ^ 3
 drift_vec <- (1:omega - faultStart) / 10 ^ 3
@@ -294,12 +321,12 @@ fault2A_mat <- fault2A_df %>% select(x,y,z) %>% as.matrix
 # State 2
 fault2A_S2_mat <- fault2A_mat %*% rot_and_scale3d(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
-scatterplot3d(fault2A_S2_mat)
+# scatterplot3d(fault2A_S2_mat)
 
 # State 3
 fault2A_S3_mat <- fault2A_mat %*% rot_and_scale3d(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
-scatterplot3d(fault2A_S3_mat)
+# scatterplot3d(fault2A_S3_mat)
 
 # Now concatenate these vectors
 fault2A_df$xState2 <- fault2A_S2_mat[,1]
@@ -323,12 +350,16 @@ fault2A_switch_df <- bind_rows(fault2A_state1_df,
                                fault2A_state2_df,
                                fault2A_state3_df) %>%
   arrange(dateTime)
-
+```
+Now we look at the scatterplot under this drift fault.
+```{r fault2A_scatter}
 fault2A_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
+```
 
-
+The fourth fault we introduce (Fault 2B) is a drift in features $\textbf{y}$ and $\textbf{z}$ by $10 ^ {-3} * (\text{step} - 8500)$.
+```{r fault2B_intro}
 ###  Fault 2B  ###
 # Drift each <y, z> by (step - faultStart) / 10 ^ 3
 fault2B_df <- normal_df %>%
@@ -369,11 +400,16 @@ fault2B_switch_df <- bind_rows(fault2B_state1_df,
                                fault2B_state2_df,
                                fault2B_state3_df) %>%
   arrange(dateTime)
-
+```
+We now inspect the effect of Fault 2B.
+```{r fault2B_scatter}
 fault2B_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
+```
 
+Our fifth fault (Fault 3A) is to amplify the underlying $\textbf{t}$ signal vector as $\frac{3}{2 * 10080} * (10080 - \text{step}) * \textbf{t}$.
+```{r fault3A_intro}
 ###  Fault 3A  ###
 # Amplify t for each <x, y, z> by 3 * (omega - step) * t / (2 * omega)
 amplify_vec <- 2 * (1:omega - faultStart) / (omega - faultStart) + 1
@@ -418,12 +454,15 @@ fault3A_switch_df <- bind_rows(fault3A_state1_df,
                                fault3A_state2_df,
                                fault3A_state3_df) %>%
   arrange(dateTime)
-
+```
+Now inspect the effect of this fault
+```{r fault3A_scatter}
 fault3A_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
-
-
+```
+Our last fault under consideration, Fault 3B, is a dampening fault to $\textbf{t}$ as $\log \textbf{t}$. As $\textbf{t}$ is bdd within $[0.01, 2]$, $\log\textbf{t}\in[-4.61, 0.7]$.
+```{r fault3B_intro}
 ###  Fault 3B  ###
 # Dampen t for z by log|t|
 t_log <- normal_df$t
@@ -439,12 +478,12 @@ fault3B_mat <- fault3B_df %>% select(x,y,z) %>% as.matrix
 # State 2
 fault3B_S2_mat <- fault3B_mat %*% rot_and_scale3d(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
-scatterplot3d(fault3B_S2_mat)
+# scatterplot3d(fault3B_S2_mat)
 
 # State 3
 fault3B_S3_mat <- fault3B_mat %*% rot_and_scale3d(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
-scatterplot3d(fault3B_S3_mat)
+# scatterplot3d(fault3B_S3_mat)
 
 # Now concatenate these vectors
 fault3B_df$xState2 <- fault3B_S2_mat[,1]
@@ -468,20 +507,19 @@ fault3B_switch_df <- bind_rows(fault3B_state1_df,
                                fault3B_state2_df,
                                fault3B_state3_df) %>%
   arrange(dateTime)
-
+```
+We inspect the effect of the last fault on our scatterplot.
+```{r fault3B_scatter}
 fault3B_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
+```
 
-######  The Seven Data Frames  ################################################
-# The normal_df data frame is without fault. We will remove rows faultStart to
-# omega, and replace these rows with the same rows from each each of the fault
-# data frames.
-# Turn all the data frames into xts objects for Kazor's function to work.
-# NOTE - this follows a depreciated version of zoo, so we need the dateTime
-# column as the rownames of the data frame, not as an index.
-# EDITED NOTE - B. Barnard and I rebuilt Kazor's code as a functional package.
-# The functions in these packages use xts matrices as inputs.
+###  The Seven Data Frames
+The normal_df data frame is without fault. We will remove rows 8500 to 10080, and replace these rows with the same rows from each each of the fault data frames. We then store each of these seven `xts` matrices in a list.
+
+Implementation notes: turn all the data frames into `xts` objects for Kazor's function to work, which we believe follows a depreciated version of `zoo`, so we need the `dateTime` column as the rownames of the data frame, not as an index. EDITED NOTE - B. Barnard and I rebuilt Kazor's code as a functional package called `mvMonitoring`. The functions in these packages use `xts` matrices as inputs.
+```{r fault_dataframes}
 library(xts)
 normal_switch_xts <- xts(normal_switch_df[,-1],
                          order.by = normal_switch_df[,1])
