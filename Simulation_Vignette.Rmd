@@ -610,7 +610,7 @@ faults_ls$fault3B$z %>% plot.xts()
 We now throw all this data we've just generated into our package. CURRENT ISSUES: remove only alarmed observations, not flagged observations. Set up a replicate structure to repeat this proccess 1000 times.
 ```{r msad-pca}
 Sys.time()
-results_ls <- mspMonitor(data = faults_ls$normal[,2:4],
+results_ls <- mvMonitoring::mspMonitor(data = faults_ls$normal[,2:4],
                          labelVector = faults_ls$normal[,1],
                          trainObs = 2880,
                          updateFreq = 1440)
