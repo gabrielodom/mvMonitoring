@@ -30,8 +30,8 @@ processMonitor <- function(data,
                               faultsToTriggerAlarm = faultsToTriggerAlarm),
                         lazy_eval(ls)))
   fault_xts <- faultObj_ls$faultObj
-  obsToKeepNew <- faultObj_ls$nonFlaggedTestObs
-  obsToKeep <- faultObj_ls$nonFlaggedTestObs
+  obsToKeepNew <- faultObj_ls$nonAlarmedTestObs
+  obsToKeep <- faultObj_ls$nonAlarmedTestObs
 
   while(nrow(obsToKeepNew) == updateFreq){
     n <- nrow(obsToKeepNew)
@@ -55,16 +55,19 @@ processMonitor <- function(data,
       obsToKeep <- rbind(obsToKeep, obsToKeepNew)
     }
   }
+  faultNames <- colnames(fault_xts)
+  faultNames[5] <- "Alarm"
+  colnames(fault_xts) <- faultNames
 
   # browser()
 
   # alarms_xts1 <- faultAlarm(fault_xts,
   #                           faultsToTrigger = faultsToTriggerAlarm,
   #                           faultObs = NULL)
-  alarms_xts2 <- faultObj_ls$alarmedTestObs
+  alarms_xts <- faultObj_ls$alarmedTestObs
 
   list(FaultChecks = fault_xts,
        Non_Flagged_Obs = obsToKeep,
-       Alarms = alarms_xts2)
+       Alarms = alarms_xts)
 }
 

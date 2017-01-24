@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-threshold <- function(pca_object, alpha = 0.05, ...){
+threshold <- function(pca_object, alpha = 0.001, ...){
   UseMethod("threshold")
 }
 

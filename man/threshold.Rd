@@ -4,7 +4,7 @@
 \alias{threshold}
 \title{Title}
 \usage{
-threshold(pca_object, alpha = 0.05, ...)
+threshold(pca_object, alpha = 0.001, ...)
 }
 \arguments{
 \item{...}{}

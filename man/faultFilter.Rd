@@ -7,7 +7,7 @@
 faultFilter(trainData, testData, updateFreq, faultsToTriggerAlarm, ...)
 }
 \arguments{
-\item{...}{}
+\item{faultsToTriggerAlarm}{}
 }
 \description{
 Title

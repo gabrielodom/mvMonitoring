@@ -613,7 +613,8 @@ Sys.time()
 results_ls <- mvMonitoring::mspMonitor(data = faults_ls$normal[,2:4],
                          labelVector = faults_ls$normal[,1],
                          trainObs = 2880,
-                         updateFreq = 1440)
+                         updateFreq = 1440,
+                         alpha = 0.1)
 Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # 1 second for 2880 train (two days), and 1440 update (one day).
 
