@@ -59,12 +59,8 @@ processMonitor <- function(data,
   faultNames[5] <- "Alarm"
   colnames(fault_xts) <- faultNames
 
-  # browser()
-
-  # alarms_xts1 <- faultAlarm(fault_xts,
-  #                           faultsToTrigger = faultsToTriggerAlarm,
-  #                           faultObs = NULL)
   alarms_xts <- faultObj_ls$alarmedTestObs
+  colnames(alarms_xts) <- faultNames
 
   list(FaultChecks = fault_xts,
        Non_Flagged_Obs = obsToKeep,

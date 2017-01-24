@@ -57,30 +57,31 @@ faultFilter <- function(trainData,
 
   # This bit will find the observations which have not been flagged by either
   # statistic. However, we need to find and report the alarmed observations as
-  # well. We first add a column for alarm status.
+  # well. We first add a column for SPE and T2 alarm status.
   faultObj <- cbind(faultObj, rep(0, nrow(faultObj)))
   # nonFlaggedObs <- faultObj[faultObj[,2] == FALSE & faultObj[,4] == FALSE, ]
 
   # Now we iterate through the faultObj xts object by row, checking when we see
   # 3 (the default value of faultsToTriggerAlarm) flagged observations in a row
   alarmCheck <- rep(1, faultsToTriggerAlarm)
+  # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
   for(i in faultsToTriggerAlarm:nrow(faultObj)){
-    x1 <- as.vector(faultObj[(i - faultsToTriggerAlarm + 1):i,2])
+    x1 <- as.vector(faultObj[(i - faultsToTriggerAlarm + 1):i, 4])
     if(identical(x1, alarmCheck)){
       faultObj[i,5] <- 1
     }
-    x2 <- as.vector(faultObj[(i - faultsToTriggerAlarm + 1):i,4])
+    x2 <- as.vector(faultObj[(i - faultsToTriggerAlarm + 1):i, 2])
     if(identical(x2, alarmCheck)){
-      faultObj[i,5] <- 1
+      faultObj[i,5] <- faultObj[i,5] + 2
     }
   }
   # We seperate out the non-alarmed observations, and we keep as many as we
   # need to update the algorithm.
-  nonAlarmedObs <- faultObj[faultObj[,5] != 1, ]
+  nonAlarmedObs <- faultObj[faultObj[,5] == 0, ]
   keptObsIndex <- head(index(nonAlarmedObs), n = updateFreq)
   keptObs <- testData[keptObsIndex]
 
-  alarmedObs <- faultObj[faultObj[,5] == 1, ]
+  alarmedObs <- faultObj[faultObj[,5] != 0, ]
 
   object <- list(faultObj = faultObj,
                  nonAlarmedTestObs = keptObs,
