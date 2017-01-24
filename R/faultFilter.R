@@ -33,7 +33,12 @@ faultFilter <- function(trainData,
   # names(scaledTrainData2) <- names(trainData)
   # plot.xts(scaledTrainData2$x)
 
+  # Call the pca.R file, passing in the scaled training data matrix and the
+  # proportion of energy to preserve in the projection (defaults to 95%)
   pcaObj <- do.call(pca, args = c(list(data = scaledTrainData), lazy_eval(ls)))
+
+  # Call the threshold.R file, passing in the object returned by the pca call
+  # previous.
   thresholdObj <- do.call(threshold, args = c(list(pca_object = pcaObj),
                                               lazy_eval(ls)))
 

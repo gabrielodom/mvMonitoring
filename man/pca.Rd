@@ -4,7 +4,7 @@
 \alias{pca}
 \title{Title}
 \usage{
-pca(data, var.amnt = 0.9, ...)
+pca(data, var.amnt = 0.95, ...)
 }
 \arguments{
 \item{...}{}

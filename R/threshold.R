@@ -17,7 +17,13 @@ threshold <- function(pca_object, alpha = 0.05, ...){
 #'
 #' @importFrom BMS quantile.density
 #'
-threshold.pca <- function(pca_object, alpha = 0.05, ...){
+threshold.pca <- function(pca_object, alpha = 0.001, ...){
+  # This function takes in a pca object returned by the pca.R function and a
+  # threshold level defaulting to 0.1% of the observations (set low to reduce
+  # false alarms, as described in Kazor et al (2016)). The function returns a
+  # calculated SPE threshold corresponding to the 1 - alpha critical value, a
+  # similar T2 threshold, and the projection and Lambda Inverse matrices passed
+  # through from the pca.R function call.
 
   spe <- pca_object$SPE
   t2 <- pca_object$T2

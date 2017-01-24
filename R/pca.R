@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-pca <- function(data, var.amnt = 0.9, ...){
+pca <- function(data, var.amnt = 0.95, ...){
 UseMethod("pca")
 }
 
@@ -16,7 +16,13 @@ UseMethod("pca")
 #' @export
 #'
 #'
-pca.matrix <- function(data, var.amnt = 0.9, ...){
+pca.matrix <- function(data, var.amnt = 0.95, ...){
+  # This function takes in a training data matrix (without the label column)
+  # and the energy preservation proportion (defaulting to 95% per Kazor et al
+  # (2016)). This function returns a projection matrix, a diagonal matrix of
+  # the reciprocal eigenvalues (LambdaInv), a vector of the SPE test statistic
+  # values corresponding to the rows of the data matrix, and a T2 test
+  # statistic vector similar to the SPE vector.
 
         R <- cor(data, use = "pairwise.complete.obs")
         eigenR <- eigen(R)
@@ -24,9 +30,6 @@ pca.matrix <- function(data, var.amnt = 0.9, ...){
         evecR <- eigenR$vectors
         prop.var <- as.matrix(cumsum(evalR) / sum(evalR) * 100)
         comps <- which(prop.var - (var.amnt * 100) > 0)[1]
-
-
-
 
         P <- as.matrix(evecR[, 1:comps]) # Transformation matrix
 
