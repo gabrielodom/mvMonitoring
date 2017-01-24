@@ -63,12 +63,14 @@ faultFilter <- function(trainData,
 
   # Now we iterate through the faultObj xts object by row, checking when we see
   # 3 (the default value of faultsToTriggerAlarm) flagged observations in a row
-  alarmCheck <- rep(TRUE, faultsToTriggerAlarm)
+  alarmCheck <- rep(1, faultsToTriggerAlarm)
   for(i in faultsToTriggerAlarm:nrow(faultObj)){
-    if(identical(faultObj[(i - faultsToTriggerAlarm + 1):i,2], alarmCheck)){
+    x1 <- as.vector(faultObj[(i - faultsToTriggerAlarm + 1):i,2])
+    if(identical(x1, alarmCheck)){
       faultObj[i,5] <- 1
     }
-    if(identical(faultObj[(i - faultsToTriggerAlarm + 1):i,4], alarmCheck)){
+    x2 <- as.vector(faultObj[(i - faultsToTriggerAlarm + 1):i,4])
+    if(identical(x2, alarmCheck)){
       faultObj[i,5] <- 1
     }
   }
