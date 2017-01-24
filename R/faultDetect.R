@@ -18,6 +18,11 @@ faultDetect <- function(threshold_object, observation, ...){
 #'
 #' @examples
 faultDetect.threshold <- function(threshold_object, observation, ...){
+  # This function takes in the threshold object returned by the threshold.R
+  # function and a single observation which needs fault detection. The function
+  # then returns a row vector of the SPE test statistics, a logical indicator
+  # indicating if this statistic is beyond the threshold, the T2 statistic, and
+  # an indicator if this statistic is beyond the threshold.
 
   SPEthreshold <- threshold_object$SPE_threshold
   T2threshold <- threshold_object$T2_threshold

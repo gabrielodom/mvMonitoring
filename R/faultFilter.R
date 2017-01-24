@@ -5,6 +5,7 @@
 #' @param testData
 #' @param updateFreq
 #' @param ...
+#' @param faultsToTriggerAlarm
 #'
 #' @return
 #' @export
@@ -18,6 +19,7 @@
 faultFilter <- function(trainData,
                         testData,
                         updateFreq,
+                        faultsToTriggerAlarm,
                         ...){
 
   ls <- lazy_dots(...)
@@ -27,11 +29,6 @@ faultFilter <- function(trainData,
   precisRootMat <- diag(1 / stdDevs, ncol = ncol(sigmaTrain))
 
   scaledTrainData <- scale(trainData)
-  # muTrain_mat <- rep(1, nrow(trainData)) %*% t(muTrain)
-  # scaledTrainData2 <- (trainData - muTrain_mat) %*% precisRootMat
-  # scaledTrainData2 <- xts(scaledTrainData2, order.by = index(trainData))
-  # names(scaledTrainData2) <- names(trainData)
-  # plot.xts(scaledTrainData2$x)
 
   # Call the pca.R file, passing in the scaled training data matrix and the
   # proportion of energy to preserve in the projection (defaults to 95%)
@@ -47,6 +44,8 @@ faultFilter <- function(trainData,
   scaledTest <- xts(scaledTest, order.by = index(testData))
   names(scaledTest) <- names(testData)
 
+  # We now apply the faultDetect function down each row of the scaled test data
+  # set. We then return it to its form as an xts matrix.
   faultObj <- lapply(1:nrow(scaledTest), function(i){
     do.call(faultDetect,
             args = c(list(threshold_object = thresholdObj,
@@ -56,13 +55,34 @@ faultFilter <- function(trainData,
   faultObj <- do.call(rbind, faultObj)
   faultObj <- xts(faultObj, order.by = index(testData))
 
-  nonFlaggedObs <- faultObj[faultObj[,2] == FALSE & faultObj[,4] == FALSE, ]
-  keptObsIndex <- head(index(nonFlaggedObs), n = updateFreq)
+  # This bit will find the observations which have not been flagged by either
+  # statistic. However, we need to find and report the alarmed observations as
+  # well. We first add a column for alarm status.
+  faultObj <- cbind(faultObj, rep(0, nrow(faultObj)))
+  # nonFlaggedObs <- faultObj[faultObj[,2] == FALSE & faultObj[,4] == FALSE, ]
 
+  # Now we iterate through the faultObj xts object by row, checking when we see
+  # 3 (the default value of faultsToTriggerAlarm) flagged observations in a row
+  alarmCheck <- rep(TRUE, faultsToTriggerAlarm)
+  for(i in faultsToTriggerAlarm:nrow(faultObj)){
+    if(all.equal(faultObj[(i - faultsToTriggerAlarm + 1):i,2]) == alarmCheck){
+      faultObj[i,5] <- 1
+    }
+    if(all.equal(faultObj[(i - faultsToTriggerAlarm + 1):i,4]) == alarmCheck){
+      faultObj[i,5] <- 1
+    }
+  }
+  # We seperate out the non-alarmed observations, and we keep as many as we
+  # need to update the algorithm.
+  nonAlarmedObs <- faultObj[faultObj[,5] != 1, ]
+  keptObsIndex <- head(index(nonAlarmedObs), n = updateFreq)
   keptObs <- testData[keptObsIndex]
 
+  alarmedObs <- faultObj[faultObj[,5] == 1, ]
+
   object <- list(faultObj = faultObj,
-                 nonFlaggedTestObs = keptObs)
+                 nonAlarmedTestObs = keptObs,
+                 alarmedTestObs = alarmedObs)
   class(object) <- "faultDF"
   object
 }

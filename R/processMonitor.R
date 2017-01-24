@@ -24,10 +24,11 @@ processMonitor <- function(data,
   ls <- lazy_dots(...)
 
   faultObj_ls <- do.call(faultFilter,
-                         args = c(list(trainData = data[1:trainObs,],
-                                       testData = data[(trainObs + 1):nrow(data)],
-                                       updateFreq = updateFreq),
-                                  lazy_eval(ls)))
+                args = c(list(trainData = data[1:trainObs,],
+                              testData = data[(trainObs + 1):nrow(data)],
+                              updateFreq = updateFreq,
+                              faultsToTriggerAlarm = faultsToTriggerAlarm),
+                        lazy_eval(ls)))
   fault_xts <- faultObj_ls$faultObj
   obsToKeepNew <- faultObj_ls$nonFlaggedTestObs
   obsToKeep <- faultObj_ls$nonFlaggedTestObs
@@ -41,13 +42,15 @@ processMonitor <- function(data,
       }
 
     testTime <- index(obsToKeep[nrow(obsToKeep)])
-    faultObj_ls <- do.call(faultFilter, args = c(list(trainData = trainData,
-                                                      testData = data[paste0(testTime, "/")],
-                                                      updateFreq = updateFreq),
-                                                 lazy_eval(ls)))
+    faultObj_ls <- do.call(faultFilter,
+                           args = c(list(trainData = trainData,
+                                         testData = data[paste0(testTime, "/")],
+                                         updateFreq = updateFreq,
+                                         faultsToTriggerAlarm = faultsToTriggerAlarm),
+                                    lazy_eval(ls)))
 
     fault_xts[index(faultObj_ls$faultObj),] <- faultObj_ls$faultObj
-    obsToKeepNew <- faultObj_ls$nonFlaggedTestObs
+    obsToKeepNew <- faultObj_ls$nonAlarmedTestObs
     if(nrow(obsToKeepNew) != 0){
       obsToKeep <- rbind(obsToKeep, obsToKeepNew)
     }
@@ -55,12 +58,13 @@ processMonitor <- function(data,
 
   # browser()
 
-  alarms_xts <- faultAlarm(fault_xts,
-                           faultsToTrigger = faultsToTriggerAlarm,
-                           faultObs = NULL)
+  # alarms_xts1 <- faultAlarm(fault_xts,
+  #                           faultsToTrigger = faultsToTriggerAlarm,
+  #                           faultObs = NULL)
+  alarms_xts2 <- faultObj_ls$alarmedTestObs
 
   list(FaultChecks = fault_xts,
        Non_Flagged_Obs = obsToKeep,
-       Alarms = alarms_xts)
+       Alarms = alarms_xts2)
 }
 

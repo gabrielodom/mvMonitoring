@@ -4,7 +4,7 @@
 \alias{faultFilter}
 \title{Title}
 \usage{
-faultFilter(trainData, testData, updateFreq, ...)
+faultFilter(trainData, testData, updateFreq, faultsToTriggerAlarm, ...)
 }
 \arguments{
 \item{...}{}
