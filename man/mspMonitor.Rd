@@ -4,13 +4,47 @@
 \alias{mspMonitor}
 \title{Title}
 \usage{
-mspMonitor(data, labelVector, trainObs, updateFreq = cieling(0.2 * trainObs),
+mspMonitor(data, labelVector, trainObs, updateFreq = cieling(0.5 * trainObs),
   faultsToTriggerAlarm = 3, ...)
 }
 \arguments{
-\item{...}{}
+\item{data}{an xts data matrix}
+
+\item{labelVector}{class label vector (as logical or finite numeric)}
+
+\item{trainObs}{the number of observations upon which to train the algorithm}
+
+\item{updateFreq}{the algorithm update frequency (defaulting to half as many
+observations as the training frequency)}
+
+\item{faultsToTriggerAlarm}{the number of sequential faults needed to
+trigger an alarm}
+
+\item{...}{Lazy dots for additional internal arguments}
+}
+\value{
+a list of the following components: FaultChecks - an xts data matrix
+containing the SPE monitoring statistic and logical flagging indicator, the
+Hotelling's T2 monitoring statitisic and logical flagging indicator, and the
+Alarm indicator; Non_Alarmed_Obs - an xts data matrix of all the non-Alarmed
+observations; Alarms - and an xts data matrix of the features and specific
+alarms for Alarmed observations, where the alarm code is as follows: 0 = no
+alarm, 1 = Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms.
 }
 \description{
-Title
+This function performs Multi-State Adaptive-Dynamic PCA on a
+data set with time-stamped observations.
+}
+\details{
+This function is designed to identify and sort out sequences of
+observations which fall outside normal operating conditions. This function
+uses non-parametric density estimation to calculated the 1 - alpha quantiles
+of the SPE and Hotelling's T2 statistics from a set of training observations,
+then flags any observation in the testing data set with statistics beyond
+these calculated critical values. Becuase of naturaly variablity inherent in
+all real data, we do not sort out observations simply because they are have
+been flagged. This function records an alarm only for observations having
+three (as set by the default argument value of "faultsToTriggerAlarm") flags
+in a row. These alarm-positive observations are removed from the data set.
 }
 
