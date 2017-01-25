@@ -612,7 +612,7 @@ We now throw all this data we've just generated into our package. CURRENT ISSUES
 Sys.time()
 results_ls <- mvMonitoring::mspMonitor(data = faults_ls$normal[,2:4],
                          labelVector = faults_ls$normal[,1],
-                         trainObs = 2880,
+                         trainObs = 4320,
                          updateFreq = 1440,
                          alpha = 0.001,
                          faultsToTriggerAlarm = 3)

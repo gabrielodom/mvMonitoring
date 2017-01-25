@@ -36,7 +36,9 @@ processMonitor <- function(data,
   obsToKeep <- faultObj_ls$nonAlarmedTestObs
 
   while(nrow(obsToKeepNew) == updateFreq){
-    n <- nrow(obsToKeepNew)
+    # browser()
+    # How many ok observations have we found so far with faultFilter?
+    n <- nrow(obsToKeep)
     if(n < trainObs){
       trainData <- rbind(data[(n + 1):trainObs,], obsToKeep)
       }else{
@@ -46,11 +48,17 @@ processMonitor <- function(data,
     testTime <- index(obsToKeep[nrow(obsToKeep)])
     faultObj_ls <- do.call(faultFilter,
                            args = c(list(trainData = trainData,
+      # Train on all observations after the last observation in obsToKeep. This
+      # is what the date/ means for xts objects.
                                          testData = data[paste0(testTime, "/")],
                                          updateFreq = updateFreq,
                                          faultsToTriggerAlarm = faultsToTriggerAlarm),
                                     lazy_eval(ls)))
 
+    # Update the monitoring statistic values in the fault matrix. Because of
+    # the adaptive nature of the algorithm, many observations which would have
+    # been alarmed under the first run of faultFilter are now within normal
+    # limits. We update the fault matrix with new statistic values and flags.
     fault_xts[index(faultObj_ls$faultObj),] <- faultObj_ls$faultObj
     obsToKeepNew <- faultObj_ls$nonAlarmedTestObs
     if(nrow(obsToKeepNew) != 0){
@@ -61,8 +69,7 @@ processMonitor <- function(data,
   faultNames[5] <- "Alarm"
   colnames(fault_xts) <- faultNames
 
-  alarms_xts <- faultObj_ls$alarmedTestObs
-  colnames(alarms_xts) <- faultNames
+  alarms_xts <- fault_xts[fault_xts[,5] != 0, ]
 
   list(FaultChecks = fault_xts,
        Non_Alarmed_Obs = obsToKeep,

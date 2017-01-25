@@ -83,6 +83,7 @@ faultFilter <- function(trainData,
 
   alarmedObs <- faultObj[faultObj[,5] != 0, ]
 
+  # The faultObj is an xts with the same number of observations as testData.
   object <- list(faultObj = faultObj,
                  nonAlarmedTestObs = keptObs,
                  alarmedTestObs = alarmedObs)
