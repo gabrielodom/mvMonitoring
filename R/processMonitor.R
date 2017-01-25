@@ -72,6 +72,10 @@ processMonitor <- function(data,
   colnames(fault_xts) <- faultNames
 
   alarms_xts <- fault_xts[fault_xts[,5] != 0, ]
+  alarmIndex <- index(alarms_xts)
+  alarmObs <- data[alarmIndex]
+  alarms_xts <- cbind(alarmObs, alarms_xts)
+
 
   list(FaultChecks = fault_xts,
        Non_Alarmed_Obs = obsToKeep,

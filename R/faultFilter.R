@@ -81,12 +81,9 @@ faultFilter <- function(trainData,
   keptObsIndex <- head(index(nonAlarmedObs), n = updateFreq)
   keptObs <- testData[keptObsIndex]
 
-  alarmedObs <- faultObj[faultObj[,5] != 0, ]
-
   # The faultObj is an xts with the same number of observations as testData.
   object <- list(faultObj = faultObj,
-                 nonAlarmedTestObs = keptObs,
-                 alarmedTestObs = alarmedObs)
+                 nonAlarmedTestObs = keptObs)
   class(object) <- "faultDF"
   object
 }
