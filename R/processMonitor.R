@@ -1,10 +1,13 @@
 #' Title
 #'
+#' @description Apply Adaptive-Dynamic PCA to state-specific data matrices.
+#'
 #' @param data A data frame with row names as a POSIX date time label
 #' @param trainObs How many train observations will be used
-#' @param ...
+#' @param ... Lazy dots for additional internal arguments
 #' @param updateFreq How many non-flagged rows to collect before we update
-#' @param faultsToTriggerAlarm
+#' @param faultsToTriggerAlarm the number of sequential faults needed to
+#' trigger an alarm
 #'
 #' @return
 #' @export

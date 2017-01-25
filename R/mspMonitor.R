@@ -1,6 +1,6 @@
 #' Title
 #'
-#' @description This function performs Multi-State Adaptive-Dynamic PCA on a
+#' @description This function performs Multi-State Adaptive PCA on a
 #' data set with time-stamped observations.
 #'
 #' @param data an xts data matrix
@@ -8,6 +8,10 @@
 #' @param trainObs the number of observations upon which to train the algorithm
 #' @param updateFreq the algorithm update frequency (defaulting to half as many
 #' observations as the training frequency)
+#' @param Dynamic Should the PCA algorithm include lagged variables? Defaults
+#' to TRUE
+#' @param lagsIncluded If Dynamic = TRUE, how many lags should be included?
+#' Defaults to 1.
 #' @param faultsToTriggerAlarm the number of sequential faults needed to
 #' trigger an alarm
 #' @param ... Lazy dots for additional internal arguments
@@ -35,18 +39,27 @@
 #'
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval lazy_eval
+#' @importFrom zoo zoo
 #'
 #' @examples
 mspMonitor <- function(data,
                        labelVector,
                        trainObs,
                        updateFreq = cieling(0.5 * trainObs),
+                       Dynamic = TRUE,
+                       lagsIncluded = 1,
                        faultsToTriggerAlarm = 3,
                        ...){
 
   # browser()
 
   ls <- lazy_dots(...)
+
+  # Lag the data
+  if(Dynamic == TRUE){
+    data <- lag(zoo(data), 0:-lagsIncluded)
+  }
+
   classes <- unique(labelVector)
   classData <- cbind(labelVector, data)
   data_ls <- lapply(1:length(classes), function(i){
