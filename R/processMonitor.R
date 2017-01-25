@@ -23,6 +23,8 @@ processMonitor <- function(data,
 
   ls <- lazy_dots(...)
 
+  # browser()
+
   faultObj_ls <- do.call(faultFilter,
                 args = c(list(trainData = data[1:trainObs,],
                               testData = data[(trainObs + 1):nrow(data)],
@@ -63,7 +65,7 @@ processMonitor <- function(data,
   colnames(alarms_xts) <- faultNames
 
   list(FaultChecks = fault_xts,
-       Non_Flagged_Obs = obsToKeep,
+       Non_Alarmed_Obs = obsToKeep,
        Alarms = alarms_xts)
 }
 

@@ -51,10 +51,10 @@ mspMonitor <- function(data,
   })
   FaultChecks <- do.call(rbind, FaultChecks)
 
-  Non_Flagged_Obs <- lapply(classes, function(i){
-    monitorResults[[i]]$Non_Flagged_Obs
+  Non_Alarmed_Obs <- lapply(classes, function(i){
+    monitorResults[[i]]$Non_Alarmed_Obs
   })
-  Non_Flagged_Obs <- do.call(rbind, Non_Flagged_Obs)
+  Non_Alarmed_Obs <- do.call(rbind, Non_Alarmed_Obs)
 
   Alarms <- lapply(classes, function(i){
     monitorResults[[i]]$Alarms
@@ -63,6 +63,6 @@ mspMonitor <- function(data,
 
 
   list(FaultChecks = FaultChecks,
-       Non_Flagged_Obs = Non_Flagged_Obs,
+       Non_Alarmed_Obs = Non_Alarmed_Obs,
        Alarms = Alarms)
 }
