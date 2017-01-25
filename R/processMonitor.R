@@ -38,7 +38,7 @@ processMonitor <- function(data,
   while(nrow(obsToKeepNew) == updateFreq){
     # browser()
     # How many ok observations have we found so far with faultFilter?
-    n <- nrow(obsToKeep)
+    n <- nrow(obsToKeepNew)
     if(n < trainObs){
       trainData <- rbind(data[(n + 1):trainObs,], obsToKeep)
       }else{
@@ -46,11 +46,13 @@ processMonitor <- function(data,
       }
 
     testTime <- index(obsToKeep[nrow(obsToKeep)])
+    # Train on all observations after the last observation in obsToKeep. This
+    # is what the date/ means for xts objects (date/ means that date and all
+    # after it, this is why we remove the first row).
+    testData <- data[paste0(testTime, "/")]
     faultObj_ls <- do.call(faultFilter,
                            args = c(list(trainData = trainData,
-      # Train on all observations after the last observation in obsToKeep. This
-      # is what the date/ means for xts objects.
-                                         testData = data[paste0(testTime, "/")],
+                                         testData = testData[-1,],
                                          updateFreq = updateFreq,
                                          faultsToTriggerAlarm = faultsToTriggerAlarm),
                                     lazy_eval(ls)))
