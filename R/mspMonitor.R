@@ -1,6 +1,6 @@
-#' Title
+#' Multi-State Adaptive-Dynamic Process Training
 #'
-#' @description This function performs Multi-State Adaptive PCA on a
+#' @description This function performs Multi-State Adaptive-Dynamic PCA on a
 #' data set with time-stamped observations.
 #'
 #' @param data an xts data matrix
@@ -42,10 +42,10 @@
 #' @importFrom zoo zoo
 #'
 #' @examples
-mspMonitor <- function(data,
+mspTrain <- function(data,
                        labelVector,
                        trainObs,
-                       updateFreq = cieling(0.5 * trainObs),
+                       updateFreq = ceiling(0.5 * trainObs),
                        Dynamic = TRUE,
                        lagsIncluded = 1,
                        faultsToTriggerAlarm = 3,

@@ -4,7 +4,7 @@
 \alias{processMonitor}
 \title{Title}
 \usage{
-processMonitor(data, trainObs, updateFreq = cieling(0.2 * trainObs),
+processMonitor(data, trainObs, updateFreq = ceiling(0.2 * trainObs),
   faultsToTriggerAlarm = 3, ...)
 }
 \arguments{
@@ -14,10 +14,13 @@ processMonitor(data, trainObs, updateFreq = cieling(0.2 * trainObs),
 
 \item{updateFreq}{How many non-flagged rows to collect before we update}
 
-\item{faultsToTriggerAlarm}{}
+\item{faultsToTriggerAlarm}{the number of sequential faults needed to
+trigger an alarm}
+
+\item{...}{Lazy dots for additional internal arguments}
 }
 \description{
-Title
+Apply Adaptive-Dynamic PCA to state-specific data matrices.
 }
 \examples{
 processMonitor(MASS::mvrnorm(100, mu = c(0,0,0),
