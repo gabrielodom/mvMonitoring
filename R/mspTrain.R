@@ -91,7 +91,24 @@ mspTrain <- function(data,
   Alarms <- lapply(classes, function(i){
     monitorResults[[i]]$Alarms
   })
-  Alarms <- do.call(rbind, Alarms)
+  # Some of the alarm xts matrices are empty, and neither merge.xts() nor
+  # rbind.xts() will work to bind an empty xts to a non-empty xts. Therefore,
+  # we remove any empty xts objects. If all xts objects are empty, then we
+  # return one of the empty ones.
+  condition <- sapply(Alarms, function(i){
+    # condition returns a logical vector where FALSE corresponds to an empty
+    # xts object
+    !is.null(dim(i))
+  })
+  if(sum(condition) != 0){
+    # If there is at least one non-empty xts object in Alarms, then find the
+    # non-empty ones and row bind their observations together.
+    Alarms <- Alarms[condition]
+    Alarms <- do.call(rbind, Alarms)
+  }else{
+    # Otherwise (all the xts objects are empty), return the first one.
+    Alarms <- Alarms[[1]]
+  }
 
 
   list(FaultChecks = FaultChecks,
