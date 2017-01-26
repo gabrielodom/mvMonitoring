@@ -51,17 +51,16 @@ mspTrain <- function(data,
                        faultsToTriggerAlarm = 3,
                        ...){
 
-  # browser()
-
   ls <- lazy_dots(...)
 
   # Lag the data
   if(Dynamic == TRUE){
     data <- lag(zoo(data), 0:-lagsIncluded)
   }
+  data <- xts(data[-(1:lagsIncluded),])
 
   classes <- unique(labelVector)
-  classData <- cbind(labelVector, data)
+  classData <- cbind(labelVector[-(1:lagsIncluded),], data)
   data_ls <- lapply(1:length(classes), function(i){
     data_df <- classData[classData[,1] == classes[i],]
     data_df[, -1]

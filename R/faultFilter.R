@@ -22,6 +22,8 @@ faultFilter <- function(trainData,
                         faultsToTriggerAlarm,
                         ...){
 
+  # browser()
+
   ls <- lazy_dots(...)
   muTrain <- colMeans(trainData)
   sigmaTrain <- cov(trainData)
