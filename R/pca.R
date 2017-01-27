@@ -15,6 +15,8 @@ UseMethod("pca")
 #' @keywords internal
 #' @export
 #'
+#' @importFrom stats cor
+#'
 #'
 pca.matrix <- function(data, var.amnt = 0.95, ...){
   # This function takes in a training data matrix (without the label column)
@@ -64,6 +66,7 @@ pca.matrix <- function(data, var.amnt = 0.95, ...){
 
 #' @keywords internal
 #' @export
+#' @importFrom stats cor
 #'
 #'
 pca.xts <- pca.matrix

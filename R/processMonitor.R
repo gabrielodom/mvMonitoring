@@ -17,9 +17,6 @@
 #' @importFrom utils head
 #' @importFrom MASS mvrnorm
 #'
-#' @examples processMonitor(MASS::mvrnorm(100, mu = c(0,0,0),
-#'                                        Sigma = toeplitz(c(1, 0.5, 0.1))),
-#'                          trainObs = 20, updateFreq = 5, var.amnt = 0.8)
 processMonitor <- function(data,
                            trainObs,
                            updateFreq = ceiling(0.2 * trainObs),
@@ -84,4 +81,3 @@ processMonitor <- function(data,
        Non_Alarmed_Obs = obsToKeep,
        Alarms = alarms_xts)
 }
-

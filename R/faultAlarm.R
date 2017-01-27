@@ -12,6 +12,7 @@
 #'
 #' @importFrom xts xts
 #' @importFrom zoo index
+#' @importFrom utils tail
 #'
 #' @examples
 faultAlarm <- function(faultDF, faultsToTrigger = 3, faultObs = NULL){

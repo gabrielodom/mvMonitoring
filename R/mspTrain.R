@@ -40,6 +40,7 @@
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval lazy_eval
 #' @importFrom zoo zoo
+#' @importFrom stats lag
 #'
 #' @examples
 mspTrain <- function(data,

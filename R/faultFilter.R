@@ -14,6 +14,7 @@
 #' @importFrom lazyeval lazy_dots
 #' @importFrom zoo index
 #' @importFrom xts xts
+#' @importFrom stats cov
 #'
 #' @examples
 faultFilter <- function(trainData,
