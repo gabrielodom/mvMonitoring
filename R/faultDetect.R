@@ -3,14 +3,14 @@
 #' @description Detect if a single observation is beyond normal parameters
 #'
 #' @param threshold_object An object of classes "threshold" and "pca" returned
-#' by the threshold() function.
+#' by the internal threshold() function.
 #' @param observation A single row of an xts data matrix to test against the
 #' thresholds
 #' @param ... Lazy dots for additional internal arguments
 #'
-#' @return A named 1 row, 4 column matrix of the SPE statistic value, SPE fault
-#' indicator, T2 statistic value, and T2 fault indicator for the single row
-#' observation passed to this function.
+#' @return A named 1 row, 4 column matrix of the SPE statistic value ("SPE"),
+#' SPE fault indicator ("SPE_Flag"), T2 statistic value ("T2"), and T2 fault
+#' indicator for the single row observation passed to this function ("T2_Flag").
 #'
 #' @details This function takes in the threshold object returned by the
 #' threshold.R function and a single observation which needs fault detection.

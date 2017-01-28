@@ -1,10 +1,30 @@
-#' Title
+#' PCA for Data Scatter Matrix
 #'
-#' @param var.amnt
-#' @param data
+#' @description Calculate the principal components analysis for a data matrix,
+#' and also find the squared prediction error (SPE) and Hotelling's T2 test
+#' statistic values for each observation in this data matrix
+#'
+#' @param data A centred-and-scaled data matrix or xts matrix
+#' @param var.amnt How much energy should be preserved in the projection?
+#' Defaults to 0.95.
 #' @param ... Lazy dots for additional internal arguments
 #'
-#' @return
+#' @return A list of class "pca" with the following: projectionMatrix - the q
+#' eigenvectors corresponding to the q largest eigenvalues as a p * q projection
+#' matrix, LambdaInv - the diagonal matrix of inverse eigenvalues, SPE - the
+#' vector of SPE test statistic values for each of the n observations contained
+#' in the data matrix, and T2 - the vector of Hotelling's T2 test statistic
+#' for each of the same n observations.
+#'
+#' @details This function takes in a training data matrix (without the label
+#' column) and the energy preservation proportion (defaulting to 95% per Kazor
+#' et al (2016)). This proportion is the sum of the q largest eigenvalues over
+#' the sum of all p eigenvalues, where q is the number of columns of the p * q
+#' projection matrix P. This function then returns the projection matrix P, a
+#' diagonal matrix of the reciprocal eigenvalues (LambdaInv), a vector of the
+#' SPE test statistic values corresponding to the rows of the data matrix, and
+#' a T2 test statistic vector similar to the SPE vector.
+#'
 #' @export
 #'
 #' @examples
@@ -19,12 +39,6 @@ UseMethod("pca")
 #'
 #'
 pca.matrix <- function(data, var.amnt = 0.95, ...){
-  # This function takes in a training data matrix (without the label column)
-  # and the energy preservation proportion (defaulting to 95% per Kazor et al
-  # (2016)). This function returns a projection matrix, a diagonal matrix of
-  # the reciprocal eigenvalues (LambdaInv), a vector of the SPE test statistic
-  # values corresponding to the rows of the data matrix, and a T2 test
-  # statistic vector similar to the SPE vector.
 
         R <- cor(data, use = "pairwise.complete.obs")
         eigenR <- eigen(R)

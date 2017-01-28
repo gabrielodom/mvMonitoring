@@ -10,16 +10,15 @@
 #' @param faultsToTriggerAlarm Specifies how many sequential faults will cause
 #' an alarm to trigger. Defaults to 3.
 #'
-#' @return A list of class "fault_ls" with the following: an xts flag matrix of
-#' with the same number of rows as "testData". This flag matrix has these
-#' columns - the SPE test statistic for each observation in "testData", an SPE
-#' indicator recording 0 if the test statistic is less than or equal to the
-#' critical value (from the threshold object), a T2 test statistic, a similar
-#' T2 indicator, and a final column indicating if there have been three flags
-#' in a row for either the SPE or T2 monitoring statistics or both. This is
-#' called "faultObj". The second component of the list is an xts matrix of all
-#' the rows of the training data which were not alarmed. This is called
-#' "nonAlarmedTestObs".
+#' @return A list of class "fault_ls" with the following: faultObj - an xts
+#' flag matrix with the same number of rows as "testData". This flag matrix has
+#' these columns - the SPE test statistic for each observation in "testData",
+#' an SPE indicator recording 0 if the test statistic is less than or equal to
+#' the critical value (from the threshold object), a T2 test statistic, a
+#' similar T2 indicator, and a final column indicating if there have been three
+#' flags in a row for either the SPE or T2 monitoring statistics or both.
+#' nonAlarmedTestObs - an xts matrix of all the rows of the training data which
+#' were not alarmed.
 #'
 #' @details This function calls all the other internal functions: faultDetect(),
 #' threshold(), and pca().

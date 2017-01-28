@@ -8,7 +8,7 @@ faultDetect(threshold_object, observation, ...)
 }
 \arguments{
 \item{threshold_object}{An object of classes "threshold" and "pca" returned
-by the threshold() function.}
+by the internal threshold() function.}
 
 \item{observation}{A single row of an xts data matrix to test against the
 thresholds}

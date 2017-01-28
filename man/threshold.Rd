@@ -2,14 +2,36 @@
 % Please edit documentation in R/threshold.R
 \name{threshold}
 \alias{threshold}
-\title{Title}
+\title{Non-parametric Threshold Estimation}
 \usage{
 threshold(pca_object, alpha = 0.001, ...)
 }
 \arguments{
+\item{pca_object}{A list with class "pca" from the internal pca() function}
+
+\item{alpha}{The upper 1 - alpha quantile of the SPE and T2 densities from
+the training data passed to this function}
+
 \item{...}{Lazy dots for additional internal arguments}
 }
+\value{
+A list with classes "threshold" and "pca" containing: the 1 - alpha
+quantile of the SPE density, the 1 - alpha quantile of the T2 density, a
+projection matrix from the data feature space to the feature subspace which
+preserves some specified proprtion of the energy of the data scatter matrix
+(this is the "var.amnt" argument in the pca() function), and a diagonal
+matrix of the reciprocal eigenvalues of the data scatter matrix.
+}
 \description{
-Title
+Calculate the non-parametric critical value estimates for the
+SPE and T2 monitoring test statistics
+}
+\details{
+This function takes in a pca object returned by the pca.R function
+and a threshold level defaulting to 0.001% of the observations (set this low
+to reduce false alarms, as described in Kazor et al (2016)). The function
+returns a calculated SPE threshold corresponding to the 1 - alpha critical
+value, a similar T2 threshold, and the projection and Lambda Inverse (1 /
+eigenvalues) matrices passed through from the pca.R function call.
 }
 

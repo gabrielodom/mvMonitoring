@@ -2,7 +2,7 @@
 % Please edit documentation in R/faultAlarm.R
 \name{faultAlarm}
 \alias{faultAlarm}
-\title{Title}
+\title{The Alarm function}
 \usage{
 faultAlarm(faultDF, faultsToTrigger = 3, faultObs = NULL)
 }
@@ -10,6 +10,6 @@ faultAlarm(faultDF, faultsToTrigger = 3, faultObs = NULL)
 \item{faultDF}{}
 }
 \description{
-Title
+The Alarm function
 }
 
