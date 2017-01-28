@@ -1,7 +1,4 @@
-# The Alarm function
-
-
-#' Title
+#' The Alarm function
 #'
 #' @param faultsToTrigger
 #' @param faultObs
