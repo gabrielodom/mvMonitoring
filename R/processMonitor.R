@@ -92,7 +92,7 @@ processMonitor <- function(data,
   alarmObs <- data[alarmIndex]
   alarms_xts <- cbind(alarmObs, alarms_xts)
 
-  # Training Thresholds and Projection Matrix
+  # thresholdObj: Training Thresholds and Projection Matrix
   trainSpecs <- faultObj_ls$trainSpecs
 
   list(FaultChecks = fault_xts,

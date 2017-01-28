@@ -607,7 +607,7 @@ faults_ls$fault3B$z %>% plot.xts()
 
 
 ## Multi-State AD-PCA Implementation
-We now throw all this data we've just generated into our package. CURRENT ISSUES: remove only alarmed observations, not flagged observations. Set up a replicate structure to repeat this proccess 1000 times.
+We now throw all this data we've just generated into our package.
 ```{r msad-pca}
 Sys.time()
 results_ls <- mvMonitoring::mspTrain(data = faults_ls$normal[,2:4],
@@ -632,4 +632,16 @@ falseAlarmRate_T2 <- sum(results_ls$FaultChecks[,5] %in% c(1,3)) /
 # false alarm rates increased dramatically (0.19, 0.41), so we increased the 
 # number of training observations to 4320 (three days worth, up from 2880). The
 # false alarm rates dropped back, but not nearly as low (0.0031, 0.0884).
+```
+
+## Test the Multi-State Monitoring function
+```{r test_msad-pca}
+# Create six observations with lags 0:2 included
+laggedTestObs <- faults_ls$normal[10073:10080, -1]
+laggedTestObs <- stats::lag(laggedTestObs, 0:-2)
+laggedTestObs <- cbind(faults_ls$normal[10073:10080, 1], laggedTestObs)
+laggedTestObs <- laggedTestObs[-(7:8),]
+mspMonitor(observations = laggedTestObs[,-1],
+           labelVector = laggedTestObs[,1],
+           trainingSummary = results_ls$TrainingSpecs)
 ```

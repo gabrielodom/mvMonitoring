@@ -101,18 +101,10 @@ faultFilter <- function(trainData,
   keptObsIndex <- head(index(nonAlarmedObs), n = updateFreq)
   keptObs <- testData[keptObsIndex]
 
-  # From the threshold object, we want to preserve the SPE and T2 threshold
-  # values, as well as the class-specific preojection matrices
-  critVals <- c(thresholdObj$SPE_threshold, thresholdObj$T2_threshold)
-  names(critVals) <- c("SPE", "T2")
-  projectionMatrix <- thresholdObj$projectionMatrix
-  trainSpecs_ls <- list(thresholds = critVals,
-                        projectionMatrix = projectionMatrix)
-
   # The faultObj is an xts with the same number of observations as testData.
   object <- list(faultObj = faultObj,
                  nonAlarmedTestObs = keptObs,
-                 trainSpecs = trainSpecs_ls)
+                 trainSpecs = thresholdObj)
   class(object) <- "fault_ls"
   object
 }
