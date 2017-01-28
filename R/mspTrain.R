@@ -3,20 +3,20 @@
 #' @description This function performs Multi-State Adaptive-Dynamic PCA on a
 #' data set with time-stamped observations.
 #'
-#' @param data an xts data matrix
-#' @param labelVector class label vector (as logical or finite numeric)
-#' @param trainObs the number of observations upon which to train the algorithm
-#' @param updateFreq the algorithm update frequency (defaulting to half as many
+#' @param data An xts data matrix
+#' @param labelVector Class label vector (as logical or finite numeric)
+#' @param trainObs The number of observations upon which to train the algorithm
+#' @param updateFreq The algorithm update frequency (defaulting to half as many
 #' observations as the training frequency)
 #' @param Dynamic Should the PCA algorithm include lagged variables? Defaults
 #' to TRUE
 #' @param lagsIncluded If Dynamic = TRUE, how many lags should be included?
 #' Defaults to 1.
-#' @param faultsToTriggerAlarm the number of sequential faults needed to
+#' @param faultsToTriggerAlarm The number of sequential faults needed to
 #' trigger an alarm
 #' @param ... Lazy dots for additional internal arguments
 #'
-#' @return a list of the following components: FaultChecks - an xts data matrix
+#' @return A list of the following components: FaultChecks - an xts data matrix
 #' containing the SPE monitoring statistic and logical flagging indicator, the
 #' Hotelling's T2 monitoring statitisic and logical flagging indicator, and the
 #' Alarm indicator; Non_Alarmed_Obs - an xts data matrix of all the non-Alarmed
@@ -25,15 +25,24 @@
 #' alarm, 1 = Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms.
 #'
 #' @details This function is designed to identify and sort out sequences of
-#' observations which fall outside normal operating conditions. This function
-#' uses non-parametric density estimation to calculated the 1 - alpha quantiles
-#' of the SPE and Hotelling's T2 statistics from a set of training observations,
-#' then flags any observation in the testing data set with statistics beyond
-#' these calculated critical values. Becuase of naturaly variablity inherent in
-#' all real data, we do not sort out observations simply because they are have
-#' been flagged. This function records an alarm only for observations having
-#' three (as set by the default argument value of "faultsToTriggerAlarm") flags
-#' in a row. These alarm-positive observations are removed from the data set.
+#' observations which fall outside normal operating conditions. We assume that
+#' the process data are time-dependent in both seasonal and non-stationary
+#' effects (which necessitate the Adaptive and Dynamic components, respectively).
+#' We further assume that this process data is drawn from a process under
+#' multiple mutually exclusive states, implying that the linear dimension
+#' reduction projection matrices may be different for each state. Therefore, in
+#' summary, this function splits the data by classes, lags the features to
+#' account for correlation between sequential observations, and re-estimates
+#' projection matrices on a rolling window to account for seasonality. Further,
+#' this function uses non-parametric density estimation to calculate the 1 -
+#' alpha quantiles of the SPE and Hotelling's T2 statistics from a set of
+#' training observations, then flags any observation in the testing data set
+#' with statistics beyond these calculated critical values. Becuase of natural
+#' variablity inherent in all real data, we do not remove observations simply
+#' because they are have been flagged. This function records an alarm only for
+#' observations having three (as set by the default argument value of
+#' "faultsToTriggerAlarm") flags in a row. These alarm-positive observations
+#' are then removed from the data set.
 #'
 #' @export
 #'
