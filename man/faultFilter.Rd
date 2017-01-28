@@ -20,16 +20,17 @@ an alarm to trigger. Defaults to 3.}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list of class "fault_ls" with the following: an xts flag matrix of
-with the same number of rows as "testData". This flag matrix has these
-columns - the SPE test statistic for each observation in "testData", an SPE
-indicator recording 0 if the test statistic is less than or equal to the
-critical value (from the threshold object), a T2 test statistic, a similar
-T2 indicator, and a final column indicating if there have been three flags
-in a row for either the SPE or T2 monitoring statistics or both. This is
-called "faultObj". The second component of the list is an xts matrix of all
-the rows of the training data which were not alarmed. This is called
-"nonAlarmedTestObs".
+A list of class "fault_ls" with the following: faultObj - an xts
+flag matrix with the same number of rows as "testData". This flag matrix has
+these columns - the SPE test statistic for each observation in "testData",
+an SPE indicator recording 0 if the test statistic is less than or equal to
+the critical value (from the threshold object), a T2 test statistic, a
+similar T2 indicator, and a final column indicating if there have been three
+flags in a row for either the SPE or T2 monitoring statistics or both;
+nonAlarmedTestObs - an xts matrix of all the rows of the training data which
+were not alarmed; trainSpecs - a list of: a vector of critical values from
+the SPE and T2 densities from the 1 - alpha quantile (see threshold()), and
+the class-specific projection matrix.
 }
 \description{
 Flag and filter out observations beyond normal parameters

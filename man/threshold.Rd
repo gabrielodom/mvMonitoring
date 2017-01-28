@@ -10,17 +10,18 @@ threshold(pca_object, alpha = 0.001, ...)
 \item{pca_object}{A list with class "pca" from the internal pca() function}
 
 \item{alpha}{The upper 1 - alpha quantile of the SPE and T2 densities from
-the training data passed to this function}
+the training data passed to this function. Defaults to 0.001.}
 
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list with classes "threshold" and "pca" containing: the 1 - alpha
-quantile of the SPE density, the 1 - alpha quantile of the T2 density, a
-projection matrix from the data feature space to the feature subspace which
-preserves some specified proprtion of the energy of the data scatter matrix
-(this is the "var.amnt" argument in the pca() function), and a diagonal
-matrix of the reciprocal eigenvalues of the data scatter matrix.
+A list with classes "threshold" and "pca" containing: SPE_threshold
+- the 1 - alpha quantile of the SPE density; T2_threshold - the 1 - alpha
+quantile of the T2 density; projectionMatrix - a projection matrix from the
+data feature space to the feature subspace which preserves some specified
+proprtion of the energy of the data scatter matrix (this is the "var.amnt"
+argument in the pca() function); and LambdaInv - a diagonal matrix of the
+reciprocal eigenvalues of the data scatter matrix.
 }
 \description{
 Calculate the non-parametric critical value estimates for the

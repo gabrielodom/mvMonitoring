@@ -16,9 +16,11 @@
 #' an SPE indicator recording 0 if the test statistic is less than or equal to
 #' the critical value (from the threshold object), a T2 test statistic, a
 #' similar T2 indicator, and a final column indicating if there have been three
-#' flags in a row for either the SPE or T2 monitoring statistics or both.
+#' flags in a row for either the SPE or T2 monitoring statistics or both;
 #' nonAlarmedTestObs - an xts matrix of all the rows of the training data which
-#' were not alarmed.
+#' were not alarmed; trainSpecs - a list of: a vector of critical values from
+#' the SPE and T2 densities from the 1 - alpha quantile (see threshold()), and
+#' the class-specific projection matrix.
 #'
 #' @details This function calls all the other internal functions: faultDetect(),
 #' threshold(), and pca().
@@ -99,9 +101,18 @@ faultFilter <- function(trainData,
   keptObsIndex <- head(index(nonAlarmedObs), n = updateFreq)
   keptObs <- testData[keptObsIndex]
 
+  # From the threshold object, we want to preserve the SPE and T2 threshold
+  # values, as well as the class-specific preojection matrices
+  critVals <- c(thresholdObj$SPE_threshold, thresholdObj$T2_threshold)
+  names(critVals) <- c("SPE", "T2")
+  projectionMatrix <- thresholdObj$projectionMatrix
+  trainSpecs_ls <- list(thresholds = critVals,
+                        projectionMatrix = projectionMatrix)
+
   # The faultObj is an xts with the same number of observations as testData.
   object <- list(faultObj = faultObj,
-                 nonAlarmedTestObs = keptObs)
+                 nonAlarmedTestObs = keptObs,
+                 trainSpecs = trainSpecs_ls)
   class(object) <- "fault_ls"
   object
 }

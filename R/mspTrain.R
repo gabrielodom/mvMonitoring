@@ -22,7 +22,11 @@
 #' Alarm indicator; Non_Alarmed_Obs - an xts data matrix of all the non-Alarmed
 #' observations; Alarms - and an xts data matrix of the features and specific
 #' alarms for Alarmed observations, where the alarm code is as follows: 0 = no
-#' alarm, 1 = Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms.
+#' alarm, 1 = Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms:
+#' TrainingSpecs - a list of k lists (one for each class) containing: a vector
+#' of class-specific critical values from the SPE and T2 densities from the 1 -
+#' alpha quantile (see the internal threshold() function), and the class-
+#' specific projection matrix.
 #'
 #' @details This function is designed to identify and sort out sequences of
 #' observations which fall outside normal operating conditions. We assume that
@@ -88,16 +92,19 @@ mspTrain <- function(data,
 
   names(monitorResults) <- classes
 
+  # Fault Checks data matrix
   FaultChecks <- lapply(classes, function(i){
     monitorResults[[i]]$FaultChecks
   })
   FaultChecks <- do.call(rbind, FaultChecks)
 
+  # Non-alarmed observations data matrix
   Non_Alarmed_Obs <- lapply(classes, function(i){
     monitorResults[[i]]$Non_Alarmed_Obs
   })
   Non_Alarmed_Obs <- do.call(rbind, Non_Alarmed_Obs)
 
+  # Alarmed observations and corresponding alarm codes data matrix
   Alarms <- lapply(classes, function(i){
     monitorResults[[i]]$Alarms
   })
@@ -120,8 +127,15 @@ mspTrain <- function(data,
     Alarms <- Alarms[[1]]
   }
 
+  # Training Specifications list for flagging future observations
+  TrainingSpecs <- lapply(classes, function(i){
+    monitorResults[[i]]$TrainingSpecs
+  })
+  names(TrainingSpecs) <- classes
+
 
   list(FaultChecks = FaultChecks,
        Non_Alarmed_Obs = Non_Alarmed_Obs,
-       Alarms = Alarms)
+       Alarms = Alarms,
+       TrainingSpecs = TrainingSpecs)
 }

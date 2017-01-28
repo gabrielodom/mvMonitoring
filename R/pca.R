@@ -11,9 +11,9 @@
 #'
 #' @return A list of class "pca" with the following: projectionMatrix - the q
 #' eigenvectors corresponding to the q largest eigenvalues as a p * q projection
-#' matrix, LambdaInv - the diagonal matrix of inverse eigenvalues, SPE - the
+#' matrix; LambdaInv - the diagonal matrix of inverse eigenvalues; SPE - the
 #' vector of SPE test statistic values for each of the n observations contained
-#' in the data matrix, and T2 - the vector of Hotelling's T2 test statistic
+#' in the data matrix; and T2 - the vector of Hotelling's T2 test statistic
 #' for each of the same n observations.
 #'
 #' @details This function takes in a training data matrix (without the label

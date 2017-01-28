@@ -16,7 +16,10 @@
 #' data matrix of all the non-Alarmed observations; Alarms - and a class
 #' specific xts data matrix of the features and specific alarms for Alarmed
 #' observations, where the alarm code is as follows: 0 = no alarm, 1 =
-#' Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms.
+#' Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms; trainSpecs - a
+#' list of: a vector of critical values from the SPE and T2 densities from the
+#' 1 - alpha quantile (see threshold()), and the class-specific projection
+#' matrix.
 #'
 #' @details This function is the class-specific implementation of the Adaptive
 #' PCA described in the details of the mspTrain function. See that function for
@@ -78,17 +81,22 @@ processMonitor <- function(data,
       obsToKeep <- rbind(obsToKeep, obsToKeepNew)
     }
   }
+  # FaultChecks
   faultNames <- colnames(fault_xts)
   faultNames[5] <- "Alarm"
   colnames(fault_xts) <- faultNames
 
+  # Alarms
   alarms_xts <- fault_xts[fault_xts[,5] != 0, ]
   alarmIndex <- index(alarms_xts)
   alarmObs <- data[alarmIndex]
   alarms_xts <- cbind(alarmObs, alarms_xts)
 
+  # Training Thresholds and Projection Matrix
+  trainSpecs <- faultObj_ls$trainSpecs
 
   list(FaultChecks = fault_xts,
        Non_Alarmed_Obs = obsToKeep,
-       Alarms = alarms_xts)
+       Alarms = alarms_xts,
+       TrainingSpecs = trainSpecs)
 }

@@ -9,11 +9,11 @@
 #' @param ... Lazy dots for additional internal arguments
 #'
 #' @return A list with classes "threshold" and "pca" containing: SPE_threshold
-#' - the 1 - alpha quantile of the SPE density, T2_threshold - the 1 - alpha
-#' quantile of the T2 density, projectionMatrix - a projection matrix from the
+#' - the 1 - alpha quantile of the SPE density; T2_threshold - the 1 - alpha
+#' quantile of the T2 density; projectionMatrix - a projection matrix from the
 #' data feature space to the feature subspace which preserves some specified
 #' proprtion of the energy of the data scatter matrix (this is the "var.amnt"
-#' argument in the pca() function), and LambdaInv - a diagonal matrix of the
+#' argument in the pca() function); and LambdaInv - a diagonal matrix of the
 #' reciprocal eigenvalues of the data scatter matrix.
 #'
 #' @details This function takes in a pca object returned by the pca.R function

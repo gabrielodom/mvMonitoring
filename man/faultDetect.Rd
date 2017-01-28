@@ -16,9 +16,9 @@ thresholds}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A named 1 row, 4 column matrix of the SPE statistic value, SPE fault
-indicator, T2 statistic value, and T2 fault indicator for the single row
-observation passed to this function.
+A named 1 row, 4 column matrix of the SPE statistic value ("SPE"),
+SPE fault indicator ("SPE_Flag"), T2 statistic value ("T2"), and T2 fault
+indicator for the single row observation passed to this function ("T2_Flag").
 }
 \description{
 Detect if a single observation is beyond normal parameters

@@ -27,7 +27,10 @@ indicator, and the Alarm indicator; Non_Alarmed_Obs - a class specific xts
 data matrix of all the non-Alarmed observations; Alarms - and a class
 specific xts data matrix of the features and specific alarms for Alarmed
 observations, where the alarm code is as follows: 0 = no alarm, 1 =
-Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms.
+Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms; trainSpecs - a
+list of: a vector of critical values from the SPE and T2 densities from the
+1 - alpha quantile (see threshold()), and the class-specific projection
+matrix.
 }
 \description{
 Apply Adaptive-Dynamic PCA to state-specific data matrices.

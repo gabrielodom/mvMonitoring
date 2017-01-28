@@ -35,7 +35,11 @@ Hotelling's T2 monitoring statitisic and logical flagging indicator, and the
 Alarm indicator; Non_Alarmed_Obs - an xts data matrix of all the non-Alarmed
 observations; Alarms - and an xts data matrix of the features and specific
 alarms for Alarmed observations, where the alarm code is as follows: 0 = no
-alarm, 1 = Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms.
+alarm, 1 = Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms:
+TrainingSpecs - a list of k lists (one for each class) containing: a vector
+of class-specific critical values from the SPE and T2 densities from the 1 -
+alpha quantile (see the internal threshold() function), and the class-
+specific projection matrix.
 }
 \description{
 This function performs Multi-State Adaptive-Dynamic PCA on a
