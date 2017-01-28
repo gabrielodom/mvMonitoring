@@ -7,7 +7,7 @@
 pca(data, var.amnt = 0.95, ...)
 }
 \arguments{
-\item{...}{}
+\item{...}{Lazy dots for additional internal arguments}
 }
 \description{
 Title

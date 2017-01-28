@@ -2,7 +2,7 @@
 #'
 #' @param pca_object
 #' @param alpha
-#' @param ...
+#' @param ... Lazy dots for additional internal arguments
 #'
 #' @return
 #' @export

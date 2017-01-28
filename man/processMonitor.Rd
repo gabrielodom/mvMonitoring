@@ -2,13 +2,13 @@
 % Please edit documentation in R/processMonitor.R
 \name{processMonitor}
 \alias{processMonitor}
-\title{Title}
+\title{Adaptive Process Training}
 \usage{
 processMonitor(data, trainObs, updateFreq = ceiling(0.2 * trainObs),
   faultsToTriggerAlarm = 3, ...)
 }
 \arguments{
-\item{data}{A data frame with row names as a POSIX date time label}
+\item{data}{An xts data matrix}
 
 \item{trainObs}{How many train observations will be used}
 
@@ -19,7 +19,22 @@ trigger an alarm}
 
 \item{...}{Lazy dots for additional internal arguments}
 }
+\value{
+A list of the following components: FaultChecks - a class specific
+xts data matrix containing the SPE monitoring statistic and logical flagging
+indicator, the Hotelling's T2 monitoring statitisic and logical flagging
+indicator, and the Alarm indicator; Non_Alarmed_Obs - a class specific xts
+data matrix of all the non-Alarmed observations; Alarms - and a class
+specific xts data matrix of the features and specific alarms for Alarmed
+observations, where the alarm code is as follows: 0 = no alarm, 1 =
+Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms.
+}
 \description{
 Apply Adaptive-Dynamic PCA to state-specific data matrices.
+}
+\details{
+This function is the class-specific implementation of the Adaptive
+PCA described in the details of the mspTrain function. See that function for
+further details.
 }
 

@@ -6,4 +6,4 @@ data <- xts(data,
             order.by = seq.POSIXt(from = as.POSIXlt(Sys.Date(), tz = "Chicago"),
                                   by = "min",
                                   length.out = nrow(data)))
-processMonitor(data, trainObs = 200, updateFreq = 100)
+mvMonitoring::processMonitor(data, trainObs = 200, updateFreq = 100)

@@ -2,7 +2,7 @@
 #'
 #' @param var.amnt
 #' @param data
-#' @param ...
+#' @param ... Lazy dots for additional internal arguments
 #'
 #' @return
 #' @export

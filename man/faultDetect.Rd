@@ -2,14 +2,34 @@
 % Please edit documentation in R/faultDetect.R
 \name{faultDetect}
 \alias{faultDetect}
-\title{Title}
+\title{Fault Detection}
 \usage{
 faultDetect(threshold_object, observation, ...)
 }
 \arguments{
-\item{...}{}
+\item{threshold_object}{An object of classes "threshold" and "pca" returned
+by the threshold() function.}
+
+\item{observation}{A single row of an xts data matrix to test against the
+thresholds}
+
+\item{...}{Lazy dots for additional internal arguments}
+}
+\value{
+A named 1 row, 4 column matrix of the SPE statistic value, SPE fault
+indicator, T2 statistic value, and T2 fault indicator for the single row
+observation passed to this function.
 }
 \description{
-Title
+Detect if a single observation is beyond normal parameters
+}
+\details{
+This function takes in the threshold object returned by the
+threshold.R function and a single observation which needs fault detection.
+The function then returns a row vector of the SPE test statistics, a logical
+indicator indicating if this statistic is beyond the threshold, the T2
+statistic, and an indicator if this statistic is beyond the threshold. These
+threshold values are passed in through the threshold object after calculation
+from the training data set in the threshold() function.
 }
 

@@ -7,7 +7,7 @@
 threshold(pca_object, alpha = 0.001, ...)
 }
 \arguments{
-\item{...}{}
+\item{...}{Lazy dots for additional internal arguments}
 }
 \description{
 Title

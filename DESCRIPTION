@@ -1,13 +1,16 @@
 Package: mvMonitoring
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Multi-State Adaptive Dynamic Principle Components Analysis for
+Multivariate Process Monitoring
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Gabriel Odom and Ben Barnard
+Maintainer: Gabriel Odom <gabriel_odom@baylor.edu>
+Description: Use multi-state splitting to apply Adaptive-Dynamic PCA to data
+generated from a continuous-time multivariate industrial or natural process. 
+Employ PCA-based dimension reduction to extract linear combinations of 
+relevant features, reducing computational burdens.
 License: What license is it under?
-Depends: BMS, lazyeval, zoo, xts, MASS, utils
+Depends: BMS, lazyeval, zoo, xts, utils
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
