@@ -23,8 +23,8 @@ mspMonitor <- function(observations,
                        labelVector,
                        trainingSummary,
                        ...){
+
   classes <- unique(labelVector)
-  obsNames <- names(observations)
 
   # If our user accidentally sends in a vector instead of an xts matrix
   if(is.null(dim(observations))){
@@ -36,16 +36,13 @@ mspMonitor <- function(observations,
   # Apply the fault detection function to each row, accounting for the chance
   # that rows come from different classes
   dataAndFaults <- lapply(1:nrow(classData), function(i){
-    faultObj <- faultDetect(threshold_object = trainingSummary[[classData[1,i]]],
-                            observation = classData[-1, i])
-    cbind(classData[,i], faultObj)
+    faultObj <- faultDetect(threshold_object = trainingSummary[[classData[i,1]]],
+                            observation = classData[i, -1])
+    cbind(classData[i,], faultObj)
   })
   obsAndFlags <- do.call(rbind, dataAndFaults)
   obsAndFlags <- cbind(obsAndFlags, 0)
-
-  # Reapply the names
-  faultObjNames <- c("SPE", "SPE_Flag", "T2", "T2_Flag", "Alarm")
-  names(obsAndFlags) <- append(obsNames, faultObjNames)
+  colnames(obsAndFlags)[ncol(obsAndFlags)] <- "Alarm"
 
   obsAndFlags
 }

@@ -7,10 +7,21 @@
 mspMonitor(observations, labelVector, trainingSummary, ...)
 }
 \arguments{
-\item{...}{}
+\item{observations}{an n * p xts matrix. For real-time monitoring via batch
+file, n = 1, so this must be a matrix of a single row.}
+
+\item{labelVector}{an n * 1 integer vector of class memberships}
+
+\item{trainingSummary}{the TrainingSpecs list returned by the mspTrain()
+function. This list contains --for each class-- the SPE and T2 thresholds,
+as well the projection matrix.}
+
+\item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-
+an n * (p + 5) xts matrix, where the columns (p + 1):(p + 5) are the
+monitoring statistics and corresponding fault flags, and an empty alarm
+column
 }
 \description{
 
