@@ -51,7 +51,7 @@ mspMonitor <- function(observations,
     cbind(classData[i,], faultObj)
   })
   obsAndFlags <- do.call(rbind, dataAndFaults)
-  obsAndFlags <- cbind(obsAndFlags, 0)
+  obsAndFlags <- cbind(obsAndFlags, NA)
   colnames(obsAndFlags)[ncol(obsAndFlags)] <- "Alarm"
 
   obsAndFlags

@@ -645,3 +645,14 @@ testDataandFlags <- mspMonitor(observations = laggedTestObs[,-1],
            labelVector = laggedTestObs[,1],
            trainingSummary = results_ls$TrainingSpecs)
 ```
+
+## Test the Warning function
+```{r test-warning}
+# This line will test if the function can check the last line at all.
+mspWarning(testDataandFlags)
+
+# These lines will test each line as if it was just received:
+lapply(1:nrow(testDataandFlags), FUN = function(i){
+  mspWarning(testDataandFlags[1:i,])
+})
+```

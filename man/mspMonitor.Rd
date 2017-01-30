@@ -24,9 +24,19 @@ monitoring statistics and corresponding fault flags, and an empty alarm
 column
 }
 \description{
-
+Monitor and flag (if necessary) incoming multivariate process
+observations
 }
 \details{
-
+This function is designed to be ran at specific time intervals
+(every 10 seconds, 30 seconds, 1 minute, 5 minutes, 10 minutes, etc), from a
+batch file which calls this function and mspWarning(). This function takes
+in the specific observations to monitor and their class memberships (if any)
+and returns an xts matrix of these observations concatenated with their flag
+status and an empty alarm column. Users should then append these rows onto
+the existing daily observations matrix. The mspWarning() function will then
+take in the daily observation xts matrix with rows returned by this function
+and check the monitoring statistic flag indicators to see if an alarm status
+has been reached. For further details, see the mspWarning() function.
 }
 
