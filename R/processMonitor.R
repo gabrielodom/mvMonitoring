@@ -64,6 +64,7 @@ processMonitor <- function(data,
     # is what the date/ means for xts objects (date/ means that date and all
     # after it, this is why we remove the first row).
     testData <- data[paste0(testTime, "/")]
+    if(nrow(testData) == 1) break
     faultObj_ls <- do.call(faultFilter,
                            args = c(list(trainData = trainData,
                                          testData = testData[-1,],

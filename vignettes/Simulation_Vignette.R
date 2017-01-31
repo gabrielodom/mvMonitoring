@@ -1,25 +1,7 @@
----
-title: "MSAD-PCA Walkthrough"
-author: "Gabriel Odom"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
----☺
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
-# vignette: >
-#   %\VignetteIndexEntry{MSAD-PCA Walkthrough}
-#   %\VignetteEngine{knitr::rmarkdown}
-#   \usepackage[utf8]{inputenc}
-```
 
-## Multi-State Adaptive-Dynamic PCA Simulation
-
-We create this package, `mvMonitor`, from the foundation laid by Kazor et al (2016). The `mvMonitor` package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.
-
-### The Interval Vector
-We begin by simulating an autocorrelated interval-step vector $t$, where the autocorrelated errors of $t$ have initial value $\epsilon_1 \sim \mathcal{U}_{[a,b]}$, where $a = 0.01$ and $b = 2$. This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations) and autocorrelation component $\phi = 0.75$.
-```{r t_vec_initialized}
+## ----t_vec_initialized---------------------------------------------------
 omega <- 60 * 24 * 7
 phi <- 0.75
 a <- 0.01; b <- 2
@@ -50,35 +32,21 @@ for(s in 2:omega){
 # Now we scale the ts to match the ts from the Unif(0.01,2)
 t_star_adj <- ((b - a) * (t_star - min(t_star))) /
   (max(t_star) - min(t_star)) + a
-```
-Now that we have created the underlying autocorrelated and non-stationary process vector $t$, we perform some simple confirmatory graphing techniques.
 
-```{r t_vec_graphs, echo = FALSE}
+## ----t_vec_graphs, echo = FALSE------------------------------------------
 plot(t_star_adj,
      type = "l",
      main = "Plot of t Scaled to [0.1,2]",
      xlab = "t")
 pacf(t_star,
      main = "Partial ACF for the Series t")
-```
-```{r t_vec_summary}
+
+## ----t_vec_summary-------------------------------------------------------
 mean(t_star); var(t_star)
 cor(t_star_adj[2:omega], t_star_adj[1:(omega - 1)])
 lmtest::dwtest(t_star_adj[2:omega] ~ t_star_adj[1:(omega - 1)])
-```
 
-###  Features and State Features
-We will simulate three features, with each feaure operating under $k$ different states. We will use $<x(t), y(t), z(t)>$ instead of the $<x_1(t), x_2(t), x_3(t)>$ notation used in Kazor et al. This will assist us when we introduce feature states. Our state notation will be $<x_k(t), y_k(t), z_k(t)>$ for State $k$.
-
-We create the three features under State 1 (normal operating conditions, or \emph{NOC}) as three functions of $t$:
-\begin{align}
-\textbf{x}(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
-\textbf{y}(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
-\textbf{z}(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3,
-\end{align}
-where $\varepsilon_i \sim N(0, 0.01)$.
-
-```{r state_1_init}
+## ----state_1_init--------------------------------------------------------
 library(scatterplot3d)
 library(magrittr)
 library(dplyr)
@@ -100,16 +68,13 @@ normal_df %<>% mutate(x = t + err1,
 # # It checks out
 
 orig_state_mat <- normal_df %>% select(x,y,z) %>% as.matrix
-```
-Let's take a look at our 3D scatterplot:
-```{r state1_scatter}
+
+## ----state1_scatter------------------------------------------------------
 scatterplot3d(x = normal_df$x,
               y = normal_df$y,
               z = normal_df$x)
-```
 
-Now we can create data for our other two states. These states will be scaled rotations of the current $<x,y,z>$ set. Thus, we need the `rot_and_scale3d()` function from the `Rotation_Playground.R` file. The first state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2).
-```{r state_2_init}
+## ----state_2_init--------------------------------------------------------
 source("C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring/inst/Rotation_Playground.R")
 
 ###  State 2  ###
@@ -119,13 +84,11 @@ state2_angles <- list(yaw = 0,
 state2_scales <- c(1,0.5,2)
 state2_mat <- orig_state_mat %*% rot_and_scale3d(rot_angles = state2_angles,
                                                scale_factors = state2_scales)
-```
-We can see the effects of the rotation and scaling.
-```{r state_2_scatter}
+
+## ----state_2_scatter-----------------------------------------------------
 scatterplot3d(state2_mat)
-```
-The second state is yaw, pitch, and roll rotated by (90, 0, -30) degrees, and the scales are multiplied by (0.25, 0.1, 0.75).
-```{r state_3_init}
+
+## ----state_3_init--------------------------------------------------------
 ###  State 3  ###
 state3_angles <- list(yaw = 90,
                       pitch = 0,
@@ -133,14 +96,11 @@ state3_angles <- list(yaw = 90,
 state3_scales <- c(0.25,0.1,0.75)
 state3_mat <- orig_state_mat %*% rot_and_scale3d(rot_angles = state3_angles,
                                                scale_factors = state3_scales)
-```
-We can see the difference that State 3 creates.
-```{r state_3_scatter}
-scatterplot3d(state3_mat)
-```
 
-Now, let's combine all these state observations into one data frame, which we will then subset based on the state indicator.
-```{r combine_state_data}
+## ----state_3_scatter-----------------------------------------------------
+scatterplot3d(state3_mat)
+
+## ----combine_state_data--------------------------------------------------
 ###  Combination and Cleaning  ###
 # Now concatenate these vectors
 normal_df$xState2 <- state2_mat[,1]
@@ -171,10 +131,8 @@ state3_df <- normal_df %>%
   select(dateTime, state, x = xState3, y = yState3, z = zState3)
 normal_switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
   arrange(dateTime)
-```
 
-Let's take a look at the individual states, and their combined product.
-```{r state_scatterplots}
+## ----state_scatterplots--------------------------------------------------
 
 normal_switch_df %>%
   filter(state == 1) %>%
@@ -202,13 +160,8 @@ normal_switch_df %>%
   scatterplot3d(xlim = c(-2, 3),
                 ylim = c(-3, 1),
                 zlim = c(-1, 5))
-```
 
-
-
-###  Fault Introduction
-We now create the faults for individual states and all states. We will introduce these faults 1000 time units after the end of training (to evauluate false positive rates). The first fault is to add 2 to each $<\textbf{x}(\textbf{t}), \textbf{y}(\textbf{t}), \textbf{z}(\textbf{t})>$.
-```{r fault1A_intro}
+## ----fault1A_intro-------------------------------------------------------
 faultStart <- 8500
 
 ###  Fault 1A  ###
@@ -253,15 +206,13 @@ fault1A_switch_df <- bind_rows(fault1A_state1_df,
                                fault1A_state2_df,
                                fault1A_state3_df) %>%
   arrange(dateTime)
-```
-Now, let's take a look at our process after introducing fault 1A.
-```{r fault1A_scatter}
+
+## ----fault1A_scatter-----------------------------------------------------
 fault1A_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
-```
-The second fault (Fault 1B) is to add 2 to feature $<\textbf{x}(\textbf{t})>$ only.
-```{r fault1B_intro}
+
+## ----fault1B_intro-------------------------------------------------------
 ###  Fault 1B  ###
 # Shift each x by 2
 fault1B_df <- normal_df %>%
@@ -301,16 +252,13 @@ fault1B_switch_df <- bind_rows(fault1B_state1_df,
                                fault1B_state2_df,
                                fault1B_state3_df) %>%
   arrange(dateTime)
-```
-We now look at the effect of Fault 1B on the scatterplot of the process.
-```{r fault1B_scatter}
+
+## ----fault1B_scatter-----------------------------------------------------
 fault1B_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
-```
 
-The third fault we introduce (Fault 2A) is a drift in each feature by $10 ^ {-3} * (\text{step} - 8500)$.
-```{r fault2A_intro}
+## ----fault2A_intro-------------------------------------------------------
 ###  Fault 2A  ###
 # Drift each <x, y, z> by (step - faultStart) / 10 ^ 3
 drift_vec <- (1:omega - faultStart) / 10 ^ 3
@@ -354,16 +302,13 @@ fault2A_switch_df <- bind_rows(fault2A_state1_df,
                                fault2A_state2_df,
                                fault2A_state3_df) %>%
   arrange(dateTime)
-```
-Now we look at the scatterplot under this drift fault.
-```{r fault2A_scatter}
+
+## ----fault2A_scatter-----------------------------------------------------
 fault2A_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
-```
 
-The fourth fault we introduce (Fault 2B) is a drift in features $\textbf{y}$ and $\textbf{z}$ by $10 ^ {-3} * (\text{step} - 8500)$.
-```{r fault2B_intro}
+## ----fault2B_intro-------------------------------------------------------
 ###  Fault 2B  ###
 # Drift each <y, z> by (step - faultStart) / 10 ^ 3
 fault2B_df <- normal_df %>%
@@ -404,16 +349,13 @@ fault2B_switch_df <- bind_rows(fault2B_state1_df,
                                fault2B_state2_df,
                                fault2B_state3_df) %>%
   arrange(dateTime)
-```
-We now inspect the effect of Fault 2B.
-```{r fault2B_scatter}
+
+## ----fault2B_scatter-----------------------------------------------------
 fault2B_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
-```
 
-Our fifth fault (Fault 3A) is to amplify the underlying $\textbf{t}$ signal vector as $\frac{3}{2 * 10080} * (10080 - \text{step}) * \textbf{t}$.
-```{r fault3A_intro}
+## ----fault3A_intro-------------------------------------------------------
 ###  Fault 3A  ###
 # Amplify t for each <x, y, z> by 3 * (omega - step) * t / (2 * omega)
 amplify_vec <- 2 * (1:omega - faultStart) / (omega - faultStart) + 1
@@ -458,15 +400,13 @@ fault3A_switch_df <- bind_rows(fault3A_state1_df,
                                fault3A_state2_df,
                                fault3A_state3_df) %>%
   arrange(dateTime)
-```
-Now inspect the effect of this fault
-```{r fault3A_scatter}
+
+## ----fault3A_scatter-----------------------------------------------------
 fault3A_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
-```
-Our last fault under consideration, Fault 3B, is a dampening fault to $\textbf{t}$ as $\log \textbf{t}$. As $\textbf{t}$ is bdd within $[0.01, 2]$, $\log\textbf{t}\in[-4.61, 0.7]$.
-```{r fault3B_intro}
+
+## ----fault3B_intro-------------------------------------------------------
 ###  Fault 3B  ###
 # Dampen t for z by log|t|
 t_log <- normal_df$t
@@ -511,19 +451,13 @@ fault3B_switch_df <- bind_rows(fault3B_state1_df,
                                fault3B_state2_df,
                                fault3B_state3_df) %>%
   arrange(dateTime)
-```
-We inspect the effect of the last fault on our scatterplot.
-```{r fault3B_scatter}
+
+## ----fault3B_scatter-----------------------------------------------------
 fault3B_switch_df %>%
   select(x, y, z) %>%
   scatterplot3d()
-```
 
-###  The Seven Data Frames
-The normal_df data frame is without fault. We will remove rows 8500 to 10080, and replace these rows with the same rows from each each of the fault data frames. We then store each of these seven `xts` matrices in a list.
-
-Implementation notes: turn all the data frames into `xts` objects for Kazor's function to work, which we believe follows a depreciated version of `zoo`, so we need the `dateTime` column as the rownames of the data frame, not as an index. EDITED NOTE - B. Barnard and I rebuilt Kazor's code as a functional package called `mvMonitoring`. The functions in these packages use `xts` matrices as inputs.
-```{r fault_dataframes}
+## ----fault_dataframes----------------------------------------------------
 library(xts)
 normal_switch_xts <- xts(normal_switch_df[,-1],
                          order.by = normal_switch_df[,1])
@@ -565,11 +499,8 @@ faults_ls <- list(normal = normal_switch_xts,
                   fault2B = fault2B_xts,
                   fault3A = fault3A_xts,
                   fault3B = fault3B_xts)
-```
 
-### Feature Time-series Plots
-Now that we've created and stored these feature, we can use time-series plots to confirm our multi-state vision as well as quickly ascertain the fault behavior.
-```{r feature_ts_plots}
+## ----feature_ts_plots----------------------------------------------------
 # Double check that faults are visible and according to plan:
 # faults_ls$fault1A %>% select(x) %>% plot.ts()
 # faults_ls$fault1A %>% select(y) %>% plot.ts()
@@ -607,12 +538,8 @@ faults_ls$fault3A$z %>% plot.xts()
 faults_ls$fault3B$x %>% plot.xts()
 faults_ls$fault3B$y %>% plot.xts()
 faults_ls$fault3B$z %>% plot.xts()
-```
 
-
-## Multi-State AD-PCA Implementation
-We now throw all this data we've just generated into our package.
-```{r msad-pca}
+## ----msad-pca------------------------------------------------------------
 Sys.time()
 results_ls <- mvMonitoring::mspTrain(data = faults_ls$normal[,2:4],
                          labelVector = faults_ls$normal[,1],
@@ -636,28 +563,4 @@ Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # false alarm rates increased dramatically (0.19, 0.41), so we increased the 
 # number of training observations to 4320 (three days worth, up from 2880). The
 # false alarm rates dropped back, but not nearly as low (0.0031, 0.0884).
-```
 
-## Test the Multi-State Monitoring function
-```{r test_msad-pca}
-# Create six observations with lags 0:2 included
-laggedTestObs <- faults_ls$normal[10073:10080, -1]
-laggedTestObs <- stats::lag(laggedTestObs, 0:-2)
-laggedTestObs <- cbind(faults_ls$normal[10073:10080, 1], laggedTestObs)
-laggedTestObs <- laggedTestObs[-(7:8),]
-testDataandFlags <- mvMonitoring::mspMonitor(observations = laggedTestObs[,-1],
-           labelVector = laggedTestObs[,1],
-           trainingSummary = results_ls$TrainingSpecs)
-testDataandFlags[6,]
-```
-
-## Test the Warning function
-```{r test-warning}
-# This line will test if the function can check the last line at all.
-mvMonitoring::mspWarning(testDataandFlags)
-
-# # These lines will test each line as if it was just received:
-# lapply(1:nrow(testDataandFlags), FUN = function(i){
-#   mvMonitoring::mspWarning(testDataandFlags[1:i,])
-# })
-```
