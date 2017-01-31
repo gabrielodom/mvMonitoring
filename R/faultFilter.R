@@ -62,7 +62,7 @@ faultFilter <- function(trainData,
   muTrain_mat <- rep(1, nrow(testData)) %*% t(muTrain)
   scaledTest <- as.matrix(testData - muTrain_mat) %*% precisRootMat
   scaledTest <- xts(scaledTest, order.by = index(testData))
-  names(scaledTest) <- names(testData)
+  colnames(scaledTest) <- colnames(testData)
 
   # We now apply the faultDetect function down each row of the scaled test data
   # set. We then return it to its form as an xts matrix.

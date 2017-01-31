@@ -64,6 +64,7 @@ mspTrain <- function(data,
                        lagsIncluded = 1,
                        faultsToTriggerAlarm = 3,
                        ...){
+  # browser()
 
   ls <- lazy_dots(...)
 
