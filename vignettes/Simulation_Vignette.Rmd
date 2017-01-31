@@ -3,14 +3,16 @@ title: "MSAD-PCA Walkthrough"
 author: "Gabriel Odom"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MSAD-PCA Walkthrough}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# vignette: >
-#   %\VignetteIndexEntry{MSAD-PCA Walkthrough}
-#   %\VignetteEngine{knitr::rmarkdown}
-#   \usepackage[utf8]{inputenc}
+# # To build the documentation PDF, use
+# system("R CMD Rd2pdf /Users/gabrielodom/Documents/GitHub/mvMonitoring")
 ```
 
 ## Multi-State Adaptive-Dynamic PCA Simulation
@@ -108,7 +110,7 @@ scatterplot3d(x = normal_df$x,
               z = normal_df$x)
 ```
 
-Now we can create data for our other two states. These states will be scaled rotations of the current $<x,y,z>$ set. Thus, we need the `rotateScale3D()` function from the `Rotation_Playground.R` file. The first state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2).
+Now we can create data for our other two states. These states will be scaled rotations of the current $<x,y,z>$ set. Thus, we need the `mvMonitoring::rotateScale3D()` function from the `Rotation_Playground.R` file. The first state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2).
 ```{r state_2_init}
 # source("C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring/inst/Rotation_Playground.R")
 # source("Users\gabrielodom\Documents\GitHub\mvMonitoring\mvMonitoring\inst\Rotation_Playground.R")
@@ -118,7 +120,7 @@ state2_angles <- list(yaw = 0,
                       pitch = 90,
                       roll = 30)
 state2_scales <- c(1,0.5,2)
-state2_mat <- orig_state_mat %*% rotateScale3D(rot_angles = state2_angles,
+state2_mat <- orig_state_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                scale_factors = state2_scales)
 ```
 We can see the effects of the rotation and scaling.
@@ -132,7 +134,7 @@ state3_angles <- list(yaw = 90,
                       pitch = 0,
                       roll = -30)
 state3_scales <- c(0.25,0.1,0.75)
-state3_mat <- orig_state_mat %*% rotateScale3D(rot_angles = state3_angles,
+state3_mat <- orig_state_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                scale_factors = state3_scales)
 ```
 We can see the difference that State 3 creates.
@@ -223,12 +225,12 @@ fault1A_df <- normal_df %>%
 fault1A_mat <- fault1A_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault1A_S2_mat <- fault1A_mat %*% rotateScale3D(rot_angles = state2_angles,
+fault1A_S2_mat <- fault1A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 scatterplot3d(fault1A_S2_mat)
 
 # State 3
-fault1A_S3_mat <- fault1A_mat %*% rotateScale3D(rot_angles = state3_angles,
+fault1A_S3_mat <- fault1A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 scatterplot3d(fault1A_S3_mat)
 
@@ -271,12 +273,12 @@ fault1B_df <- normal_df %>%
 fault1B_mat <- fault1B_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault1B_S2_mat <- fault1B_mat %*% rotateScale3D(rot_angles = state2_angles,
+fault1B_S2_mat <- fault1B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 scatterplot3d(fault1B_S2_mat)
 
 # State 3
-fault1B_S3_mat <- fault1B_mat %*% rotateScale3D(rot_angles = state3_angles,
+fault1B_S3_mat <- fault1B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 scatterplot3d(fault1B_S3_mat)
 
@@ -324,12 +326,12 @@ fault2A_df <- normal_df %>%
 fault2A_mat <- fault2A_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault2A_S2_mat <- fault2A_mat %*% rotateScale3D(rot_angles = state2_angles,
+fault2A_S2_mat <- fault2A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 # scatterplot3d(fault2A_S2_mat)
 
 # State 3
-fault2A_S3_mat <- fault2A_mat %*% rotateScale3D(rot_angles = state3_angles,
+fault2A_S3_mat <- fault2A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 # scatterplot3d(fault2A_S3_mat)
 
@@ -374,12 +376,12 @@ fault2B_df <- normal_df %>%
 fault2B_mat <- fault2B_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault2B_S2_mat <- fault2B_mat %*% rotateScale3D(rot_angles = state2_angles,
+fault2B_S2_mat <- fault2B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 scatterplot3d(fault2B_S2_mat)
 
 # State 3
-fault2B_S3_mat <- fault2B_mat %*% rotateScale3D(rot_angles = state3_angles,
+fault2B_S3_mat <- fault2B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 scatterplot3d(fault2B_S3_mat)
 
@@ -428,12 +430,12 @@ fault3A_df <- normal_df %>%
 fault3A_mat <- fault3A_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault3A_S2_mat <- fault3A_mat %*% rotateScale3D(rot_angles = state2_angles,
+fault3A_S2_mat <- fault3A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 scatterplot3d(fault3A_S2_mat)
 
 # State 3
-fault3A_S3_mat <- fault3A_mat %*% rotateScale3D(rot_angles = state3_angles,
+fault3A_S3_mat <- fault3A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 scatterplot3d(fault3A_S3_mat)
 
@@ -481,12 +483,12 @@ fault3B_df <- normal_df %>%
 fault3B_mat <- fault3B_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault3B_S2_mat <- fault3B_mat %*% rotateScale3D(rot_angles = state2_angles,
+fault3B_S2_mat <- fault3B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 # scatterplot3d(fault3B_S2_mat)
 
 # State 3
-fault3B_S3_mat <- fault3B_mat %*% rotateScale3D(rot_angles = state3_angles,
+fault3B_S3_mat <- fault3B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 # scatterplot3d(fault3B_S3_mat)
 

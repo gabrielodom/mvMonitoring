@@ -75,14 +75,15 @@ scatterplot3d(x = normal_df$x,
               z = normal_df$x)
 
 ## ----state_2_init--------------------------------------------------------
-source("C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring/inst/Rotation_Playground.R")
+# source("C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring/inst/Rotation_Playground.R")
+# source("Users\gabrielodom\Documents\GitHub\mvMonitoring\mvMonitoring\inst\Rotation_Playground.R")
 
 ###  State 2  ###
 state2_angles <- list(yaw = 0,
                       pitch = 90,
                       roll = 30)
 state2_scales <- c(1,0.5,2)
-state2_mat <- orig_state_mat %*% rot_and_scale3d(rot_angles = state2_angles,
+state2_mat <- orig_state_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                scale_factors = state2_scales)
 
 ## ----state_2_scatter-----------------------------------------------------
@@ -94,7 +95,7 @@ state3_angles <- list(yaw = 90,
                       pitch = 0,
                       roll = -30)
 state3_scales <- c(0.25,0.1,0.75)
-state3_mat <- orig_state_mat %*% rot_and_scale3d(rot_angles = state3_angles,
+state3_mat <- orig_state_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                scale_factors = state3_scales)
 
 ## ----state_3_scatter-----------------------------------------------------
@@ -175,12 +176,12 @@ fault1A_df <- normal_df %>%
 fault1A_mat <- fault1A_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault1A_S2_mat <- fault1A_mat %*% rot_and_scale3d(rot_angles = state2_angles,
+fault1A_S2_mat <- fault1A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 scatterplot3d(fault1A_S2_mat)
 
 # State 3
-fault1A_S3_mat <- fault1A_mat %*% rot_and_scale3d(rot_angles = state3_angles,
+fault1A_S3_mat <- fault1A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 scatterplot3d(fault1A_S3_mat)
 
@@ -221,12 +222,12 @@ fault1B_df <- normal_df %>%
 fault1B_mat <- fault1B_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault1B_S2_mat <- fault1B_mat %*% rot_and_scale3d(rot_angles = state2_angles,
+fault1B_S2_mat <- fault1B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 scatterplot3d(fault1B_S2_mat)
 
 # State 3
-fault1B_S3_mat <- fault1B_mat %*% rot_and_scale3d(rot_angles = state3_angles,
+fault1B_S3_mat <- fault1B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 scatterplot3d(fault1B_S3_mat)
 
@@ -271,12 +272,12 @@ fault2A_df <- normal_df %>%
 fault2A_mat <- fault2A_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault2A_S2_mat <- fault2A_mat %*% rot_and_scale3d(rot_angles = state2_angles,
+fault2A_S2_mat <- fault2A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 # scatterplot3d(fault2A_S2_mat)
 
 # State 3
-fault2A_S3_mat <- fault2A_mat %*% rot_and_scale3d(rot_angles = state3_angles,
+fault2A_S3_mat <- fault2A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 # scatterplot3d(fault2A_S3_mat)
 
@@ -318,12 +319,12 @@ fault2B_df <- normal_df %>%
 fault2B_mat <- fault2B_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault2B_S2_mat <- fault2B_mat %*% rot_and_scale3d(rot_angles = state2_angles,
+fault2B_S2_mat <- fault2B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 scatterplot3d(fault2B_S2_mat)
 
 # State 3
-fault2B_S3_mat <- fault2B_mat %*% rot_and_scale3d(rot_angles = state3_angles,
+fault2B_S3_mat <- fault2B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 scatterplot3d(fault2B_S3_mat)
 
@@ -369,12 +370,12 @@ fault3A_df <- normal_df %>%
 fault3A_mat <- fault3A_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault3A_S2_mat <- fault3A_mat %*% rot_and_scale3d(rot_angles = state2_angles,
+fault3A_S2_mat <- fault3A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 scatterplot3d(fault3A_S2_mat)
 
 # State 3
-fault3A_S3_mat <- fault3A_mat %*% rot_and_scale3d(rot_angles = state3_angles,
+fault3A_S3_mat <- fault3A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 scatterplot3d(fault3A_S3_mat)
 
@@ -420,12 +421,12 @@ fault3B_df <- normal_df %>%
 fault3B_mat <- fault3B_df %>% select(x,y,z) %>% as.matrix
 
 # State 2
-fault3B_S2_mat <- fault3B_mat %*% rot_and_scale3d(rot_angles = state2_angles,
+fault3B_S2_mat <- fault3B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
                                                   scale_factors = state2_scales)
 # scatterplot3d(fault3B_S2_mat)
 
 # State 3
-fault3B_S3_mat <- fault3B_mat %*% rot_and_scale3d(rot_angles = state3_angles,
+fault3B_S3_mat <- fault3B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
                                                   scale_factors = state3_scales)
 # scatterplot3d(fault3B_S3_mat)
 
@@ -563,4 +564,24 @@ Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # false alarm rates increased dramatically (0.19, 0.41), so we increased the 
 # number of training observations to 4320 (three days worth, up from 2880). The
 # false alarm rates dropped back, but not nearly as low (0.0031, 0.0884).
+
+## ----test_msad-pca-------------------------------------------------------
+# Create six observations with lags 0:2 included
+laggedTestObs <- faults_ls$normal[10073:10080, -1]
+laggedTestObs <- stats::lag(laggedTestObs, 0:-2)
+laggedTestObs <- cbind(faults_ls$normal[10073:10080, 1], laggedTestObs)
+laggedTestObs <- laggedTestObs[-(7:8),]
+testDataandFlags <- mvMonitoring::mspMonitor(observations = laggedTestObs[,-1],
+           labelVector = laggedTestObs[,1],
+           trainingSummary = results_ls$TrainingSpecs)
+testDataandFlags[6,]
+
+## ----test-warning--------------------------------------------------------
+# This line will test if the function can check the last line at all.
+mvMonitoring::mspWarning(testDataandFlags)
+
+# # These lines will test each line as if it was just received:
+# lapply(1:nrow(testDataandFlags), FUN = function(i){
+#   mvMonitoring::mspWarning(testDataandFlags[1:i,])
+# })
 
