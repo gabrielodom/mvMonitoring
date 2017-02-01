@@ -533,36 +533,57 @@ Implementation notes: turn all the data frames into `xts` objects for Kazor's fu
 library(xts)
 normal_switch_xts <- xts(normal_switch_df[,-1],
                          order.by = normal_switch_df[,1])
+# devtools::use_data(normal_switch_xts)
 
 # Fault 1A
 normal_w_fault1A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                               fault1A_switch_df[faultStart:omega,])
 fault1A_xts <- xts(normal_w_fault1A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault1A_xts)
 
 # Fault 1B
 normal_w_fault1B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault1B_switch_df[faultStart:omega,])
 fault1B_xts <- xts(normal_w_fault1B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault1B_xts)
 
 # Fault 2A
 normal_w_fault2A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault2A_switch_df[faultStart:omega,])
 fault2A_xts <- xts(normal_w_fault2A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault2A_xts)
 
 # Fault 2B
 normal_w_fault2B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault2B_switch_df[faultStart:omega,])
 fault2B_xts <- xts(normal_w_fault2B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault2B_xts)
 
 # Fault 3A
 normal_w_fault3A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault3A_switch_df[faultStart:omega,])
 fault3A_xts <- xts(normal_w_fault3A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault3A_xts)
 
 # Fault 3B
 normal_w_fault3B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault3B_switch_df[faultStart:omega,])
 fault3B_xts <- xts(normal_w_fault3B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault3B_xts)
+```
+
+Now we clean up the environment, and load the data we've saved.
+```{r sweepEnv}
+# # uncomment these lines to use the data from the package. Comment them out
+# # when generating new data.
+# rm(list = ls())
+# load("~/Documents/GitHub/mvMonitoring/data/normal_switch_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault1A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault1B_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault2A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault2B_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault3A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault3B_xts.rda")
 
 faults_ls <- list(normal = normal_switch_xts,
                   fault1A = fault1A_xts,
