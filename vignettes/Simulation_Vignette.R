@@ -1,5 +1,10 @@
 ## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
+# # To build the documentation PDF, use
+# # Mac
+# system("R CMD Rd2pdf /Users/gabrielodom/Documents/GitHub/mvMonitoring")
+# # PC - still hella buggy
+# system("R CMD Rd2pdf C:\Users\gabriel_odom\Documents\GitHub\mvMonitoring\mvMonitoring")
 
 ## ----t_vec_initialized---------------------------------------------------
 omega <- 60 * 24 * 7
@@ -564,24 +569,4 @@ Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # false alarm rates increased dramatically (0.19, 0.41), so we increased the 
 # number of training observations to 4320 (three days worth, up from 2880). The
 # false alarm rates dropped back, but not nearly as low (0.0031, 0.0884).
-
-## ----test_msad-pca-------------------------------------------------------
-# Create six observations with lags 0:2 included
-laggedTestObs <- faults_ls$normal[10073:10080, -1]
-laggedTestObs <- stats::lag(laggedTestObs, 0:-2)
-laggedTestObs <- cbind(faults_ls$normal[10073:10080, 1], laggedTestObs)
-laggedTestObs <- laggedTestObs[-(7:8),]
-testDataandFlags <- mvMonitoring::mspMonitor(observations = laggedTestObs[,-1],
-           labelVector = laggedTestObs[,1],
-           trainingSummary = results_ls$TrainingSpecs)
-testDataandFlags[6,]
-
-## ----test-warning--------------------------------------------------------
-# This line will test if the function can check the last line at all.
-mvMonitoring::mspWarning(testDataandFlags)
-
-# # These lines will test each line as if it was just received:
-# lapply(1:nrow(testDataandFlags), FUN = function(i){
-#   mvMonitoring::mspWarning(testDataandFlags[1:i,])
-# })
 
