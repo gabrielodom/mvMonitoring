@@ -23,7 +23,19 @@ knitr::opts_chunk$set(echo = TRUE)
 We create this package, `mvMonitor`, from the foundation laid by Kazor et al (2016). The `mvMonitor` package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.
 
 ### The Interval Vector
-We begin by simulating an autocorrelated interval-step vector $t$, where the autocorrelated errors of $t$ have initial value $\epsilon_1 \sim \mathcal{U}_{[a,b]}$, where $a = 0.01$ and $b = 2$. This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations) and autocorrelation component $\phi = 0.75$.
+We begin by simulating an autocorrelated interval-step vector $t$. This vector $t$ has induced autocorrelation in its errors, $\varepsilon$, where these autocorrelated errors have initial values and independent components given by
+\[
+\varepsilon \sim \mathcal{N}\left(\frac{1}{2}(a + b)(1 - \phi), \frac{b - a}{12} (1 - \phi ^ 2)\right),
+\]
+where $\epsilon_1$ is a random draw from this distribution, $a = 0.01$, $b = 2$, and the autocorrelation component $\phi = 0.75$. The mean and variance multipliers are the mean and variance of a random variable from the $\mathcal{U}_{[a,b]}$ distribution. The full autocorrelated error structure is then
+\[
+\epsilon_s = \phi\epsilon_{s - 1} + (1 - \phi)\varepsilon.
+\]
+This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ with $t^*_1 = -\cos\left(\frac{2\pi}{\omega}\right) + \epsilon_1$, and
+\[
+t^*_s = -\cos\left(\frac{2\pi}{\omega}\right) + \phi\epsilon_{s - 1} + (1 - \phi)\epsilon_s.
+\]
+The final $t$ vector is the $t^*$ vector scaled to lie entirely in $[a,b]$.
 ```{r t_vec_initialized}
 omega <- 60 * 24 * 7
 phi <- 0.75
