@@ -15,6 +15,9 @@
 #' of how these angles behave in scatterplot3d functionality (from package
 #' scatterplot3d).
 #'
+#' This function is used only in data generation of the package vignette. This
+#' function calls rotate3D().
+#'
 #' @export
 #'
 #' @examples
@@ -29,5 +32,5 @@ rotateScale3D <- function(rot_angles = c(0,0,0),
   scale_factors <- unlist(scale_factors)
   V <- diag(scale_factors, nrow = 3, ncol = 3)
 
-  rotate_3D(yaw, pitch, roll) %*% V
+  rotate3D(yaw, pitch, roll) %*% V
 }

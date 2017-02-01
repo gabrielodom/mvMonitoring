@@ -12,7 +12,8 @@ processMonitor(data, trainObs, updateFreq = ceiling(0.2 * trainObs),
 
 \item{trainObs}{How many train observations will be used}
 
-\item{updateFreq}{How many non-flagged rows to collect before we update}
+\item{updateFreq}{How many non-flagged rows to collect before the function
+updates}
 
 \item{faultsToTriggerAlarm}{the number of sequential faults needed to
 trigger an alarm}
@@ -20,24 +21,27 @@ trigger an alarm}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list of the following components: FaultChecks - a class specific
-xts data matrix containing the SPE monitoring statistic and logical flagging
-indicator, the Hotelling's T2 monitoring statitisic and logical flagging
-indicator, and the Alarm indicator; Non_Alarmed_Obs - a class specific xts
-data matrix of all the non-Alarmed observations; Alarms - and a class
-specific xts data matrix of the features and specific alarms for Alarmed
-observations, where the alarm code is as follows: 0 = no alarm, 1 =
-Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms; trainSpecs - a
-list of: a vector of critical values from the SPE and T2 densities from the
-1 - alpha quantile (see threshold()), and the class-specific projection
-matrix.
+A list of the following components: FaultChecks = a class specific
+xts data matrix containing the SPE monitoring statistic and corresponding
+logical flagging indicator, the Hotelling's T2 monitoring statitisic and
+corresponding logical flagging indicator, and the Alarm indicator.
+Non_Alarmed_Obs = a class specific xts data matrix of all the observations
+with alarm states equal to 0. Alarms = a class-specific xts data matrix of
+the features and specific alarms for Alarmed observations, where the alarm
+code is as follows: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared
+Prediction Error alarm, and 3 = both alarms. trainSpecs = the threshold
+object returned by the internal threshold() function. See this function's
+help file for more details.
 }
 \description{
 Apply Adaptive-Dynamic PCA to state-specific data matrices.
 }
 \details{
-This function is the class-specific implementation of the Adaptive
-PCA described in the details of the mspTrain function. See that function for
-further details.
+This function is the class-specific implementation of the Adaptive-
+Dynamic PCA described in the details of the mspTrain function. See that
+function's help file for further details.
+
+This internal function is called by mspTrain(). This function calls the
+faultFilter() function.
 }
 

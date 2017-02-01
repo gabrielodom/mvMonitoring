@@ -25,5 +25,8 @@ decrement feature scales.
 See the function commentary of "rotate_3D" for a brief explination
 of how these angles behave in scatterplot3d functionality (from package
 scatterplot3d).
+
+This function is used only in data generation of the package vignette. This
+function calls rotate3D().
 }
 

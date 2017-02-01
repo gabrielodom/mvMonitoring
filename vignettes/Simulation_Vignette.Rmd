@@ -12,7 +12,10 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 # # To build the documentation PDF, use
+# # Mac
 # system("R CMD Rd2pdf /Users/gabrielodom/Documents/GitHub/mvMonitoring")
+# # PC - still hella buggy
+# system("R CMD Rd2pdf C:\Users\gabriel_odom\Documents\GitHub\mvMonitoring\mvMonitoring")
 ```
 
 ## Multi-State Adaptive-Dynamic PCA Simulation

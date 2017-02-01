@@ -29,17 +29,17 @@ trigger an alarm}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list of the following components: FaultChecks - an xts data matrix
-containing the SPE monitoring statistic and logical flagging indicator, the
-Hotelling's T2 monitoring statitisic and logical flagging indicator, and the
-Alarm indicator; Non_Alarmed_Obs - an xts data matrix of all the non-Alarmed
-observations; Alarms - and an xts data matrix of the features and specific
-alarms for Alarmed observations, where the alarm code is as follows: 0 = no
-alarm, 1 = Hotelling's T2 alarm, 2 = SPE alarm, and 3 = both alarms:
-TrainingSpecs - a list of k lists (one for each class) containing: a vector
-of class-specific critical values from the SPE and T2 densities from the 1 -
-alpha quantile (see the internal threshold() function), and the class-
-specific projection matrix.
+A list of the following components: FaultChecks = an xts data matrix
+containing the SPE monitoring statistic and corresponding logical flagging
+indicator, the Hotelling's T2 monitoring statitisic and corresponding logical
+flagging indicator, and the Alarm indicator. Non_Alarmed_Obs = an xts data
+matrix of all the non-Alarmed observations. Alarms = and an xts data matrix
+of the features and specific alarms for Alarmed observations, where the alarm
+code is as follows: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared
+Prediction Error alarm, and 3 = both alarms. TrainingSpecs = a list of k
+lists, one for each class, with each list containing the specific threshold
+object returned by the internal threshold() function for that class. See this
+function's help file for more details.
 }
 \description{
 This function performs Multi-State Adaptive-Dynamic PCA on a
@@ -50,20 +50,25 @@ This function is designed to identify and sort out sequences of
 observations which fall outside normal operating conditions. We assume that
 the process data are time-dependent in both seasonal and non-stationary
 effects (which necessitate the Adaptive and Dynamic components, respectively).
-We further assume that this process data is drawn from a process under
+We further assume that this data is drawn from a multivariate process under
 multiple mutually exclusive states, implying that the linear dimension
 reduction projection matrices may be different for each state. Therefore, in
-summary, this function splits the data by classes, lags the features to
-account for correlation between sequential observations, and re-estimates
+summary, this function lags the features to account for correlation between
+sequential observations, splits the data by classes, and re-estimates
 projection matrices on a rolling window to account for seasonality. Further,
 this function uses non-parametric density estimation to calculate the 1 -
 alpha quantiles of the SPE and Hotelling's T2 statistics from a set of
 training observations, then flags any observation in the testing data set
-with statistics beyond these calculated critical values. Becuase of natural
-variablity inherent in all real data, we do not remove observations simply
-because they are have been flagged. This function records an alarm only for
-observations having three (as set by the default argument value of
-"faultsToTriggerAlarm") flags in a row. These alarm-positive observations
-are then removed from the data set.
+with process monitoring statistics beyond these calculated critical values.
+Becuase of natural variablity inherent in all real data, we do not remove
+observations simply because they are have been flagged as outside normal
+operating conditions. This function records an alarm only for observations
+having three flags in a row, as set by the default argument value of
+"faultsToTriggerAlarm". These alarm-positive observations are then removed
+from the data set and held in a separate xts matrix for inspection.
+
+This user-facing function calls the processMonitor() function, and returns
+the training arguments necessary to call the mspMonitor() and mspWarning()
+functions.
 }
 

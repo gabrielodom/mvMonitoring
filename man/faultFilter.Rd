@@ -2,17 +2,17 @@
 % Please edit documentation in R/faultFilter.R
 \name{faultFilter}
 \alias{faultFilter}
-\title{Fault Filtering}
+\title{Process Fault Filtering}
 \usage{
 faultFilter(trainData, testData, updateFreq, faultsToTriggerAlarm, ...)
 }
 \arguments{
-\item{trainData}{An xts data matrix of initial training observations. This
-will be updated by a rolling window}
+\item{trainData}{An xts data matrix of initial training observations}
 
-\item{testData}{The rest of the data, also updated by a rolling window}
+\item{testData}{The data not included in the training data set}
 
-\item{updateFreq}{How many observations wide is the rolling window?}
+\item{updateFreq}{How many observations from the test data matrix will be
+returned to update the training data matrix and move it forward?}
 
 \item{faultsToTriggerAlarm}{Specifies how many sequential faults will cause
 an alarm to trigger. Defaults to 3.}
@@ -20,23 +20,30 @@ an alarm to trigger. Defaults to 3.}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list of class "fault_ls" with the following: faultObj - an xts
-flag matrix with the same number of rows as "testData". This flag matrix has
-these columns - the SPE test statistic for each observation in "testData",
-an SPE indicator recording 0 if the test statistic is less than or equal to
-the critical value (from the threshold object), a T2 test statistic, a
-similar T2 indicator, and a final column indicating if there have been three
-flags in a row for either the SPE or T2 monitoring statistics or both;
-nonAlarmedTestObs - an xts matrix of all the rows of the training data which
-were not alarmed; trainSpecs - a list of: a vector of critical values from
-the SPE and T2 densities from the 1 - alpha quantile (see threshold()), and
-the class-specific projection matrix.
+A list of class "fault_ls" with the following: faultObj = an xts
+flagging matrix with the same number of rows as "testData". This flag matrix
+has the following five columns: the SPE test statistic for each observation
+in "testData", an SPE indicator recording 0 if the test statistic is less
+than or equal to the critical value passed through from the threshold object,
+a T2 test statistic, a similar T2 indicator, and a final column indicating
+if there have been three flags in a row for either the SPE or T2 monitoring
+statistics or both. nonAlarmedTestObs = an xts matrix of all the rows of the
+training data which were not alarmed. trainSpecs = the threshold object
+returned by the internal threshold() function. See this function's help file
+for more details.
 }
 \description{
-Flag and filter out observations beyond normal parameters
+Flag and filter out observations beyond normal parameters,
+then return the observations within normal operating conditions.
 }
 \details{
-This function calls all the other internal functions: faultDetect(),
-threshold(), and pca().
+This function is essentially a wrapper function to call and organize
+the output from these other internal functions: faultDetect(), threshold(),
+and pca(). It is applied over a rolling window, with observation width equal
+to updateFreq, of the larger full data matrix via the processMonitor()
+function, wherein the testing and training data sets move forward in time
+across the entire data matrix.
+
+This internal function is called by processMonitor().
 }
 

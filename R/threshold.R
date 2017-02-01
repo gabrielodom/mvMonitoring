@@ -1,7 +1,7 @@
 #' Non-parametric Threshold Estimation
 #'
 #' @description Calculate the non-parametric critical value estimates for the
-#' SPE and T2 monitoring test statistics
+#' SPE and T2 monitoring test statistics.
 #'
 #' @param pca_object A list with class "pca" from the internal pca() function
 #' @param alpha The upper 1 - alpha quantile of the SPE and T2 densities from
@@ -9,19 +9,23 @@
 #' @param ... Lazy dots for additional internal arguments
 #'
 #' @return A list with classes "threshold" and "pca" containing: SPE_threshold
-#' - the 1 - alpha quantile of the SPE density; T2_threshold - the 1 - alpha
-#' quantile of the T2 density; projectionMatrix - a projection matrix from the
-#' data feature space to the feature subspace which preserves some specified
-#' proprtion of the energy of the data scatter matrix (this is the "var.amnt"
-#' argument in the pca() function); and LambdaInv - a diagonal matrix of the
-#' reciprocal eigenvalues of the data scatter matrix.
+#' = the 1 - alpha quantile of the SPE density. T2_threshold = the 1 - alpha
+#' quantile of the Hotelling's T2 density. projectionMatrix = a projection
+#' matrix from the data feature space to the feature subspace which preserves
+#' some specified proportion of the energy of the data scatter matrix. This
+#' specified energy proportion is user specified through the var.amnt argument
+#' in the pca() function. LambdaInv = a diagonal matrix of the reciprocal
+#' eigenvalues of the data scatter matrix.
 #'
-#' @details This function takes in a pca object returned by the pca.R function
-#' and a threshold level defaulting to 0.001% of the observations (set this low
-#' to reduce false alarms, as described in Kazor et al (2016)). The function
-#' returns a calculated SPE threshold corresponding to the 1 - alpha critical
-#' value, a similar T2 threshold, and the projection and Lambda Inverse (1 /
-#' eigenvalues) matrices passed through from the pca.R function call.
+#' @details This function takes in a pca object returned by the pca() function
+#' and a threshold level defaulting to 0.1% of the observations. The critical
+#' quantile is set this low to reduce false alarms, as described in Kazor et al
+#' (2016). The function then returns a calculated SPE threshold corresponding
+#' to the 1 - alpha critical value, a similar T2 threshold, and the projection
+#' and Lambda Inverse (1 / eigenvalues) matrices passed through from the pca()
+#' function call.
+#'
+#' This internal function is called by faultFilter().
 #'
 #' @export
 #'

@@ -7,8 +7,9 @@
 mspMonitor(observations, labelVector, trainingSummary, ...)
 }
 \arguments{
-\item{observations}{an n * p xts matrix. For real-time monitoring via batch
-file, n = 1, so this must be a matrix of a single row.}
+\item{observations}{an n * p xts matrix. For real-time monitoring via a
+script within a batch file, n = 1, so this must be a matrix of a single
+row.}
 
 \item{labelVector}{an n * 1 integer vector of class memberships}
 
@@ -19,24 +20,30 @@ as well the projection matrix.}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-an n * (p + 5) xts matrix, where the columns (p + 1):(p + 5) are the
+An n * (p + 5) xts matrix, where the last five columns are the
 monitoring statistics and corresponding fault flags, and an empty alarm
 column
 }
 \description{
 Monitor and flag (if necessary) incoming multivariate process
-observations
+observations.
 }
 \details{
 This function is designed to be ran at specific time intervals
 (every 10 seconds, 30 seconds, 1 minute, 5 minutes, 10 minutes, etc), from a
-batch file which calls this function and mspWarning(). This function takes
-in the specific observations to monitor and their class memberships (if any)
-and returns an xts matrix of these observations concatenated with their flag
-status and an empty alarm column. Users should then append these rows onto
-the existing daily observations matrix. The mspWarning() function will then
-take in the daily observation xts matrix with rows returned by this function
-and check the monitoring statistic flag indicators to see if an alarm status
-has been reached. For further details, see the mspWarning() function.
+batch file hosted script which calls this function and mspWarning(). This
+function takes in the specific observations to monitor and their class
+memberships (if any) and returns an xts matrix of these observations column
+concatenated with their monitoring statistic values, flag statuses, and an
+empty alarm column. Users should then append these rows onto a previously
+existing daily observations matrix. The mspWarning() function will then take
+in the daily observation xts matrix with updated rows returned by this
+function and check the monitoring statistic flag indicators to see if an
+alarm status has been reached. For further details, see the mspWarning()
+function.
+
+This function calls the faultDetect() function, and requires the training
+information returned by the mspTrain function. This function will return
+the xts matrix necessary for the mspWarning() function.
 }
 

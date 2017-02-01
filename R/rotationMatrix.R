@@ -16,10 +16,13 @@
 #' is such that the pitch action appears as a roll while the roll action appears
 #' as a pitch.
 #'
+#' This function is used only in data generation of the package vignette. This
+#' function is called by rotateScale3D().
+#'
 #' @export
 #'
 #' @examples
-rotate_3D <- function(yaw, pitch, roll){
+rotate3D <- function(yaw, pitch, roll){
 
   thetaX <- roll * pi / 180
   thetaY <- pitch * pi / 180
