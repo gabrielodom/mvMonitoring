@@ -29,4 +29,11 @@ scatterplot3d).
 This function is used only in data generation of the package vignette. This
 function calls rotate3D().
 }
+\examples{
+data("normal_switch_xts")
+angles <- list(yaw = -10, pitch = 0, roll = 15)
+featureScales <- c(0.2, 1, 5)
+normal_switch_xts[,-1] \%*\% rotateScale3D(rot_angles = angles,
+                                         scale_factors = featureScales)
+}
 

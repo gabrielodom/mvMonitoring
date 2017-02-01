@@ -10,7 +10,7 @@ Description: Use multi-state splitting to apply Adaptive-Dynamic PCA to data
   Employ PCA-based dimension reduction to extract linear combinations of 
   relevant features, reducing computational burdens.
 License: What license is it under?
-Depends: BMS, lazyeval, zoo, xts, utils
+Imports: BMS, lazyeval, zoo, xts, utils
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
