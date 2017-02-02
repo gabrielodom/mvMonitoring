@@ -686,10 +686,12 @@ testDataandFlags[6,]
 ## Test the Warning function
 ```{r test-warning}
 # This line will test if the function can check the last line at all.
-mvMonitoring::mspWarning(testDataandFlags)
+mvMonitoring::mspWarning(testDataandFlags[1,])
 
-# # These lines will test each line as if it was just received:
-# lapply(1:nrow(testDataandFlags), FUN = function(i){
-#   mvMonitoring::mspWarning(testDataandFlags[1:i,])
-# })
+# These lines will test each line as if it was just received:
+alarmData <- testDataandFlags
+for(i in 1:nrow(testDataandFlags)){
+  alarmData[1:i,] <- mvMonitoring::mspWarning(alarmData[1:i,])
+}
+alarmData
 ```

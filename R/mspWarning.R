@@ -26,9 +26,35 @@
 #'
 #' @export
 #'
-#'
 #' @examples
-mspWarning <- function(mspMonitor_object, faultsToTriggerAlarm = 3){
+#' data("normal_switch_xts")
+#' # The state values are recorded in the first column.
+#' n <- nrow(normal_switch_xts)
+#' nTrainObs <- floor(0.4 * n)
+#'
+#' # Calculate the training summary, but save five observations for monitoring.
+#' trainResults_ls <- mspTrain(data = normal_switch_xts[1:(n - 5), -1],
+#'                             labelVector = normal_switch_xts[1:(n - 5), 1],
+#'                             trainObs = nTrainObs,
+#'                             lagsIncluded = 1)
+#'
+#' # While training, we included 1 lag (the default), so we will also lag the
+#' # observations we will test.
+#' testObs <- normal_switch_xts[(n - 6):n, -1]
+#' testObs <- stats::lag(testObs, 0:1)
+#' testObs <- testObs[-1, ]
+#' testObs <- cbind(normal_switch_xts[(n - 5):n, 1], testObs)
+#'
+#' # Run the monitoring function.
+#' dataAndFlags <- mspMonitor(observations = testObs[, -1],
+#'                            labelVector = testObs[, 1],
+#'                            trainingSummary = trainResults_ls$TrainingSpecs)
+#'
+#' # Alarm check the last row of the matrix returned by the mspMonitor function
+#' mspWarning(dataAndFlags)
+mspWarning <- function(mspMonitor_object,
+                       faultsToTriggerAlarm = 3){
+
   data_xts <- mspMonitor_object
   n <- nrow(data_xts)
 
