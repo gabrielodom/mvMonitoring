@@ -5,7 +5,8 @@
 #'
 #' @param observations an n * p xts matrix. For real-time monitoring via a
 #' script within a batch file, n = 1, so this must be a matrix of a single
-#' row.
+#' row. If lags were included at the training step, then these observations
+#' will also have lagged features.
 #' @param labelVector an n * 1 integer vector of class memberships
 #' @param trainingSummary the TrainingSpecs list returned by the mspTrain()
 #' function. This list contains --for each class-- the SPE and T2 thresholds,
@@ -36,6 +37,27 @@
 #' @export
 #'
 #' @examples
+#' data("normal_switch_xts")
+#' # The state values are recorded in the first column.
+#' n <- nrow(normal_switch_xts)
+#' nTrainObs <- floor(0.4 * n)
+#'
+#' # Calculate the training summary, but save five observations for monitoring.
+#' trainResults_ls <- mspTrain(data = normal_switch_xts[1:(n - 5), -1],
+#'                             labelVector = normal_switch_xts[1:(n - 5), 1],
+#'                             trainObs = nTrainObs,
+#'                             lagsIncluded = 1)
+#'
+#' # While training, we included 1 lag (the default), so we will also lag the
+#' # observations we will test.
+#' testObs <- normal_switch_xts[(n - 6):n, -1]
+#' testObs <- stats::lag(testObs, 0:1)
+#' testObs <- testObs[-1, ]
+#' testObs <- cbind(normal_switch_xts[(n - 5):n, 1], testObs)
+#'
+#' mspMonitor(observations = testObs[, -1],
+#'            labelVector = testObs[, 1],
+#'            trainingSummary = trainResults_ls$TrainingSpecs)
 mspMonitor <- function(observations,
                        labelVector,
                        trainingSummary,

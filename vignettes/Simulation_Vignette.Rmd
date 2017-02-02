@@ -674,9 +674,9 @@ Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 ```{r test_msad-pca}
 # Create six observations with lags 0:2 included
 laggedTestObs <- faults_ls$normal[10073:10080, -1]
-laggedTestObs <- stats::lag(laggedTestObs, 0:-2)
+laggedTestObs <- stats::lag(laggedTestObs, 0:2)
 laggedTestObs <- cbind(faults_ls$normal[10073:10080, 1], laggedTestObs)
-laggedTestObs <- laggedTestObs[-(7:8),]
+laggedTestObs <- laggedTestObs[-(1:2),]
 testDataandFlags <- mvMonitoring::mspMonitor(observations = laggedTestObs[,-1],
            labelVector = laggedTestObs[,1],
            trainingSummary = results_ls$TrainingSpecs)
