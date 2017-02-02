@@ -4,12 +4,12 @@
 \name{fault2A_xts}
 \alias{fault2A_xts}
 \title{Process Data under a System Drift Fault}
-\format{An xts data matrix with 10080 rows, corresponding to one week worth
-of data recorded at a 1-minute interval. The columns under normal conditions
-are defined in the help file for normal_switch_xts. The fault is a drift on
-each feature by s / 10 ^ 3, where s is the observation index. The fault
-starts at row 8500, and the four columns under the fault state are defined
-here:
+\format{An xts data matrix with 10080 rows and four columns, corresponding to
+  one week worth of data recorded at a 1-minute interval. The columns under
+  normal conditions are defined in the help file for normal_switch_xts. The
+  fault is a drift on each feature by s / 10 ^ 3, where s is the observation
+  index. The fault starts at row 8500, and the four columns under the fault
+  state are defined here:
 \describe{
   \item{state}{the state indicator for the multivariate system, with three
   levels}
@@ -35,9 +35,9 @@ Simluated in R.
 fault2A_xts
 }
 \description{
-Three-feature, three-state process data including observations
-under normal operating conditions and observations after a positive drift in
-values for each feature in the system.
+Three-feature, three-state simulated process data including
+  observations under normal operating conditions and observations after a
+  positive drift in values for each feature in the system.
 }
 \keyword{datasets}
 

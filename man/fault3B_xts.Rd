@@ -4,18 +4,18 @@
 \name{fault3B_xts}
 \alias{fault3B_xts}
 \title{Process Data under a Feature Signal Dampening}
-\format{An xts data matrix with 10080 rows, corresponding to one week worth
-of data recorded at a 1-minute interval. The columns under normal conditions
-are defined in the help file for normal_switch_xts. The fault is a signal
-dampening in the underlying determining t vector for the "z" feature. The
-fault starts at row 8500, and the four columns under the fault state are
-defined here:
+\format{An xts data matrix with 10080 rows and four columns, corresponding to
+  one week worth of data recorded at a 1-minute interval. The columns under
+  normal conditions are defined in the help file for normal_switch_xts. The
+  fault is a signal dampening in the underlying determining t vector for the
+  "z" feature. The fault starts at row 8500, and the four columns under the
+  fault state are defined here:
 \describe{
   \item{state}{the state indicator for the multivariate system, with three
   levels}
   \item{x}{x(t) = t + error}
   \item{y}{y(t) = t ^ 2 - 3t + error}
-  \item{z}{z(t) = - (t_*) ^ 3 + 3(t_*) ^ 2 + error}
+  \item{z}{z(t_*) = - (t_*) ^ 3 + 3(t_*) ^ 2 + error}
 }
 where t_* = log|t|, and t is a 10080-entry vector of autocorrelated and non-
 stationary hidden process realizations. The states alternate each hour and
@@ -35,9 +35,9 @@ Simluated in R.
 fault3B_xts
 }
 \description{
-Three-feature, three-state process data including observations
-under normal operating conditions and observations after a dampening of one
-of the underlying features in the system.
+Three-feature, three-state simulated process data including
+  observations under normal operating conditions and observations after a
+  dampening of one of the underlying features in the system.
 }
 \keyword{datasets}
 

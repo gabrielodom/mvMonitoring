@@ -1,9 +1,9 @@
 Package: mvMonitoring
 Type: Package
-Title: Multi-State Adaptive Dynamic Principle Components Analysis for
+Title: Multi-State Adaptive Dynamic Principle Component Analysis for
   Multivariate Process Monitoring
 Version: 0.1.0
-Author: Gabriel Odom, Ben Barnard, and Karen Kazor
+Author: Gabriel Odom, Ben Barnard, Karen Kazor, and Amanda Hering
 Maintainer: Gabriel Odom <gabriel_odom@baylor.edu>
 Description: Use multi-state splitting to apply Adaptive-Dynamic PCA to data
   generated from a continuous-time multivariate industrial or natural process. 

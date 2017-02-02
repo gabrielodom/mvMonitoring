@@ -1,14 +1,14 @@
 #'  Process Data under a Feature Shift Fault
 #'
-#' @description Three-feature, three-state process data including observations
-#' under normal operating conditions and observations after a positive shift in
-#' values for one feature.
+#' @description Three-feature, three-state simulated process data including
+#'   observations under normal operating conditions and observations after a
+#'   positive shift in values for one feature.
 #'
-#' @format An xts data matrix with 10080 rows, corresponding to one week worth
-#' of data recorded at a 1-minute interval. The columns under normal conditions
-#' are defined in the help file for normal_switch_xts. The fault is a system
-#' shock to the "x" feature only by 2. The fault starts at row 8500, and the
-#' four columns under the fault state are defined here:
+#' @format An xts data matrix with 10080 rows and four columns, corresponding to
+#'   one week worth of data recorded at a 1-minute interval. The columns under
+#'   normal conditions are defined in the help file for normal_switch_xts. The
+#'   fault is a system shock to the "x" feature only by 2. The fault starts at
+#'   row 8500, and the four columns under the fault state are defined here:
 #' \describe{
 #'   \item{state}{the state indicator for the multivariate system, with three
 #'   levels}
