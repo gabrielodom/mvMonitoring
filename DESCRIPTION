@@ -9,7 +9,7 @@ Description: Use multi-state splitting to apply Adaptive-Dynamic PCA to data
   generated from a continuous-time multivariate industrial or natural process. 
   Employ PCA-based dimension reduction to extract linear combinations of 
   relevant features, reducing computational burdens.
-License: What license is it under?
+License: file LICENSE
 Depends: BMS, lazyeval, zoo, xts, utils
 Imports: BMS, lazyeval, zoo, xts, utils
 Depends: R (>= 2.10)
