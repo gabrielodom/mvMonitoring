@@ -75,7 +75,7 @@
 #'
 #' @examples
 #' data("normal_switch_xts")
-#' nTrainObs <- floor(0.2 * nrow(normal_switch_xts))
+#' nTrainObs <- floor(0.4 * nrow(normal_switch_xts))
 #' # The state values are recorded in the first column.
 #'
 #' mspTrain(data = normal_switch_xts[, -1],

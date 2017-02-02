@@ -48,7 +48,7 @@ faultFilter() function.
 data("normal_switch_xts")
 # Select the data under state 1
 data <- normal_switch_xts[normal_switch_xts[,1] == 1]
-nTrainObs <- floor(0.2 * nrow(data))
+nTrainObs <- floor(0.4 * nrow(data))
 
 # Remove the now unnecesary state column
 featureCols <- data[,-1]
