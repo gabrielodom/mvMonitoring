@@ -11,8 +11,8 @@ faultFilter(trainData, testData, updateFreq, faultsToTriggerAlarm = 3, ...)
 
 \item{testData}{The data not included in the training data set}
 
-\item{updateFreq}{How many observations from the test data matrix will be
-returned to update the training data matrix and move it forward?}
+\item{updateFreq}{The number of observations from the test data matrix that
+must be returned to update the training data matrix and move it forward.}
 
 \item{faultsToTriggerAlarm}{Specifies how many sequential faults will cause
 an alarm to trigger. Defaults to 3.}
@@ -20,29 +20,45 @@ an alarm to trigger. Defaults to 3.}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list of class "fault_ls" with the following: faultObj = an xts
-flagging matrix with the same number of rows as "testData". This flag matrix
-has the following five columns: the SPE test statistic for each observation
-in "testData", an SPE indicator recording 0 if the test statistic is less
-than or equal to the critical value passed through from the threshold object,
-a T2 test statistic, a similar T2 indicator, and a final column indicating
-if there have been three flags in a row for either the SPE or T2 monitoring
-statistics or both. nonAlarmedTestObs = an xts matrix of the first updateFreq
-number of rows of the training data which were not alarmed. trainSpecs = the
-threshold object returned by the internal threshold() function. See this
-function's help file for more details.
+A list of class "fault_ls" with the following:
+  \itemize{
+    \item{faultObj -- }{an xts flagging matrix with the same number of rows as
+      "testData". This flag matrix has the following five columns:
+        \itemize{
+          \item{SPE -- }{the SPE statistic value for each observation in
+            "testData"}
+          \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the
+            test statistic is less than or equal to the critical value
+            passed through from the threshold object}
+          \item{T2 -- }{the T2 statistic value for each observation in
+            "testData"}
+          \item{T2_Flag -- }{a vector of T2 fault indicators, defined like
+            SPE_Flag}
+          \item{Alarm -- }{a column indicating if there have been three flags
+            in a row for either the SPE or T2 monitoring statistics or both.
+            Alarm states are as follows: 0 = no alarm, 1 = Hotelling's T2
+            alarm, 2 = Squared Prediction Error alarm, and 3 = both alarms.}
+        }
+      }
+    \item{nonAlarmedTestObs -- }{an xts matrix of the first updateFreq number
+      of rows of the training data which were not alarmed}
+    \item{trainSpecs -- }{the threshold object returned by the internal
+      threshold() function. See the threshold() function's help file for more
+      details.}
+  }
 }
 \description{
-Flag and filter out observations beyond normal parameters,
-then return the observations within normal operating conditions.
+Flag and filter out observations beyond normal operating
+  conditions, then return the observations within normal operating
+  conditions.
 }
 \details{
 This function is essentially a wrapper function to call and organize
-the output from these other internal functions: faultDetect(), threshold(),
-and pca(). It is applied over a rolling window, with observation width equal
-to updateFreq, of the larger full data matrix via the processMonitor()
-function, wherein the testing and training data sets move forward in time
-across the entire data matrix.
+  the output from these other internal functions: faultDetect(), threshold(),
+  and pca(). It is applied over a rolling window, with observation width
+  equal to updateFreq, of the larger full data matrix via the
+  processMonitor() function, wherein the testing and training data sets move
+  forward in time across the entire data matrix.
 
 This internal function is called by processMonitor().
 }

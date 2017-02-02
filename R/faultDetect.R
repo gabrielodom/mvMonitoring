@@ -1,28 +1,39 @@
 #' Process Fault Detection
 #'
 #' @description Detect if a single multivariate observation is beyond normal
-#' parameters.
+#'   operating conditions.
 #'
 #' @param threshold_object An object of classes "threshold" and "pca" returned
-#' by the internal threshold() function.
-#' @param observation A single row of an xts data matrix to compare against the
-#' thresholds
+#'   by the internal threshold() function.
+#' @param observation A single row of an xts data matrix (a 1 x p matrix) to
+#'   compare against the thresholds
 #' @param ... Lazy dots for additional internal arguments
 #'
-#' @return A named 1 * 4 matrix of the SPE statistic value ("SPE"),
-#' SPE fault indicator ("SPE_Flag"), T2 statistic value ("T2"), and T2 fault
-#' indicator for the single row observation passed to this function ("T2_Flag").
+#' @return A named 1 x 4 matrix with the following entries for the single row
+#'   observation passed to this function:
+#'   \itemize{
+#'     \item{SPE -- }{the SPE statistic value}
+#'     \item{SPE_Flag -- }{the SPE fault indicator, where 1 represents a flag and
+#'       0 marks that the observation is within the normal operating conditions}
+#'     \item{T2 -- }{the T2 statistic value}
+#'     \item{T2_Flag -- }{the T2 fault indicator, defined the same as SPE_Flag}
+#'   }
 #'
 #' @details This function takes in a threshold object returned by the
-#' threshold() function and a single observation as a matrix or xts row. The
-#' function then returns a row vector of the SPE test statistics, a logical
-#' indicator marking if this statistic is beyond the threshold, the Hotelling's
-#' T2 statistic, and an indicator if this statistic is beyond the threshold.
-#' Observations with monitoring statistics beyond the calculated threshold are
-#' marked with a 1, while within-parameter observations are marked with a 0.
-#' These threshold values are passed from the threshold() function through this
-#' function via a returned threshold object. This object will be used in higher
-#' function calls.
+#'   threshold() function and a single observation as a matrix or xts row.
+#'   Internally, the function multiplies the observation by the projection
+#'   matrix returned within the threshold object, calculates the SPE and T2
+#'   process monitoring statistics for that observation, and compares these
+#'   statistics against their corresponding threshold values to determine if the
+#'   observation lies outside the expected boundaries. The function then returns
+#'   a row vector of the SPE test statistic, a logical indicator marking if this
+#'   statistic is beyond the threshold, the Hotelling's T2 statistic, and an
+#'   indicator if this statistic is beyond the threshold. Observations with
+#'   monitoring statistics beyond the calculated threshold are marked with a 1,
+#'   while observations within normal operating conditions are marked with a 0.
+#'   These threshold values are passed from the threshold() function through
+#'   this function via a returned threshold object. This object will be used in
+#'   higher function calls.
 #'
 #' This internal function is called by faultFilter().
 #'
@@ -35,8 +46,9 @@
 #' thresh_obj <- threshold(pca_object = pca_obj, alpha = 0.05)
 #'
 #' # Check a single observation. We see this observation is within the normal
-#' # operating parameters at alpha = 0.05.
+#' # operating conditions at alpha = 0.05.
 #' faultDetect(threshold_object = thresh_obj, observation = scaledData[1,])
+#'
 #' # According to the Squared Prediction Error statistic, this observation is
 #' # outside the range of "normal" operation at the 0.05 level.
 #' faultDetect(threshold_object = thresh_obj, observation = scaledData[20,])
