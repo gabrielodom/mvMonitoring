@@ -4,7 +4,7 @@
 \alias{faultFilter}
 \title{Process Fault Filtering}
 \usage{
-faultFilter(trainData, testData, updateFreq, faultsToTriggerAlarm, ...)
+faultFilter(trainData, testData, updateFreq, faultsToTriggerAlarm = 3, ...)
 }
 \arguments{
 \item{trainData}{An xts data matrix of initial training observations}
@@ -27,10 +27,10 @@ in "testData", an SPE indicator recording 0 if the test statistic is less
 than or equal to the critical value passed through from the threshold object,
 a T2 test statistic, a similar T2 indicator, and a final column indicating
 if there have been three flags in a row for either the SPE or T2 monitoring
-statistics or both. nonAlarmedTestObs = an xts matrix of all the rows of the
-training data which were not alarmed. trainSpecs = the threshold object
-returned by the internal threshold() function. See this function's help file
-for more details.
+statistics or both. nonAlarmedTestObs = an xts matrix of the first updateFreq
+number of rows of the training data which were not alarmed. trainSpecs = the
+threshold object returned by the internal threshold() function. See this
+function's help file for more details.
 }
 \description{
 Flag and filter out observations beyond normal parameters,
@@ -45,5 +45,20 @@ function, wherein the testing and training data sets move forward in time
 across the entire data matrix.
 
 This internal function is called by processMonitor().
+}
+\examples{
+data("normal_switch_xts")
+# Select the data under state 1
+data <- normal_switch_xts[normal_switch_xts[,1] == 1]
+
+# Split the data into testing and training data sets
+nTrainObs <- floor(0.2 * nrow(data))
+nUpdate <- floor(0.5 * nTrainObs)
+trainObs <- data[1:nTrainObs, -1]
+testObs <- data[(nTrainObs + 1):nrow(data), -1]
+
+faultFilter(trainData = trainObs,
+            testData = testObs,
+            updateFreq = nUpdate)
 }
 
