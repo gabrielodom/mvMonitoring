@@ -31,6 +31,9 @@
 #' @export
 #'
 #' @examples
+#' data("normal_switch_xts")
+#' scaledData <- scale(normal_switch_xts[,-1])
+#' pca(scaledData, var.amnt = 0.9)
 pca <- function(data, var.amnt = 0.95, ...){
 UseMethod("pca")
 }

@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MSAD-PCA Walkthrough}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{rmarkdown::render}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -23,7 +23,11 @@ knitr::opts_chunk$set(echo = TRUE)
 We create this package, `mvMonitor`, from the foundation laid by Kazor et al (2016). The `mvMonitor` package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.
 
 ### The Interval Vector
-We begin by simulating an autocorrelated interval-step vector $t$, where the autocorrelated errors of $t$ have initial value $\epsilon_1 \sim \mathcal{U}_{[a,b]}$, where $a = 0.01$ and $b = 2$. This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations) and autocorrelation component $\phi = 0.75$.
+We begin by simulating an autocorrelated interval-step vector $t$. This vector $t$ has induced autocorrelation in its errors, $\varepsilon$, where these autocorrelated errors have initial values and independent components given by \[ \varepsilon \sim \mathcal{N}\left(\frac{1}{2}(a + b)(1 - \phi), \frac{b - a}{12} (1 - \phi ^ 2)\right), \] where $\epsilon_1$ is a random draw from this distribution, $a = 0.01$, $b = 2$, and the autocorrelation component $\phi = 0.75$. The mean and variance multipliers are the mean and variance of a random variable from the $\mathcal{U}_{[a,b]}$ distribution. The full autocorrelated error structure is then \[ \epsilon_s = \phi\epsilon_{s - 1} + (1 - \phi)\varepsilon.
+\]
+This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ with $t^*_1 = -\cos\left(\frac{2\pi}{\omega}\right) + \epsilon_1$, and \[ t^*_s = -\cos\left(\frac{2\pi}{\omega}\right) + \phi\epsilon_{s - 1} + (1 - \phi)\epsilon_s.
+\]
+The final $t$ vector is the $t^*$ vector scaled to lie entirely in $[a,b]$.
 ```{r t_vec_initialized}
 omega <- 60 * 24 * 7
 phi <- 0.75
@@ -79,8 +83,7 @@ We create the three features under State 1 (normal operating conditions, or \emp
 \begin{align}
 \textbf{x}(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
 \textbf{y}(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
-\textbf{z}(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3,
-\end{align}
+\textbf{z}(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3, \end{align}
 where $\varepsilon_i \sim N(0, 0.01)$.
 
 ```{r state_1_init}
@@ -104,7 +107,9 @@ normal_df %<>% mutate(x = t + err1,
 # plot(normal_df$z)
 # # It checks out
 
-orig_state_mat <- normal_df %>% select(x,y,z) %>% as.matrix
+orig_state_mat <- normal_df %>%
+                    select(x,y,z) %>%
+                    as.matrix
 ```
 Let's take a look at our 3D scatterplot:
 ```{r state1_scatter}
@@ -533,36 +538,57 @@ Implementation notes: turn all the data frames into `xts` objects for Kazor's fu
 library(xts)
 normal_switch_xts <- xts(normal_switch_df[,-1],
                          order.by = normal_switch_df[,1])
+# devtools::use_data(normal_switch_xts)
 
 # Fault 1A
 normal_w_fault1A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                               fault1A_switch_df[faultStart:omega,])
 fault1A_xts <- xts(normal_w_fault1A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault1A_xts)
 
 # Fault 1B
 normal_w_fault1B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault1B_switch_df[faultStart:omega,])
 fault1B_xts <- xts(normal_w_fault1B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault1B_xts)
 
 # Fault 2A
 normal_w_fault2A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault2A_switch_df[faultStart:omega,])
 fault2A_xts <- xts(normal_w_fault2A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault2A_xts)
 
 # Fault 2B
 normal_w_fault2B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault2B_switch_df[faultStart:omega,])
 fault2B_xts <- xts(normal_w_fault2B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault2B_xts)
 
 # Fault 3A
 normal_w_fault3A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault3A_switch_df[faultStart:omega,])
 fault3A_xts <- xts(normal_w_fault3A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault3A_xts)
 
 # Fault 3B
 normal_w_fault3B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
                                  fault3B_switch_df[faultStart:omega,])
 fault3B_xts <- xts(normal_w_fault3B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault3B_xts)
+```
+
+Now we clean up the environment, and load the data we've saved.
+```{r sweepEnv}
+# # uncomment these lines to use the data from the package. Comment them out
+# # when generating new data.
+# rm(list = ls())
+# load("~/Documents/GitHub/mvMonitoring/data/normal_switch_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault1A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault1B_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault2A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault2B_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault3A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault3B_xts.rda")
 
 faults_ls <- list(normal = normal_switch_xts,
                   fault1A = fault1A_xts,
@@ -598,7 +624,7 @@ Now that we've created and stored these feature, we can use time-series plots to
 faults_ls$fault1A$x %>% plot.xts()
 faults_ls$fault1A$y %>% plot.xts()
 faults_ls$fault1A$z %>% plot.xts()
-faults_ls$fault1B$x %>% plot.xts()
+faults_ls$fault1B$x %>% plot.xts() 
 faults_ls$fault1B$y %>% plot.xts()
 faults_ls$fault1B$z %>% plot.xts()
 faults_ls$fault2A$x %>% plot.xts()
@@ -639,7 +665,7 @@ Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # The T2 false alarm rate hits 0 at alpha = 0.00015, and is at 16% at 0.07. The
 # T2 statistic throws too many false alarms for my taste.
 # These values were before we split the update observations by a third. These
-# false alarm rates increased dramatically (0.19, 0.41), so we increased the 
+# false alarm rates increased dramatically (0.19, 0.41), so we increased the
 # number of training observations to 4320 (three days worth, up from 2880). The
 # false alarm rates dropped back, but not nearly as low (0.0031, 0.0884).
 ```

@@ -29,6 +29,23 @@
 #' @export
 #'
 #' @examples
+#' data("normal_switch_xts")
+#' scaledData <- scale(normal_switch_xts[,-1])
+#' pca_obj <- pca(scaledData, var.amnt = 0.9)
+#' thresh_obj <- threshold(pca_object = pca_obj, alpha = 0.05)
+#'
+#' # Check a single observation. We see this observation is within the normal
+#' # operating parameters at alpha = 0.05.
+#' faultDetect(threshold_object = thresh_obj, observation = scaledData[1,])
+#' # According to the Squared Prediction Error statistic, this observation is
+#' # outside the range of "normal" operation at the 0.05 level.
+#' faultDetect(threshold_object = thresh_obj, observation = scaledData[20,])
+#'
+#' # We can also check an entire data matrix:
+#' detect_ls <- lapply(1:nrow(scaledData), function(i){
+#'      faultDetect(threshold_object = thresh_obj, scaledData[i,])
+#' })
+#' do.call(rbind, detect_ls)
 faultDetect <- function(threshold_object, observation, ...){
   UseMethod("faultDetect")
 }
@@ -37,7 +54,6 @@ faultDetect <- function(threshold_object, observation, ...){
 #' @export
 #' @keywords internal
 #'
-#' @examples
 faultDetect.threshold <- function(threshold_object, observation, ...){
 
   SPEthreshold <- threshold_object$SPE_threshold
