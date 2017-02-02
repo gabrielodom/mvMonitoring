@@ -35,6 +35,16 @@
 #' @importFrom lazyeval lazy_eval
 #' @importFrom utils head
 #'
+#' @examples
+#' data("normal_switch_xts")
+#' # Select the data under state 1
+#' data <- normal_switch_xts[normal_switch_xts[,1] == 1]
+#' nTrainObs <- floor(0.2 * nrow(data))
+#'
+#' # Remove the now unnecesary state column
+#' featureCols <- data[,-1]
+#'
+#' processMonitor(data = featureCols, trainObs = nTrainObs)
 processMonitor <- function(data,
                            trainObs,
                            updateFreq = ceiling(0.2 * trainObs),

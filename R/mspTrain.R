@@ -49,6 +49,19 @@
 #' "faultsToTriggerAlarm". These alarm-positive observations are then removed
 #' from the data set and held in a separate xts matrix for inspection.
 #'
+#' Of note when considering performance: the example has 10080 rows on three
+#' features alternating between three states, and trains on 20 percent of the
+#' observations, while updating every 1008 (10 percent) observation. On a 2016
+#' Macbook Pro with 16Gb of RAM, this example function call takes 15 second to
+#' run. Increasing the update frequency will decrease computation time, but may
+#' increase false alarm rates or decrease flagging accuracy. We recommend that
+#' you set the update frequency based on the natural and physical designs of
+#' your system. For example, if your system has a multi-state process which
+#' switches across one of four states every two hours, then test the update
+#' frequency at an eight or 12 hour level --- enough observations to measure
+#' two to three full cycles of the switching process. For observations recorded
+#' every five minutes, try updateFreq = (60 / 5) * 8 = 96 or (60 / 5) * 12 = 144.
+#'
 #' This user-facing function calls the processMonitor() function, and returns
 #' the training arguments necessary to call the mspMonitor() and mspWarning()
 #' functions.
@@ -61,15 +74,21 @@
 #' @importFrom stats lag
 #'
 #' @examples
+#' data("normal_switch_xts")
+#' nTrainObs <- floor(0.2 * nrow(normal_switch_xts))
+#' # The state values are recorded in the first column.
+#'
+#' mspTrain(data = normal_switch_xts[, -1],
+#'          labelVector = normal_switch_xts[, 1],
+#'          trainObs = nTrainObs)
 mspTrain <- function(data,
-                       labelVector,
-                       trainObs,
-                       updateFreq = ceiling(0.5 * trainObs),
-                       Dynamic = TRUE,
-                       lagsIncluded = 1,
-                       faultsToTriggerAlarm = 3,
-                       ...){
-  # browser()
+                     labelVector,
+                     trainObs,
+                     updateFreq = ceiling(0.5 * trainObs),
+                     Dynamic = TRUE,
+                     lagsIncluded = 1,
+                     faultsToTriggerAlarm = 3,
+                     ...){
 
   ls <- lazy_dots(...)
 

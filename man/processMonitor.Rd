@@ -44,4 +44,15 @@ function's help file for further details.
 This internal function is called by mspTrain(). This function calls the
 faultFilter() function.
 }
+\examples{
+data("normal_switch_xts")
+# Select the data under state 1
+data <- normal_switch_xts[normal_switch_xts[,1] == 1]
+nTrainObs <- floor(0.2 * nrow(data))
+
+# Remove the now unnecesary state column
+featureCols <- data[,-1]
+
+processMonitor(data = featureCols, trainObs = nTrainObs)
+}
 
