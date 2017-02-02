@@ -1,1 +1,1 @@
-[![Travis-CI Build Status](https://travis-ci.com/gabrielodom/mvMonitoring.svg?branch=master)](https://travis-ci.com/gabrielodom/mvMonitoring)
+[![Travis-CI Build Status](https://travis-ci.com/gabrielodom/mvMonitoring.svg?token=ZzKTz9X2qQxWeqCPkaKq&branch=master)](https://travis-ci.com/gabrielodom/mvMonitoring)
