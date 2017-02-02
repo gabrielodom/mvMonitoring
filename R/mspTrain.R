@@ -94,7 +94,7 @@ mspTrain <- function(data,
 
   # Lag the data
   if(Dynamic == TRUE){
-    data <- lag(zoo(data), 0:-lagsIncluded)
+    data <- lag(zoo(data), 0:lagsIncluded)
   }
   data <- xts(data[-(1:lagsIncluded),])
 
