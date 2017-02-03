@@ -13,7 +13,7 @@
 #' @param Dynamic Specify if the PCA algorithm should include lagged variables.
 #'   Defaults to TRUE.
 #' @param lagsIncluded A vector of lags to include. If Dynamic = TRUE, specify
-#'   which lags to include. Defaults to c(0, 1), signifying that the Dynamic
+#'   which lags to include. Defaults to c(0, -1), signifying that the Dynamic
 #'   process observations will include current observations and observations
 #'   from one time step previous. See "Details" for more information.
 #' @param faultsToTriggerAlarm The number of sequential faults needed to trigger
@@ -72,17 +72,17 @@
 #'   alarm-positive observations are then removed from the data set and held in
 #'   a separate xts matrix for inspection.
 #'
-#'   Concering the lagsIncluded variable: the argument lagsIncluded = c(0,1)
+#'   Concering the lagsIncluded variable: the argument lagsIncluded = c(0,-1)
 #'   will column concatenate the current data with the same data from one
 #'   discrete time step back. This will necesarily remove the first row of the
 #'   data matrix, as we will have NA values under the lagged features. The
-#'   argument lagsIncluded = 0:2 will column concatenate the current
+#'   argument lagsIncluded = 0:-2 will column concatenate the current
 #'   observations with the observations from one step previous and the
 #'   observations from two steps previous, which will necessarily requirethe
 #'   removal of the first two rows of the data matrix. To include only certain
-#'   lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ... ,
-#'   lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...
-#'   , K, and these rows will be removed from consideration.
+#'   lags with the current data, specify lagsIncluded = c(0, -lag_1, -lag_2, ...
+#'   , -lag_K). This induce NA values in the first max(abs(-lag_k)) rows, for k
+#'   = 1, ... , K, and these rows will be removed from consideration.
 #'
 #'   Of note when considering performance: the example has 10080 rows on three
 #'   features alternating between three states, and trains on 20 percent of the
@@ -111,6 +111,7 @@
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval lazy_eval
 #' @importFrom zoo zoo
+#' @importFrom xts xts
 #' @importFrom stats lag
 #'
 #' @examples
@@ -126,23 +127,25 @@ mspTrain <- function(data,
                      trainObs,
                      updateFreq = ceiling(0.5 * trainObs),
                      Dynamic = TRUE,
-                     lagsIncluded = c(0,1),
+                     lagsIncluded = c(0, -1),
                      faultsToTriggerAlarm = 3,
                      ...){
 
   ls <- lazy_dots(...)
 
+  # browser()
+
   # Lag the data
   if(Dynamic == TRUE){
     data <- lag(zoo(data), lagsIncluded)
   }
-  data <- xts(data[-(1:max(lagsIncluded)),])
+  data <- xts(data[-(1:max(abs(lagsIncluded))),])
 
   classes <- unique(labelVector)
   if(is.vector(labelVector)){
     labelVector <- matrix(labelVector, ncol = 1)
   }
-  classData <- cbind(labelVector[-(1:max(lagsIncluded)),], data)
+  classData <- cbind(labelVector[-(1:max(abs(lagsIncluded))),], data)
   data_ls <- lapply(1:length(classes), function(i){
     data_df <- classData[classData[,1] == classes[i],]
     data_df[, -1]

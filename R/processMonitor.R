@@ -73,6 +73,8 @@ processMonitor <- function(data,
 
   ls <- lazy_dots(...)
 
+  # browser()
+
   faultObj_ls <- do.call(faultFilter,
                 args = c(list(trainData = data[1:trainObs,],
                               testData = data[(trainObs + 1):nrow(data), ],
@@ -98,10 +100,11 @@ processMonitor <- function(data,
     # is what the date/ means for xts objects (date/ means that date and all
     # after it, this is why we remove the first row).
     testData <- data[paste0(testTime, "/")]
-    if(nrow(testData) == 1) break
+    testData <- testData[-1,]
+    if(nrow(testData) == 0) break
     faultObj_ls <- do.call(faultFilter,
                            args = c(list(trainData = trainData,
-                                         testData = testData[-1,],
+                                         testData = testData,
                                          updateFreq = updateFreq,
                                          faultsToTriggerAlarm = faultsToTriggerAlarm),
                                     lazy_eval(ls)))

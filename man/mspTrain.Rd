@@ -5,7 +5,7 @@
 \title{Multi-State Adaptive-Dynamic Process Training}
 \usage{
 mspTrain(data, labelVector, trainObs, updateFreq = ceiling(0.5 * trainObs),
-  Dynamic = TRUE, lagsIncluded = c(0, 1), faultsToTriggerAlarm = 3, ...)
+  Dynamic = TRUE, lagsIncluded = c(0, -1), faultsToTriggerAlarm = 3, ...)
 }
 \arguments{
 \item{data}{An xts data matrix}
@@ -23,7 +23,7 @@ observations as the training frequency.}
 Defaults to TRUE.}
 
 \item{lagsIncluded}{A vector of lags to include. If Dynamic = TRUE, specify
-which lags to include. Defaults to c(0, 1), signifying that the Dynamic
+which lags to include. Defaults to c(0, -1), signifying that the Dynamic
 process observations will include current observations and observations
 from one time step previous. See "Details" for more information.}
 
@@ -90,17 +90,17 @@ This function is designed to identify and sort out sequences of
   alarm-positive observations are then removed from the data set and held in
   a separate xts matrix for inspection.
 
-  Concering the lagsIncluded variable: the argument lagsIncluded = c(0,1)
+  Concering the lagsIncluded variable: the argument lagsIncluded = c(0,-1)
   will column concatenate the current data with the same data from one
   discrete time step back. This will necesarily remove the first row of the
   data matrix, as we will have NA values under the lagged features. The
-  argument lagsIncluded = 0:2 will column concatenate the current
+  argument lagsIncluded = 0:-2 will column concatenate the current
   observations with the observations from one step previous and the
   observations from two steps previous, which will necessarily requirethe
   removal of the first two rows of the data matrix. To include only certain
-  lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ... ,
-  lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...
-  , K, and these rows will be removed from consideration.
+  lags with the current data, specify lagsIncluded = c(0, -lag_1, -lag_2, ...
+  , -lag_K). This induce NA values in the first max(abs(-lag_k)) rows, for k
+  = 1, ... , K, and these rows will be removed from consideration.
 
   Of note when considering performance: the example has 10080 rows on three
   features alternating between three states, and trains on 20 percent of the
