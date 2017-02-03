@@ -1,19 +1,20 @@
 #' Three-Dimensional Rotation and Scaling Matrix
 #'
 #' @description Render a 3-Dimensional projection matrix given positive or
-#' negative degree changes in yaw, pitch, and / or roll and increment or
-#' decrement feature scales.
+#'   negative degree changes in yaw, pitch, and / or roll and increment or
+#'   decrement feature scales.
 #'
 #' @param rot_angles a list or vector containg the rotation angles in the order
-#' following: yaw, pitch, roll. Defaults to <0,0,0>.
+#'   following: yaw, pitch, roll. Defaults to <0,0,0>.
 #' @param scale_factors a list or vector containing the values by which to
-#' multiply each dimension. Defaults to <1,1,1>.
+#'   multiply each dimension. Defaults to <1,1,1>.
 #'
-#' @return A 3 * 3 projection matrix of the degree and scale changes entered.
+#' @return A 3 x 3 projection matrix corresponding to the degree and scale
+#'   changes entered.
 #'
-#' @details See the function commentary of "rotate_3D" for a brief explination
-#' of how these angles behave in scatterplot3d functionality (from package
-#' scatterplot3d).
+#' @details See the help file of function rotate_3D() for a brief explination of
+#'   how these angles behave in scatterplot3d functionality (from package
+#'   scatterplot3d).
 #'
 #' This function is used only in data generation of the package vignette. This
 #' function calls rotate3D().
