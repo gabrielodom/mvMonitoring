@@ -84,6 +84,10 @@ mspMonitor <- function(observations,
     observations <- matrix(observations, nrow = 1)
     warning("Observation not an xts object.", immediate. = TRUE)
   }
+
+  if(is.vector(labelVector)){
+    labelVector <- matrix(labelVector, ncol = 1)
+  }
   classData <- cbind(labelVector, observations)
 
   # Apply the fault detection function to each row, accounting for the chance

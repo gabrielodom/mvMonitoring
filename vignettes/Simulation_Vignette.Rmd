@@ -697,6 +697,9 @@ alarmData
 ```
 
 # Real Data
+This data was sent to use from Kate Newhart in Golden, CO.
+
+### Import the Data files
 First, we import the two data sets. 
 ```{r realData_import}
 library(readr)
@@ -713,6 +716,8 @@ tenDay <- xts(tenDayData_v2[, -1], order.by = tenDayData_v2[[1]])
 str(currentDayData_v2, give.attr = FALSE)
 oneDay <- xts(currentDayData_v2[, -1], order.by = currentDayData_v2[[1]])
 ```
+
+### Clean and Save the Data
 We see that the `oneDay` data matrix is the first 12 hours from the `tenDay` data matrix. We believe this is in error, so we will re-write the `oneDay` matrix as the last 24 hours of the `tenDay` matrix.
 ```{r newRealTestData}
 oneDay <- tenDay["2017-01-26/"]
@@ -743,6 +748,7 @@ oneDay_clean <- oneDay[,-29]
 ```
 The clean data frame has 138 fewer observations.
 
+### Training the AD-PCA Model
 Now to analyse the training data, and pass the training information in order to test the testing data. Because the data do not come from a process with recorded state variables (or, more specifically, that we do not have such state information), we will give a column of 1s as the labels. Futher, we have nine days' worth of 10-minute-level observations, so we will train on $3 * 24 * 60 / 10 = 432$ observations (three days' worth), and update each day ($24 * 60 * 10 = 144$). Further, we will lag the features by one time step.
 ```{r trainRealData}
 nineDayResults_ls <- mvMonitoring::mspTrain(data = nineDay_clean,
@@ -753,3 +759,25 @@ nineDayResults_ls <- mvMonitoring::mspTrain(data = nineDay_clean,
                          faultsToTriggerAlarm = 3,
                          lagsIncluded = 0:1)
 ```
+
+### Testing the New Observations
+We will test the observations from the `oneDay_clean` data set. We must first lag the test observations. We'll borrow the lags we don't have from the previous day (in `nineDay_clean`).
+```{r testRealData}
+laggedOneDay <- stats::lag(oneDay_clean, 0:1)
+laggedOneDay[1,36:70] <- nineDay_clean[nrow(nineDay_clean),]
+
+realDataandFlags <- mvMonitoring::mspMonitor(observations = laggedOneDay,
+           labelVector = rep(1, nrow(laggedOneDay)),
+           trainingSummary = nineDayResults_ls$TrainingSpecs)
+realDataandFlags[1,]
+```
+For some reason, that I don't know right now, `mspMonitor` is flagging all of these values as faults, which will trigger alarms for most of the day.
+```{r realWarnings}
+# These lines will test each line as if it was just received:
+realAlarmData <- realDataandFlags
+for(i in 1:nrow(realDataandFlags)){
+  realAlarmData[1:i,] <- mvMonitoring::mspWarning(realAlarmData[1:i,])
+}
+realAlarmData
+```
+I'm not sure why this is happening. I'll have to dig in to it later. I do notice that both the SPE and T2 statistics are off the charts. The only component affecting them equally is the projection matrix P. We are estimating a 70 ^ 2 matrix using only 432 observations at a time, so this matrix could very well be unstable (we'd need around 2500 observations to stably estimate the scatter matrix).
