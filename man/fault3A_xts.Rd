@@ -10,22 +10,22 @@
   fault is a signal amplificaton in the underlying determining t vector. The
   fault starts at row 8500, and the four columns under the fault state are
   defined here:
-\describe{
-  \item{state}{the state indicator for the multivariate system, with three
+\itemize{
+  \item{state : }{the state indicator for the multivariate system, with three
   levels}
-  \item{x}{x(t_*) = t_* + error}
-  \item{y}{y(t_*) = (t_*) ^ 2 - 3t + error}
-  \item{z}{z(t_*) = - (t_*) ^ 3 + 3(t_*) ^ 2 + error}
+  \item{x : }{x(t_*) = t_* + error}
+  \item{y : }{y(t_*) = (t_*) ^ 2 - 3t + error}
+  \item{z : }{z(t_*) = - (t_*) ^ 3 + 3(t_*) ^ 2 + error}
 }
 where t_* = 3 * t * (10080 - s) / (2 * 10080), where s is the observation
 index, and t is a 10080-entry vector of autocorrelated and non-stationary
 hidden process realizations. The states alternate each hour and are defined
 as follows:
-\describe{
-  \item{State1}{As presented}
-  \item{State2}{Rotated by (yaw = 0, pitch = 90, roll = 30) and scaled by
+\itemize{
+  \item{State1 -- }{As presented}
+  \item{State2 -- }{Rotated by (yaw = 0, pitch = 90, roll = 30) and scaled by
   (1 * x, 0.5 * y , 2 * z).}
-  \item{State3}{Rotated by (yaw = 90, pitch = 0, roll = -30) and scaled by
+  \item{State3 -- }{Rotated by (yaw = 90, pitch = 0, roll = -30) and scaled by
   (0.25 * x, 0.1 * y , 0.75 * z).}
 }
 See the vignette for more details.}
