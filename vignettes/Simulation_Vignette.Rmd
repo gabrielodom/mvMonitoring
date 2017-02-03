@@ -695,3 +695,29 @@ for(i in 1:nrow(testDataandFlags)){
 }
 alarmData
 ```
+
+# Real Data
+First, we import the two data sets. 
+```{r realData_import}
+library(readr)
+tenDayData_v2 <- read_csv("~/Documents/GitHub/mvMonitoring/inst/tenDayData_v2.csv", 
+                          col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
+currentDayData_v2 <- read_csv("~/Documents/GitHub/mvMonitoring/inst/currentDayData_v2.csv", 
+                              col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
+```
+The first data set is of a 10-day period, and the second data set is from a single day. The first columns of each data set are DateTime columns. Now we can do some basic data exploration, and save the data sets as `xts` matrices. Because `readr` imports the data frame as a tibble, we use list subsetting to get at the index column.
+```{r readData_EDA}
+str(tenDayData_v2, give.attr = FALSE)
+tenDay <- xts(tenDayData_v2[, -1], order.by = tenDayData_v2[[1]])
+
+str(currentDayData_v2)
+oneDay <- xts(currentDayData_v2[, -1], order.by = currentDayData_v2[[1]])
+```
+We see that the `oneDay` data matrix is the first 12 hours from the `tenDay` data matrix. We believe this is in error, so we will re-write the `oneDay` matrix as the last 24 hours of the `tenDay` matrix.
+```{r newRealTestData}
+oneDay <- tenDay["2017-01-26/"]
+nineDay <- tenDay["/2017-01-25"]
+  
+devtools::use_data(oneDay)
+devtools::use_data(nineDay)
+```
