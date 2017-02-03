@@ -14,24 +14,28 @@ an alarm to trigger. Defaults to 3.}
 }
 \value{
 An xts matrix of the same dimensions as mspMonitor_object, with a
-recorded negative or positive and type-specific alarm status
+  recorded negative or positive and type-specific alarm status. Alarm codes
+  are: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared Prediction Error
+  alarm, and 3 = both alarms.
 }
 \description{
 Trigger an alarm, if necessary, for incoming multivariate
-process observations.
+  process observations.
 }
 \details{
 This function and the mspMonitor() function are designed to be ran
-via a script within a batch. The file flow is as follows: at each time
-interval, run the mspMonitor() function on the daily observation matrix to
-add a flag status to the most recent incoming observation in the matrix, and
-return this new xts matrix. Then, pass this updated daily observation matrix
-to the mspWarning() function, which will check if the process has recorded
-three or more sequential monitoring statistic flags in a row. Of note, since
-these functions are expected to be repeatedly ran in real time, this
-function will only check for an alarm within the last row of the xts matrix.
-To check multiple rows for an alarm state, please use the mspTrain function,
-which was designed to check multiple past observations.
+  via a scheduled task through Windows "Task Scheduler" or Macintosh OX
+  "launchd" application suites. The file flow is as follows: at each time
+  interval, run the mspMonitor() function on the matrix of daily observations
+  to add a flag status to the most recent incoming observation in the matrix,
+  and return this new xts matrix. Then, pass this updated daily observation
+  matrix to the mspWarning() function, which will check if the process has
+  recorded three or more sequential monitoring statistic flags in a row. Of
+  note, because these functions are expected to be repeatedly called in real
+  time, this function will only check for an alarm within the last row of the
+  xts matrix. To check multiple rows for an alarm state, please use the
+  mspTrain() function, which was designed to check multiple past
+  observations.
 
 This function requires an xts matrix returned by the mspMonitor() function.
 }
@@ -45,7 +49,7 @@ nTrainObs <- floor(0.4 * n)
 trainResults_ls <- mspTrain(data = normal_switch_xts[1:(n - 5), -1],
                             labelVector = normal_switch_xts[1:(n - 5), 1],
                             trainObs = nTrainObs,
-                            lagsIncluded = 1)
+                            lagsIncluded = c(0,1))
 
 # While training, we included 1 lag (the default), so we will also lag the
 # observations we will test.

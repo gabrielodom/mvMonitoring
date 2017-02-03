@@ -5,84 +5,123 @@
 \title{Multi-State Adaptive-Dynamic Process Training}
 \usage{
 mspTrain(data, labelVector, trainObs, updateFreq = ceiling(0.5 * trainObs),
-  Dynamic = TRUE, lagsIncluded = 1, faultsToTriggerAlarm = 3, ...)
+  Dynamic = TRUE, lagsIncluded = c(0, 1), faultsToTriggerAlarm = 3, ...)
 }
 \arguments{
 \item{data}{An xts data matrix}
 
-\item{labelVector}{Class label vector (as logical or finite numeric)}
+\item{labelVector}{Class labels as a logical (two states only) or finite
+numeric (two or more states) vector with length equal to the number of rows
+in "data". For data with only one state, this will be a vector of 1s.}
 
 \item{trainObs}{The number of observations upon which to train the algorithm}
 
 \item{updateFreq}{The algorithm update frequency (defaulting to half as many
 observations as the training frequency)}
 
-\item{Dynamic}{Should the PCA algorithm include lagged variables? Defaults
-to TRUE}
+\item{Dynamic}{Specify if the PCA algorithm should include lagged variables.
+Defaults to TRUE.}
 
-\item{lagsIncluded}{If Dynamic = TRUE, how many lags should be included?
-Defaults to 1.}
+\item{lagsIncluded}{A vector of lags to include. If Dynamic = TRUE, specify
+which lags to include. Defaults to c(0, 1), signifying that the Dynamic
+process observations will include current observations and observations
+from one time step previous. See "Details" for more information.}
 
-\item{faultsToTriggerAlarm}{The number of sequential faults needed to
-trigger an alarm}
+\item{faultsToTriggerAlarm}{The number of sequential faults needed to trigger
+an alarm. Defaults to 3}
 
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list of the following components: FaultChecks = an xts data matrix
-containing the SPE monitoring statistic and corresponding logical flagging
-indicator, the Hotelling's T2 monitoring statitisic and corresponding logical
-flagging indicator, and the Alarm indicator. Non_Alarmed_Obs = an xts data
-matrix of all the non-Alarmed observations. Alarms = and an xts data matrix
-of the features and specific alarms for Alarmed observations, where the alarm
-code is as follows: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared
-Prediction Error alarm, and 3 = both alarms. TrainingSpecs = a list of k
-lists, one for each class, with each list containing the specific threshold
-object returned by the internal threshold() function for that class. See this
-function's help file for more details.
+A list with the following components:
+  \itemize{
+    \item{FaultChecks -- }{an xts flagging matrix with the same number of rows as
+      "data". This flag matrix has the following five columns:
+        \itemize{
+          \item{SPE -- }{the SPE statistic value for each observation in
+            "data"}
+          \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the
+            test statistic is less than or equal to the critical value
+            passed through from the threshold object}
+          \item{T2 -- }{the T2 statistic value for each observation in
+            "data"}
+          \item{T2_Flag -- }{a vector of T2 fault indicators, defined like
+            SPE_Flag}
+          \item{Alarm -- }{a column indicating if there have been three flags
+            in a row for either the SPE or T2 monitoring statistics or both.
+            Alarm states are as follows: 0 = no alarm, 1 = Hotelling's T2
+            alarm, 2 = Squared Prediction Error alarm, and 3 = both alarms.}
+        }
+      }
+    \item{nonAlarmedObs -- }{an xts data matrix of all the non-Alarmed
+      observations}
+    \item{Alarms -- }{an xts data matrix of the features and specific alarms
+      for Alarmed observations, where the alarm codes are listed above}
+    \item{TrainingSpecs -- }{a list of k lists, one for each class, with each
+      list containing the specific threshold object returned by the internal
+      threshold() function for that class. See the threshold() function's
+      help file for more details.}
+  }
 }
 \description{
 This function performs Multi-State Adaptive-Dynamic PCA on a
-data set with time-stamped observations.
+  data set with time-stamped observations.
 }
 \details{
 This function is designed to identify and sort out sequences of
-observations which fall outside normal operating conditions. We assume that
-the process data are time-dependent in both seasonal and non-stationary
-effects (which necessitate the Adaptive and Dynamic components, respectively).
-We further assume that this data is drawn from a multivariate process under
-multiple mutually exclusive states, implying that the linear dimension
-reduction projection matrices may be different for each state. Therefore, in
-summary, this function lags the features to account for correlation between
-sequential observations, splits the data by classes, and re-estimates
-projection matrices on a rolling window to account for seasonality. Further,
-this function uses non-parametric density estimation to calculate the 1 -
-alpha quantiles of the SPE and Hotelling's T2 statistics from a set of
-training observations, then flags any observation in the testing data set
-with process monitoring statistics beyond these calculated critical values.
-Becuase of natural variablity inherent in all real data, we do not remove
-observations simply because they are have been flagged as outside normal
-operating conditions. This function records an alarm only for observations
-having three flags in a row, as set by the default argument value of
-"faultsToTriggerAlarm". These alarm-positive observations are then removed
-from the data set and held in a separate xts matrix for inspection.
+  observations which fall outside normal operating conditions. We assume that
+  the process data are time-dependent in both seasonal and non-stationary
+  effects (which necessitate the Adaptive and Dynamic components,
+  respectively). We further assume that this data is drawn from a
+  multivariate process under multiple mutually exclusive states, implying
+  that the linear dimension reduction projection matrices may be different
+  for each state. Therefore, in summary, this function lags the features to
+  account for correlation between sequential observations, splits the data by
+  classes, and re-estimates projection matrices on a rolling window to
+  account for seasonality. Further, this function uses non-parametric density
+  estimation to calculate the 1 - alpha quantiles of the SPE and Hotelling's
+  T2 statistics from a set of training observations, then flags any
+  observation in the testing data set with process monitoring statistics
+  beyond these calculated critical values. Becuase of natural variablity
+  inherent in all real data, we do not remove observations simply because
+  they are have been flagged as outside normal operating conditions. This
+  function records an alarm only for observations having three flags in a
+  row, as set by the default argument value of "faultsToTriggerAlarm". These
+  alarm-positive observations are then removed from the data set and held in
+  a separate xts matrix for inspection.
 
-Of note when considering performance: the example has 10080 rows on three
-features alternating between three states, and trains on 20 percent of the
-observations, while updating every 1008 (10 percent) observation. On a 2016
-Macbook Pro with 16Gb of RAM, this example function call takes 15 second to
-run. Increasing the update frequency will decrease computation time, but may
-increase false alarm rates or decrease flagging accuracy. We recommend that
-you set the update frequency based on the natural and physical designs of
-your system. For example, if your system has a multi-state process which
-switches across one of four states every two hours, then test the update
-frequency at an eight or 12 hour level --- enough observations to measure
-two to three full cycles of the switching process. For observations recorded
-every five minutes, try updateFreq = (60 / 5) * 8 = 96 or (60 / 5) * 12 = 144.
+  Concering the lagsIncluded variable: the argument lagsIncluded = c(0,1)
+  will column concatenate the current data with the same data from one
+  discrete time step back. This will necesarily remove the first row of the
+  data matrix, as we will have NA values under the lagged features. The
+  argument lagsIncluded = 0:2 will column concatenate the current
+  observations with the observations from one step previous and the
+  observations from two steps previous, which will necessarily requirethe
+  removal of the first two rows of the data matrix. To include only certain
+  lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ... ,
+  lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...
+  , K, and these rows will be removed from consideration.
+
+  Of note when considering performance: the example has 10080 rows on three
+  features alternating between three states, and trains on 20 percent of the
+  observations, while updating every 1008 (10 percent) observation. On a 2016
+  Macbook Pro with 16Gb of RAM, this example function call takes 15 second to
+  run. Increasing the update frequency will decrease computation time, but
+  may increase false alarm rates or decrease flagging accuracy. We recommend
+  that you set the update frequency based on the natural and physical designs
+  of your system. For example, if your system has a multi-state process which
+  switches across one of four states every two hours, then test the update
+  frequency at an eight or 12 hour level --- enough observations to measure
+  two to three full cycles of the switching process. For observations
+  recorded every five minutes, try updateFreq = (60 / 5) * 8 = 96 or (60 / 5)
+  * 12 = 144.
 
 This user-facing function calls the processMonitor() function, and returns
 the training arguments necessary to call the mspMonitor() and mspWarning()
 functions.
+
+For more details, see Kazor et al (2016):
+\url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
 }
 \examples{
 data("normal_switch_xts")
