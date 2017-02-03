@@ -4,8 +4,8 @@
 \name{oneDay_clean}
 \alias{oneDay_clean}
 \title{Real Process Data for Testing}
-\format{An xts matrix of 144 rows and 35 features recorded over
-  2017-01-26 at 00:10 to 2017-01-27 at 00:00.}
+\format{An xts matrix of 75 rows and 35 features recorded over
+  2017-01-27 at 00:10 to 2017-01-27 at 12:30.}
 \source{
 Kathryn Newhart
 }
@@ -13,7 +13,7 @@ Kathryn Newhart
 oneDay_clean
 }
 \description{
-Data from the SM-MBR Bioreactor system over 24 hours. This data
+Data from the SM-MBR Bioreactor system over 12 hours. This data
   will be used for testing the mvMonitoring package.
 }
 \keyword{datasets}

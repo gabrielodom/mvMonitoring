@@ -648,8 +648,8 @@ We now throw all this data we've just generated into our package.
 Sys.time()
 results_ls <- mvMonitoring::mspTrain(data = faults_ls$normal[,2:4],
                          labelVector = faults_ls$normal[,1],
-                         trainObs = 432,
-                         updateFreq = 144,
+                         trainObs = 4320,
+                         updateFreq = 1440,
                          alpha = 0.001,
                          faultsToTriggerAlarm = 3,
                          lagsIncluded = 0:-2)
