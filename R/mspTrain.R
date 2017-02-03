@@ -139,6 +139,9 @@ mspTrain <- function(data,
   data <- xts(data[-(1:max(lagsIncluded)),])
 
   classes <- unique(labelVector)
+  if(is.vector(labelVector)){
+    labelVector <- matrix(labelVector, ncol = 1)
+  }
   classData <- cbind(labelVector[-(1:max(lagsIncluded)),], data)
   data_ls <- lapply(1:length(classes), function(i){
     data_df <- classData[classData[,1] == classes[i],]

@@ -710,14 +710,46 @@ The first data set is of a 10-day period, and the second data set is from a sing
 str(tenDayData_v2, give.attr = FALSE)
 tenDay <- xts(tenDayData_v2[, -1], order.by = tenDayData_v2[[1]])
 
-str(currentDayData_v2)
+str(currentDayData_v2, give.attr = FALSE)
 oneDay <- xts(currentDayData_v2[, -1], order.by = currentDayData_v2[[1]])
 ```
 We see that the `oneDay` data matrix is the first 12 hours from the `tenDay` data matrix. We believe this is in error, so we will re-write the `oneDay` matrix as the last 24 hours of the `tenDay` matrix.
 ```{r newRealTestData}
 oneDay <- tenDay["2017-01-26/"]
+anyNA(oneDay)
 nineDay <- tenDay["/2017-01-25"]
-  
-devtools::use_data(oneDay)
-devtools::use_data(nineDay)
+anyNA(nineDay)
+```
+The nine day data set contains NA values, so we need to deal with these. We also must check for constant or near-constant data vectors. These vectors will cause the eigendecomposition to fail.
+```{r rmNA}
+nineDay_clean <- na.omit(nineDay)
+nrow(nineDay) - nrow(nineDay_clean)
+
+# Any constant columns? Columns with the same values can cause singularity issues.
+sapply(1:ncol(nineDay_clean), function(i){
+  length(unique(nineDay_clean[,i])) < 20
+})
+# From this, we see that columns 3, 6, 29, and 30 put us at risk of singularity
+# issues.
+plot.xts(nineDay_clean[,3])
+plot.xts(nineDay_clean[,6])
+plot.xts(nineDay_clean[,29])
+plot.xts(nineDay_clean[,30])
+# We necessarily remove column 29, as it is constant for multiple entire updates
+nineDay_clean <- nineDay_clean[,-29]
+oneDay_clean <- oneDay[,-29]
+# devtools::use_data(oneDay_clean)
+# devtools::use_data(nineDay_clean)
+```
+The clean data frame has 138 fewer observations.
+
+Now to analyse the training data, and pass the training information in order to test the testing data. Because the data do not come from a process with recorded state variables (or, more specifically, that we do not have such state information), we will give a column of 1s as the labels. Futher, we have nine days' worth of 10-minute-level observations, so we will train on $3 * 24 * 60 / 10 = 432$ observations (three days' worth), and update each day ($24 * 60 * 10 = 144$). Further, we will lag the features by one time step.
+```{r trainRealData}
+nineDayResults_ls <- mvMonitoring::mspTrain(data = nineDay_clean,
+                         labelVector = rep(1, nrow(nineDay_clean)),
+                         trainObs = 432,
+                         updateFreq = 144,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:1)
 ```
