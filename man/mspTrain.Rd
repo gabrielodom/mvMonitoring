@@ -121,6 +121,7 @@ the training arguments necessary to call the mspMonitor() and mspWarning()
 functions.
 
 For more details, see Kazor et al (2016):
+
 \url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
 }
 \examples{
