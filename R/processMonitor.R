@@ -3,28 +3,48 @@
 #' @description Apply Adaptive-Dynamic PCA to state-specific data matrices.
 #'
 #' @param data An xts data matrix
-#' @param trainObs How many train observations will be used
+#' @param trainObs The number of training observations to be used
 #' @param ... Lazy dots for additional internal arguments
-#' @param updateFreq How many non-flagged rows to collect before the function
-#' updates
-#' @param faultsToTriggerAlarm the number of sequential faults needed to
-#' trigger an alarm
+#' @param updateFreq The number of non-flagged observations to collect before
+#'   the function updates. Defaults to half as many observations as the number
+#'   of training observations.
+#' @param faultsToTriggerAlarm The number of sequential faults needed to trigger
+#'   an alarm. Defaults to 3.
 #'
-#' @return A list of the following components: FaultChecks = a class specific
-#' xts data matrix containing the SPE monitoring statistic and corresponding
-#' logical flagging indicator, the Hotelling's T2 monitoring statitisic and
-#' corresponding logical flagging indicator, and the Alarm indicator.
-#' Non_Alarmed_Obs = a class specific xts data matrix of all the observations
-#' with alarm states equal to 0. Alarms = a class-specific xts data matrix of
-#' the features and specific alarms for Alarmed observations, where the alarm
-#' code is as follows: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared
-#' Prediction Error alarm, and 3 = both alarms. trainSpecs = the threshold
-#' object returned by the internal threshold() function. See this function's
-#' help file for more details.
+#' @return A list with the following components:
+#'   \itemize{
+#'     \item{FaultChecks -- }{a class-specific xts flagging matrix with the
+#'       same number of rows as "data". This flag matrix has the following five
+#'       columns:
+#'         \itemize{
+#'           \item{SPE -- }{the SPE statistic value for each observation in
+#'             "data"}
+#'           \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the
+#'             test statistic is less than or equal to the critical value
+#'             passed through from the threshold object}
+#'           \item{T2 -- }{the T2 statistic value for each observation in
+#'             "data"}
+#'           \item{T2_Flag -- }{a vector of T2 fault indicators, defined like
+#'             SPE_Flag}
+#'           \item{Alarm -- }{a column indicating if there have been three flags
+#'             in a row for either the SPE or T2 monitoring statistics or both.
+#'             Alarm states are as follows: 0 = no alarm, 1 = Hotelling's T2
+#'             alarm, 2 = Squared Prediction Error alarm, and 3 = both alarms.}
+#'         }
+#'       }
+#'     \item{Non_Alarmed_Obs -- }{a class-specific xts data matrix of all the
+#'       non-alarmed observations (observations with alarm state equal to 0)}
+#'     \item{Alarms -- }{a class-specific xts data matrix of the features and
+#'       specific alarms of Alarmed observations, where the alarm codes are
+#'       listed above}
+#'     \item{trainSpecs -- }{a threshold object returned by the internal
+#'       threshold() function. See the threshold() function's help file for
+#'       more details.}
+#'   }
 #'
 #' @details This function is the class-specific implementation of the Adaptive-
-#' Dynamic PCA described in the details of the mspTrain function. See that
-#' function's help file for further details.
+#'   Dynamic PCA described in the details of the mspTrain() function. See
+#'   the mspTrain() function's help file for further details.
 #'
 #' This internal function is called by mspTrain(). This function calls the
 #' faultFilter() function.
@@ -47,7 +67,7 @@
 #' processMonitor(data = featureCols, trainObs = nTrainObs)
 processMonitor <- function(data,
                            trainObs,
-                           updateFreq = ceiling(0.2 * trainObs),
+                           updateFreq = ceiling(0.5 * trainObs),
                            faultsToTriggerAlarm = 3,
                            ...){
 

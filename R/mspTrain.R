@@ -8,8 +8,8 @@
 #'   numeric (two or more states) vector with length equal to the number of rows
 #'   in "data". For data with only one state, this will be a vector of 1s.
 #' @param trainObs The number of observations upon which to train the algorithm
-#' @param updateFreq The algorithm update frequency (defaulting to half as many
-#'   observations as the training frequency)
+#' @param updateFreq The algorithm update frequency. Defaults to half as many
+#'   observations as the training frequency.
 #' @param Dynamic Specify if the PCA algorithm should include lagged variables.
 #'   Defaults to TRUE.
 #' @param lagsIncluded A vector of lags to include. If Dynamic = TRUE, specify
@@ -40,10 +40,10 @@
 #'             alarm, 2 = Squared Prediction Error alarm, and 3 = both alarms.}
 #'         }
 #'       }
-#'     \item{nonAlarmedObs -- }{an xts data matrix of all the non-Alarmed
+#'     \item{Non_Alarmed_Obs -- }{an xts data matrix of all the non-alarmed
 #'       observations}
 #'     \item{Alarms -- }{an xts data matrix of the features and specific alarms
-#'       for Alarmed observations, where the alarm codes are listed above}
+#'       for Alarmed observations with the alarm codes are listed above}
 #'     \item{TrainingSpecs -- }{a list of k lists, one for each class, with each
 #'       list containing the specific threshold object returned by the internal
 #'       threshold() function for that class. See the threshold() function's
