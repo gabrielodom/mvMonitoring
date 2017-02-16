@@ -26,6 +26,13 @@
 #' normal_switch_xts[,-1] %*% rotate3D(yaw = -10, pitch = 0, roll = 15)
 rotate3D <- function(yaw, pitch, roll){
 
+  if(is.list(yaw)){
+    yaw_ls <- yaw
+    yaw <- yaw_ls[[1]]
+    pitch <- yaw_ls[[2]]
+    roll <- yaw_ls[[3]]
+  }
+
   thetaX <- roll * pi / 180
   thetaY <- pitch * pi / 180
   thetaZ <- yaw * pi / 180

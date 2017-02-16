@@ -25,7 +25,7 @@ We create this package, `mvMonitor`, from the foundation laid by Kazor et al (20
 ### The Interval Vector
 We begin by simulating an autocorrelated interval-step vector $t$. This vector $t$ has induced autocorrelation in its errors, $\varepsilon$, where these autocorrelated errors have initial values and independent components given by \[ \varepsilon \sim \mathcal{N}\left(\frac{1}{2}(a + b)(1 - \phi), \frac{b - a}{12} (1 - \phi ^ 2)\right), \] where $\epsilon_1$ is a random draw from this distribution, $a = 0.01$, $b = 2$, and the autocorrelation component $\phi = 0.75$. The mean and variance multipliers are the mean and variance of a random variable from the $\mathcal{U}_{[a,b]}$ distribution. The full autocorrelated error structure is then \[ \epsilon_s = \phi\epsilon_{s - 1} + (1 - \phi)\varepsilon.
 \]
-This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ with $t^*_1 = -\cos\left(\frac{2\pi}{\omega}\right) + \epsilon_1$, and \[ t^*_s = -\cos\left(\frac{2\pi}{\omega}\right) + \phi\epsilon_{s - 1} + (1 - \phi)\epsilon_s.
+This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ with $t^*_1 = -\cos\left(\frac{2\pi}{\omega}\right) + \epsilon_1$, and \[ t^*_s = -\cos\left(\frac{2\pi}{\omega}\right) + \epsilon_s.
 \]
 The final $t$ vector is the $t^*$ vector scaled to lie entirely in $[a,b]$.
 ```{r t_vec_initialized}
@@ -53,8 +53,7 @@ for(s in 2:omega){
 t_star <- vector(length = omega)
 t_star[1] <- -cos(2 * pi / omega) + t_err[1]
 for(s in 2:omega){
-  t_star[s] <- -cos(2 * pi * s / omega) +
-    phi * t_err[(s - 1)] + (1 - phi) * t_err[s]
+  t_star[s] <- -cos(2 * pi * s / omega) + t_err[s]
 }
 # Now we scale the ts to match the ts from the Unif(0.01,2)
 t_star_adj <- ((b - a) * (t_star - min(t_star))) /
