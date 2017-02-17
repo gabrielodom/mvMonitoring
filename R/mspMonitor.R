@@ -49,6 +49,7 @@
 #' the xts matrix necessary for the mspWarning() function.
 #'
 #' @export
+#' @importFrom xts lag.xts
 #'
 #' @examples
 #' data("normal_switch_xts")
@@ -65,8 +66,8 @@
 #' # While training, we included 1 lag (the default), so we will also lag the
 #' # observations we will test.
 #' testObs <- normal_switch_xts[(n - 6):n, -1]
-#' testObs <- stats::lag(zoo::zoo(testObs), 0:-1)
-#' testObs <- xts::xts(testObs[-1,])
+#' testObs <- xts:::lag.xts(testObs, 0:1)
+#' testObs <- testObs[-1,]
 #' testObs <- cbind(normal_switch_xts[(n - 5):n, 1], testObs)
 #'
 #' mspMonitor(observations = testObs[, -1],

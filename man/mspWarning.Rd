@@ -54,8 +54,8 @@ trainResults_ls <- mspTrain(data = normal_switch_xts[1:(n - 5), -1],
 # While training, we included 1 lag (the default), so we will also lag the
 # observations we will test.
 testObs <- normal_switch_xts[(n - 6):n, -1]
-testObs <- stats::lag(zoo::zoo(testObs), 0:-1)
-testObs <- xts::xts(testObs[-1,])
+testObs <- xts:::lag.xts(testObs, 0:1)
+testObs <- testObs[-1,]
 testObs <- cbind(normal_switch_xts[(n - 5):n, 1], testObs)
 
 # Run the monitoring function.

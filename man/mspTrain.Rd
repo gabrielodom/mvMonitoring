@@ -5,7 +5,7 @@
 \title{Multi-State Adaptive-Dynamic Process Training}
 \usage{
 mspTrain(data, labelVector, trainObs, updateFreq = ceiling(0.5 * trainObs),
-  Dynamic = TRUE, lagsIncluded = c(0, -1), faultsToTriggerAlarm = 3, ...)
+  Dynamic = TRUE, lagsIncluded = c(0, 1), faultsToTriggerAlarm = 3, ...)
 }
 \arguments{
 \item{data}{An xts data matrix}
@@ -33,35 +33,24 @@ an alarm. Defaults to 3}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list with the following components:
-  \itemize{
-    \item{FaultChecks -- }{an xts flagging matrix with the same number of rows as
-      "data". This flag matrix has the following five columns:
-        \itemize{
-          \item{SPE -- }{the SPE statistic value for each observation in
-            "data"}
-          \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the
-            test statistic is less than or equal to the critical value
-            passed through from the threshold object}
-          \item{T2 -- }{the T2 statistic value for each observation in
-            "data"}
-          \item{T2_Flag -- }{a vector of T2 fault indicators, defined like
-            SPE_Flag}
-          \item{Alarm -- }{a column indicating if there have been three flags
-            in a row for either the SPE or T2 monitoring statistics or both.
-            Alarm states are as follows: 0 = no alarm, 1 = Hotelling's T2
-            alarm, 2 = Squared Prediction Error alarm, and 3 = both alarms.}
-        }
-      }
-    \item{Non_Alarmed_Obs -- }{an xts data matrix of all the non-alarmed
-      observations}
-    \item{Alarms -- }{an xts data matrix of the features and specific alarms
-      for Alarmed observations with the alarm codes are listed above}
-    \item{TrainingSpecs -- }{a list of k lists, one for each class, with each
-      list containing the specific threshold object returned by the internal
-      threshold() function for that class. See the threshold() function's
-      help file for more details.}
-  }
+A list with the following components: \itemize{ \item{FaultChecks --
+  }{an xts flagging matrix with the same number of rows as "data". This flag
+  matrix has the following five columns: \itemize{ \item{SPE -- }{the SPE
+  statistic value for each observation in "data"} \item{SPE_Flag -- }{a
+  vector of SPE indicators recording 0 if the test statistic is less than or
+  equal to the critical value passed through from the threshold object}
+  \item{T2 -- }{the T2 statistic value for each observation in "data"}
+  \item{T2_Flag -- }{a vector of T2 fault indicators, defined like SPE_Flag}
+  \item{Alarm -- }{a column indicating if there have been three flags in a
+  row for either the SPE or T2 monitoring statistics or both. Alarm states
+  are as follows: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared
+  Prediction Error alarm, and 3 = both alarms.} } } \item{Non_Alarmed_Obs --
+  }{an xts data matrix of all the non-alarmed observations} \item{Alarms --
+  }{an xts data matrix of the features and specific alarms for Alarmed
+  observations with the alarm codes are listed above} \item{TrainingSpecs --
+  }{a list of k lists, one for each class, with each list containing the
+  specific threshold object returned by the internal threshold() function for
+  that class. See the threshold() function's help file for more details.} }
 }
 \description{
 This function performs Multi-State Adaptive-Dynamic PCA on a
@@ -90,17 +79,23 @@ This function is designed to identify and sort out sequences of
   alarm-positive observations are then removed from the data set and held in
   a separate xts matrix for inspection.
 
-  Concering the lagsIncluded variable: the argument lagsIncluded = c(0,-1)
+  Concering the lagsIncluded variable: the argument lagsIncluded = c(0,1)
   will column concatenate the current data with the same data from one
   discrete time step back. This will necesarily remove the first row of the
   data matrix, as we will have NA values under the lagged features. The
-  argument lagsIncluded = 0:-2 will column concatenate the current
+  argument lagsIncluded = 0:2 will column concatenate the current
   observations with the observations from one step previous and the
   observations from two steps previous, which will necessarily requirethe
   removal of the first two rows of the data matrix. To include only certain
-  lags with the current data, specify lagsIncluded = c(0, -lag_1, -lag_2, ...
-  , -lag_K). This induce NA values in the first max(abs(-lag_k)) rows, for k
-  = 1, ... , K, and these rows will be removed from consideration.
+  lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ... ,
+  lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...
+  , K, and these rows will be removed from consideration. From the lag.xts()
+  function helpfile: "The primary motivation for having methods specific to
+  xts was to make use of faster C-level code within xts. Additionally, it was
+  decided that lag's default behavior should match the common time-series
+  interpretation of that operator — specifically that a value at time ‘t’
+  should be the value at time ‘t-1’ for a positive lag. This is different
+  than lag.zoo() as well as lag.ts()."
 
   Of note when considering performance: the example has 10080 rows on three
   features alternating between three states, and trains on 20 percent of the
@@ -116,13 +111,13 @@ This function is designed to identify and sort out sequences of
   recorded every five minutes, try updateFreq = (60 / 5) * 8 = 96 or (60 / 5)
   * 12 = 144.
 
-This user-facing function calls the processMonitor() function, and returns
-the training arguments necessary to call the mspMonitor() and mspWarning()
-functions.
+  This user-facing function calls the processMonitor() function, and returns
+  the training arguments necessary to call the mspMonitor() and mspWarning()
+  functions.
 
-For more details, see Kazor et al (2016):
+  For more details, see Kazor et al (2016):
 
-\url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
+  \url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
 }
 \examples{
 data("normal_switch_xts")
