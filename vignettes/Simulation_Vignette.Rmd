@@ -50,11 +50,9 @@ for(s in 2:omega){
 }
 
 # Now for the vector itself
-t_star <- vector(length = omega)
-t_star[1] <- -cos(2 * pi / omega) + t_err[1]
-for(s in 2:omega){
-  t_star[s] <- -cos(2 * pi * s / omega) + t_err[s]
-}
+s <- 1:omega
+t_star <- -cos(2 * pi * s / omega) + t_err
+
 # Now we scale the ts to match the ts from the Unif(0.01,2)
 t_star_adj <- ((b - a) * (t_star - min(t_star))) /
   (max(t_star) - min(t_star)) + a
