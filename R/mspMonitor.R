@@ -78,6 +78,8 @@ mspMonitor <- function(observations,
                        trainingSummary,
                        ...){
 
+  # browser()
+
   classes <- unique(labelVector)
 
   # If our user accidentally sends in a vector instead of an xts matrix

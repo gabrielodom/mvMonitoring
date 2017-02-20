@@ -621,6 +621,9 @@ Now that we've created and stored these feature, we can use time-series plots to
 # faults_ls$fault3B %>% select(x) %>% plot.ts()
 # faults_ls$fault3B %>% select(y) %>% plot.ts()
 # faults_ls$fault3B %>% select(z) %>% plot.ts()
+faults_ls$normal$x %>% plot.xts()
+faults_ls$normal$y %>% plot.xts()
+faults_ls$normal$z %>% plot.xts()
 faults_ls$fault1A$x %>% plot.xts()
 faults_ls$fault1A$y %>% plot.xts()
 faults_ls$fault1A$z %>% plot.xts()
@@ -646,13 +649,13 @@ faults_ls$fault3B$z %>% plot.xts()
 We now throw all this data we've just generated into our package.
 ```{r msad-pca}
 Sys.time()
-results_ls <- mvMonitoring::mspTrain(data = faults_ls$normal[,2:4],
-                         labelVector = faults_ls$normal[,1],
+results_ls <- mvMonitoring::mspTrain(data = faults_ls$normal[1:8640, 2:4],
+                         labelVector = faults_ls$normal[1:8640, 1],
                          trainObs = 3 * 24 * 60,
                          updateFreq = 24 * 60,
                          alpha = 0.001,
                          faultsToTriggerAlarm = 3,
-                         lagsIncluded = 0:-2)
+                         lagsIncluded = 0:2)
 Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # 1 second for 2880 train (two days), and 1440 update (one day).
 
@@ -673,14 +676,14 @@ Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 ## Test the Multi-State Monitoring function
 ```{r test_msad-pca}
 # Create six observations with lags 0:2 included
-laggedTestObs <- faults_ls$normal[10073:10080, -1]
+laggedTestObs <- faults_ls$normal[8639:10080, -1]
 laggedTestObs <- lag.xts(laggedTestObs, 0:2)
 laggedTestObs <- laggedTestObs[-(1:2),]
-laggedTestObs <- cbind(faults_ls$normal[10075:10080, 1], laggedTestObs)
+laggedTestObs <- cbind(faults_ls$normal[8641:10080, 1], laggedTestObs)
 testDataandFlags <- mvMonitoring::mspMonitor(observations = laggedTestObs[,-1],
            labelVector = laggedTestObs[,1],
            trainingSummary = results_ls$TrainingSpecs)
-testDataandFlags[6,]
+testDataandFlags[1:5,]
 ```
 
 ## Test the Warning function
@@ -693,7 +696,14 @@ alarmData <- testDataandFlags
 for(i in 1:nrow(testDataandFlags)){
   alarmData[1:i,] <- mvMonitoring::mspWarning(alarmData[1:i,])
 }
-alarmData
+alarmData[,11:15]
+
+# We are seeing a lot of false alarms in state 2 under NOC, but few to no false
+# alarms in states 1 an 3
+# faults_ls$normal[faults_ls$normal[,1] == 2, 2] %>% plot.xts()
+# faults_ls$normal[faults_ls$normal[,1] == 2, 3] %>% plot.xts()
+# faults_ls$normal[faults_ls$normal[,1] == 2, 4] %>% plot.xts()
+# faults_ls$normal[faults_ls$normal[,1] == 2, 2:4] %>% scatterplot3d()
 ```
 
 # Real Data
