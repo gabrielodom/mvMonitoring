@@ -96,8 +96,15 @@ mspMonitor <- function(observations,
   # Apply the fault detection function to each row, accounting for the chance
   # that rows come from different classes
   dataAndFaults <- lapply(1:nrow(classData), function(i){
-    faultObj <- faultDetect(threshold_object = trainingSummary[[classData[i,1]]],
-                            observation = classData[i, -1])
+    # Subset out the appropriate training information for that observation
+    train_ls <- trainingSummary[[classData[i,1]]]
+    # Centre and scale the observation
+    centredObs <- as.matrix(classData[i, -1] - train_ls$muTrain)
+    scaledObs <- centredObs %*% train_ls$RootPrecisTrain
+    # Now apply fault detection
+    faultObj <- faultDetect(threshold_object = train_ls,
+                            observation = scaledObs)
+    # Bind the flagging info to the original observation
     cbind(classData[i,], faultObj)
   })
   obsAndFlags <- do.call(rbind, dataAndFaults)

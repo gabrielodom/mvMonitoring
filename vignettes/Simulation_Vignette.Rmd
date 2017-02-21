@@ -674,6 +674,17 @@ Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # false alarm rates dropped back, but not nearly as low (0.0031, 0.0884).
 
 results_ls$TrainingSpecs[[2]]$SPE_threshold
+# Apparently, the SPE function is VERY sensitive to the change in the var.amnt
+# parameter (defaults to 95%). At 0.95, the threshold is around 1.2-1.4. The
+# closer this parameter is to 1, the lower the SPE threshold (overfitting?).
+# This causes the abnormally high false alarm rate for state 2. However, when I
+# drop var.amnt even to 94%, the threshold increases drastically (to between 18
+# and 20); and if I increase var.amnt to 99%, the threshold drops to about
+# 0.6-0.7. I need to speak with Dr. Hering about this.
+
+# I think that right around 94% is the cutoff to include or not include one of
+# the features, so we have almost a 0-1 loss cutoff there. Features aren't
+# continuous, so I'm not sure the best course of action here.
 ```
 
 ## Test the Multi-State Monitoring function
@@ -795,15 +806,15 @@ tenDayResults_ls <- mvMonitoring::mspTrain(data = tenDay_clean,
                          updateFreq = 144,
                          alpha = 0.001,
                          faultsToTriggerAlarm = 3,
-                         lagsIncluded = 0:-1)
+                         lagsIncluded = 0:1,
+                         var.amnt = 0.95)
 ```
 
 ### Testing the New Observations
 We will test the observations from the `oneDay_clean` data set. We must first lag the test observations. We'll borrow the lags we don't have from the previous day (in `nineDay_clean`).
 ```{r testRealData}
-laggedOneDay <- stats::lag(zoo::zoo(oneDay_clean), 0:-1)
+laggedOneDay <- lag.xts(oneDay_clean, 0:1)
 laggedOneDay[1,36:70] <- tenDay_clean[nrow(tenDay_clean),]
-laggedOneDay <- xts::xts(laggedOneDay)
 
 realDataandFlags <- mvMonitoring::mspMonitor(observations = laggedOneDay,
            labelVector = rep(1, nrow(laggedOneDay)),
@@ -820,3 +831,4 @@ for(i in 1:nrow(realDataandFlags)){
 tail(realAlarmData)
 ```
 I'm not sure why this is happening. I'll have to dig in to it later. I do notice that both the SPE and T2 statistics are off the charts. The only component affecting them equally is the projection matrix P. We are estimating a 70 ^ 2 matrix using only 432 observations at a time, so this matrix could very well be unstable (we'd need around 2500 observations to stably estimate the scatter matrix).
+EDIT: I was not supplying the training mean vector and precision matrix to the monitoring function, which means that the the test observations were not being centred and scaled. This did not make much impact in the simulated data, as the centered and scaled data would not be far off from the original values, except in state 2. This issue is fixed.

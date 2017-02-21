@@ -100,6 +100,11 @@ faultFilter <- function(trainData,
   scaledTest <- xts(scaledTest, order.by = index(testData))
   colnames(scaledTest) <- colnames(testData)
 
+  # We also need the training information to contain the mean and precision, so
+  # that new observations can be centred and scaled based on the training info.
+  thresholdObj$muTrain <- muTrain
+  thresholdObj$RootPrecisTrain <- precisRootMat
+
   # We now apply the faultDetect function down each row of the scaled test data
   # set. We then return it to its form as an xts matrix.
   faultObj <- lapply(1:nrow(scaledTest), function(i){
