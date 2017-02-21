@@ -713,7 +713,8 @@ for(i in 1:nrow(testDataandFlags)){
 
 # False Alarms? 
 alarmData[,15] %>% sum(na.rm = T)
-alarmData[,11:15]
+alarmData[,11:15] %>% head
+alarmData[,11:15] %>% tail
 
 # What do the first three hours look like? What did it look like right before?
 # Before
@@ -836,7 +837,10 @@ EDIT: I was not supplying the training mean vector and precision matrix to the m
 
 # Fault Simulations
 We believe that our code is up and running properly. Now, we will test how quickly the monitoring function can identify system faults. These faults will all start at index 8500 (9:39PM on 2 December), and we will train on the first 7500 observations.
+
+### Fault 1A
 ```{r faultSim1A}
+Sys.time()
 results1A_ls <- mvMonitoring::mspTrain(data = faults_ls$fault1A[1:7500, -1],
                          labelVector = faults_ls$normal[1:7500, 1],
                          trainObs = 3 * 24 * 60,
@@ -858,4 +862,146 @@ alarmData_1A <- testDataandFlags_1A
 for(i in 1:nrow(testDataandFlags_1A)){
   alarmData_1A[1:i,] <- mvMonitoring::mspWarning(alarmData_1A[1:i,])
 }
+Sys.time() # 13 seconds on Windows machine
+alarmData_1A[,15] %>% plot.xts()
+```
+
+### Fault 1B
+```{r faultSim1B}
+Sys.time()
+results1B_ls <- mvMonitoring::mspTrain(data = faults_ls$fault1B[1:7500, -1],
+                         labelVector = faults_ls$normal[1:7500, 1],
+                         trainObs = 3 * 24 * 60,
+                         updateFreq = 24 * 60,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:2,
+                         var.amnt = 0.95)
+
+laggedTestObs_1B <- faults_ls$fault1B[7499:10080, -1]
+laggedTestObs_1B <- lag.xts(laggedTestObs_1B, 0:2)
+laggedTestObs_1B <- laggedTestObs_1B[-(1:2),]
+laggedTestObs_1B <- cbind(faults_ls$fault1B[7501:10080, 1], laggedTestObs_1B)
+testDataandFlags_1B <- mvMonitoring::mspMonitor(observations = laggedTestObs_1B[,-1],
+           labelVector = laggedTestObs_1B[,1],
+           trainingSummary = results1B_ls$TrainingSpecs)
+
+alarmData_1B <- testDataandFlags_1B
+for(i in 1:nrow(testDataandFlags_1B)){
+  alarmData_1B[1:i,] <- mvMonitoring::mspWarning(alarmData_1B[1:i,])
+}
+Sys.time() # 14 seconds on the Windows machine
+alarmData_1B[,15] %>% plot.xts()
+```
+
+### Fault 2A
+```{r faultSim2A}
+Sys.time()
+results2A_ls <- mvMonitoring::mspTrain(data = faults_ls$fault2A[1:7500, -1],
+                         labelVector = faults_ls$normal[1:7500, 1],
+                         trainObs = 3 * 24 * 60,
+                         updateFreq = 24 * 60,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:2,
+                         var.amnt = 0.95)
+
+laggedTestObs_2A <- faults_ls$fault2A[7499:10080, -1]
+laggedTestObs_2A <- lag.xts(laggedTestObs_2A, 0:2)
+laggedTestObs_2A <- laggedTestObs_2A[-(1:2),]
+laggedTestObs_2A <- cbind(faults_ls$fault2A[7501:10080, 1], laggedTestObs_2A)
+testDataandFlags_2A <- mvMonitoring::mspMonitor(observations = laggedTestObs_2A[,-1],
+           labelVector = laggedTestObs_2A[,1],
+           trainingSummary = results2A_ls$TrainingSpecs)
+
+alarmData_2A <- testDataandFlags_2A
+for(i in 1:nrow(testDataandFlags_2A)){
+  alarmData_2A[1:i,] <- mvMonitoring::mspWarning(alarmData_2A[1:i,])
+}
+Sys.time() # 18 seconds on Windows machine
+alarmData_2A[,15] %>% plot.xts()
+```
+
+### Fault 2B
+```{r faultSim2B}
+Sys.time()
+results2B_ls <- mvMonitoring::mspTrain(data = faults_ls$fault2B[1:7500, -1],
+                         labelVector = faults_ls$normal[1:7500, 1],
+                         trainObs = 3 * 24 * 60,
+                         updateFreq = 24 * 60,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:2,
+                         var.amnt = 0.95)
+
+laggedTestObs_2B <- faults_ls$fault2B[7499:10080, -1]
+laggedTestObs_2B <- lag.xts(laggedTestObs_2B, 0:2)
+laggedTestObs_2B <- laggedTestObs_2B[-(1:2),]
+laggedTestObs_2B <- cbind(faults_ls$fault2B[7501:10080, 1], laggedTestObs_2B)
+testDataandFlags_2B <- mvMonitoring::mspMonitor(observations = laggedTestObs_2B[,-1],
+           labelVector = laggedTestObs_2B[,1],
+           trainingSummary = results2B_ls$TrainingSpecs)
+
+alarmData_2B <- testDataandFlags_2B
+for(i in 1:nrow(testDataandFlags_2B)){
+  alarmData_2B[1:i,] <- mvMonitoring::mspWarning(alarmData_2B[1:i,])
+}
+Sys.time() # 15 seconds on the Windows machine
+alarmData_2B[,15] %>% plot.xts()
+```
+
+### Fault 3A
+```{r faultSim3A}
+Sys.time()
+results3A_ls <- mvMonitoring::mspTrain(data = faults_ls$fault3A[1:7500, -1],
+                         labelVector = faults_ls$normal[1:7500, 1],
+                         trainObs = 3 * 24 * 60,
+                         updateFreq = 24 * 60,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:2,
+                         var.amnt = 0.95)
+
+laggedTestObs_3A <- faults_ls$fault3A[7499:10080, -1]
+laggedTestObs_3A <- lag.xts(laggedTestObs_3A, 0:2)
+laggedTestObs_3A <- laggedTestObs_3A[-(1:2),]
+laggedTestObs_3A <- cbind(faults_ls$fault3A[7501:10080, 1], laggedTestObs_3A)
+testDataandFlags_3A <- mvMonitoring::mspMonitor(observations = laggedTestObs_3A[,-1],
+           labelVector = laggedTestObs_3A[,1],
+           trainingSummary = results3A_ls$TrainingSpecs)
+
+alarmData_3A <- testDataandFlags_3A
+for(i in 1:nrow(testDataandFlags_3A)){
+  alarmData_3A[1:i,] <- mvMonitoring::mspWarning(alarmData_3A[1:i,])
+}
+Sys.time() # 13 seconds on Windows machine
+alarmData_3A[,15] %>% plot.xts()
+```
+
+### Fault 3B
+```{r faultSim3B}
+Sys.time()
+results3B_ls <- mvMonitoring::mspTrain(data = faults_ls$fault3B[1:7500, -1],
+                         labelVector = faults_ls$normal[1:7500, 1],
+                         trainObs = 3 * 24 * 60,
+                         updateFreq = 24 * 60,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:2,
+                         var.amnt = 0.95)
+
+laggedTestObs_3B <- faults_ls$fault3B[7499:10080, -1]
+laggedTestObs_3B <- lag.xts(laggedTestObs_3B, 0:2)
+laggedTestObs_3B <- laggedTestObs_3B[-(1:2),]
+laggedTestObs_3B <- cbind(faults_ls$fault3B[7501:10080, 1], laggedTestObs_3B)
+testDataandFlags_3B <- mvMonitoring::mspMonitor(observations = laggedTestObs_3B[,-1],
+           labelVector = laggedTestObs_3B[,1],
+           trainingSummary = results3B_ls$TrainingSpecs)
+
+alarmData_3B <- testDataandFlags_3B
+for(i in 1:nrow(testDataandFlags_3B)){
+  alarmData_3B[1:i,] <- mvMonitoring::mspWarning(alarmData_3B[1:i,])
+}
+Sys.time() # 13 seconds on the Windows machine
+alarmData_3B[,15] %>% plot.xts()
 ```

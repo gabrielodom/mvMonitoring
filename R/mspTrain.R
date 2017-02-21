@@ -174,6 +174,8 @@ mspTrain <- function(data,
     monitorResults[[i]]$Non_Alarmed_Obs
   })
   Non_Alarmed_Obs <- do.call(rbind, Non_Alarmed_Obs)
+  Non_Alarmed_Obs <- cbind(classData[index(Non_Alarmed_Obs), 1],
+                           Non_Alarmed_Obs)
 
   # Alarmed observations and corresponding alarm codes data matrix
   Alarms <- lapply(classes, function(i){
