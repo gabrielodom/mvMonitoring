@@ -832,3 +832,30 @@ tail(realAlarmData)
 ```
 I'm not sure why this is happening. I'll have to dig in to it later. I do notice that both the SPE and T2 statistics are off the charts. The only component affecting them equally is the projection matrix P. We are estimating a 70 ^ 2 matrix using only 432 observations at a time, so this matrix could very well be unstable (we'd need around 2500 observations to stably estimate the scatter matrix).
 EDIT: I was not supplying the training mean vector and precision matrix to the monitoring function, which means that the the test observations were not being centred and scaled. This did not make much impact in the simulated data, as the centered and scaled data would not be far off from the original values, except in state 2. This issue is fixed.
+
+
+# Fault Simulations
+We believe that our code is up and running properly. Now, we will test how quickly the monitoring function can identify system faults. These faults will all start at index 8500 (9:39PM on 2 December), and we will train on the first 7500 observations.
+```{r faultSim1A}
+results1A_ls <- mvMonitoring::mspTrain(data = faults_ls$fault1A[1:7500, -1],
+                         labelVector = faults_ls$normal[1:7500, 1],
+                         trainObs = 3 * 24 * 60,
+                         updateFreq = 24 * 60,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:2,
+                         var.amnt = 0.95)
+
+laggedTestObs_1A <- faults_ls$fault1A[7499:10080, -1]
+laggedTestObs_1A <- lag.xts(laggedTestObs_1A, 0:2)
+laggedTestObs_1A <- laggedTestObs_1A[-(1:2),]
+laggedTestObs_1A <- cbind(faults_ls$fault1A[7501:10080, 1], laggedTestObs_1A)
+testDataandFlags_1A <- mvMonitoring::mspMonitor(observations = laggedTestObs_1A[,-1],
+           labelVector = laggedTestObs_1A[,1],
+           trainingSummary = results1A_ls$TrainingSpecs)
+
+alarmData_1A <- testDataandFlags_1A
+for(i in 1:nrow(testDataandFlags_1A)){
+  alarmData_1A[1:i,] <- mvMonitoring::mspWarning(alarmData_1A[1:i,])
+}
+```
