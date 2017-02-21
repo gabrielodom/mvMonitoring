@@ -651,11 +651,12 @@ We now throw all this data we've just generated into our package.
 Sys.time()
 results_ls <- mvMonitoring::mspTrain(data = faults_ls$normal[1:8640, 2:4],
                          labelVector = faults_ls$normal[1:8640, 1],
-                         trainObs = 3 * 24 * 60,
+                         trainObs = 5 * 24 * 60,
                          updateFreq = 24 * 60,
                          alpha = 0.001,
                          faultsToTriggerAlarm = 3,
-                         lagsIncluded = 0:2)
+                         lagsIncluded = 0:2,
+                         var.amnt = 0.95)
 Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # 1 second for 2880 train (two days), and 1440 update (one day).
 
@@ -671,6 +672,8 @@ Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
 # false alarm rates increased dramatically (0.19, 0.41), so we increased the
 # number of training observations to 4320 (three days worth, up from 2880). The
 # false alarm rates dropped back, but not nearly as low (0.0031, 0.0884).
+
+results_ls$TrainingSpecs[[2]]$SPE_threshold
 ```
 
 ## Test the Multi-State Monitoring function
@@ -696,7 +699,22 @@ alarmData <- testDataandFlags
 for(i in 1:nrow(testDataandFlags)){
   alarmData[1:i,] <- mvMonitoring::mspWarning(alarmData[1:i,])
 }
+
+# False Alarms? 
+alarmData[,15] %>% sum(na.rm = T)
 alarmData[,11:15]
+
+# What do the first three hours look like? What did it look like right before?
+# Before
+faults_ls$normal[8461:8640, 2:4] %>% scatterplot3d()
+# After
+alarmData[1:180,2:4] %>% scatterplot3d()
+# I'm not seeing much difference - even the scales are the same. Let's look
+# specifically at state 2:
+# Before
+faults_ls$normal[8521:8580, 2:4] %>% scatterplot3d()
+# After
+alarmData[61:120,2:4] %>% scatterplot3d()
 
 # We are seeing a lot of false alarms in state 2 under NOC, but few to no false
 # alarms in states 1 an 3
