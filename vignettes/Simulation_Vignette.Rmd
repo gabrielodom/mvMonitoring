@@ -839,6 +839,7 @@ EDIT: I was not supplying the training mean vector and precision matrix to the m
 We believe that our code is up and running properly. Now, we will test how quickly the monitoring function can identify system faults. These faults will all start at index 8500 (9:39PM on 2 December), and we will train on the first 7500 observations.
 
 ### Fault 1A
+Wer see near-immediate alarm states from both SPE and T2.
 ```{r faultSim1A}
 Sys.time()
 results1A_ls <- mvMonitoring::mspTrain(data = faults_ls$fault1A[1:7500, -1],
@@ -862,11 +863,12 @@ alarmData_1A <- testDataandFlags_1A
 for(i in 1:nrow(testDataandFlags_1A)){
   alarmData_1A[1:i,] <- mvMonitoring::mspWarning(alarmData_1A[1:i,])
 }
-Sys.time() # 13 seconds on Windows machine
+Sys.time() # 13 seconds on Windows machine and Mac
 alarmData_1A[,15] %>% plot.xts()
 ```
 
 ### Fault 1B
+We see near-immediate alarm rates from SPE, and T2 alarms within the first half hour.
 ```{r faultSim1B}
 Sys.time()
 results1B_ls <- mvMonitoring::mspTrain(data = faults_ls$fault1B[1:7500, -1],
@@ -890,11 +892,12 @@ alarmData_1B <- testDataandFlags_1B
 for(i in 1:nrow(testDataandFlags_1B)){
   alarmData_1B[1:i,] <- mvMonitoring::mspWarning(alarmData_1B[1:i,])
 }
-Sys.time() # 14 seconds on the Windows machine
+Sys.time() # 14 seconds on the Windows machine, 12 on Mac
 alarmData_1B[,15] %>% plot.xts()
 ```
 
 ### Fault 2A
+SPE alarms after four hours, T2 after six, and they both alarm together consistently after 12 hours.
 ```{r faultSim2A}
 Sys.time()
 results2A_ls <- mvMonitoring::mspTrain(data = faults_ls$fault2A[1:7500, -1],
@@ -918,11 +921,12 @@ alarmData_2A <- testDataandFlags_2A
 for(i in 1:nrow(testDataandFlags_2A)){
   alarmData_2A[1:i,] <- mvMonitoring::mspWarning(alarmData_2A[1:i,])
 }
-Sys.time() # 18 seconds on Windows machine
+Sys.time() # 18 seconds on Windows machine, 12 on Mac
 alarmData_2A[,15] %>% plot.xts()
 ```
 
 ### Fault 2B
+SPE alarms around four to five hours after this fault, and T2 comes in about 11 hours after this fault.
 ```{r faultSim2B}
 Sys.time()
 results2B_ls <- mvMonitoring::mspTrain(data = faults_ls$fault2B[1:7500, -1],
@@ -946,11 +950,12 @@ alarmData_2B <- testDataandFlags_2B
 for(i in 1:nrow(testDataandFlags_2B)){
   alarmData_2B[1:i,] <- mvMonitoring::mspWarning(alarmData_2B[1:i,])
 }
-Sys.time() # 15 seconds on the Windows machine
+Sys.time() # 15 seconds on the Windows machine, 12 on Mac
 alarmData_2B[,15] %>% plot.xts()
 ```
 
 ### Fault 3A
+This fault is almost entirely missed by the monitor. However, both SPE and T2 trigger an alarm after 11 hours.
 ```{r faultSim3A}
 Sys.time()
 results3A_ls <- mvMonitoring::mspTrain(data = faults_ls$fault3A[1:7500, -1],
@@ -974,11 +979,12 @@ alarmData_3A <- testDataandFlags_3A
 for(i in 1:nrow(testDataandFlags_3A)){
   alarmData_3A[1:i,] <- mvMonitoring::mspWarning(alarmData_3A[1:i,])
 }
-Sys.time() # 13 seconds on Windows machine
+Sys.time() # 13 seconds on Windows machine, 11 on Mac
 alarmData_3A[,15] %>% plot.xts()
 ```
 
 ### Fault 3B
+SPE triggers an alarm almost immediately, while T2 takes almost 11 hours to trigger.
 ```{r faultSim3B}
 Sys.time()
 results3B_ls <- mvMonitoring::mspTrain(data = faults_ls$fault3B[1:7500, -1],
@@ -1002,6 +1008,6 @@ alarmData_3B <- testDataandFlags_3B
 for(i in 1:nrow(testDataandFlags_3B)){
   alarmData_3B[1:i,] <- mvMonitoring::mspWarning(alarmData_3B[1:i,])
 }
-Sys.time() # 13 seconds on the Windows machine
+Sys.time() # 13 seconds on the Windows machine, 12 on Mac
 alarmData_3B[,15] %>% plot.xts()
 ```
