@@ -39,4 +39,3 @@ Three-feature, three-state simulated process data including
   positive shift in values for one feature.
 }
 \keyword{datasets}
-

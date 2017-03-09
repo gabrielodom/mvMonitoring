@@ -51,4 +51,3 @@ scaledData <- scale(normal_switch_xts[,-1])
 pca_obj <- pca(scaledData, var.amnt = 0.9)
 threshold(pca_object = pca_obj, alpha = 0.05)
 }
-

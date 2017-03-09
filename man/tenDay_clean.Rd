@@ -17,4 +17,3 @@ Data from the SM-MBR Bioreactor system over ten days. This data
   will be used for training the mvMonitoring package.
 }
 \keyword{datasets}
-
