@@ -53,7 +53,6 @@
 #' @importFrom dplyr select
 #' @importFrom magrittr %>%
 #' @importFrom stats rnorm
-#' @importFrom xts xts
 #'
 #' @examples processNOCdata(startTime = "2016-11-27 00:00:00 CST")
 processNOCdata <- function(startTime,
@@ -118,7 +117,7 @@ processNOCdata <- function(startTime,
   ###  Escape for Single-State Case  ###
   if(multiState != TRUE){
     normal_df$state <- 1
-    return(normal_df %>% select(dateTime, state, x, y, z))
+    return(normal_df)
   }
 
   ###  And Three States  ###
@@ -142,13 +141,17 @@ processNOCdata <- function(startTime,
   ###  Hourly Switching Process  ###
   state1_df <- normal_df %>%
     filter(state == 1) %>%
-    select(dateTime, state, x, y, z)
+    select(dateTime, state, x, y, z, t, err1, err2, err3)
   state2_df <- normal_df %>%
     filter(state == 2) %>%
-    select(dateTime, state, x = xState2, y = yState2, z = zState2)
+    select(dateTime, state,
+           x = xState2, y = yState2, z = zState2,
+           t, err1, err2, err3)
   state3_df <- normal_df %>%
     filter(state == 3) %>%
-    select(dateTime, state, x = xState3, y = yState3, z = zState3)
+    select(dateTime, state,
+           x = xState3, y = yState3, z = zState3,
+           t, err1, err2, err3)
   normal_switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
     arrange(dateTime)
 

@@ -5,7 +5,10 @@
 \title{Simulate Normal or Fault Observations from a Single-State or Multi-State
 Process}
 \usage{
-mspProcessData(fault = NULL, faultStartIndex = NULL, startTime, ...)
+mspProcessData(fault, faultStartIndex, startTime, period = 7 * 24 * 60,
+  angles2 = list(yaw = 0, pitch = 90, roll = 30), scales2 = c(1, 0.5, 2),
+  angles3 = list(yaw = 90, pitch = 0, roll = -30), scales3 = c(0.25, 0.1,
+  0.75), ...)
 }
 \arguments{
 \item{...}{}
@@ -20,7 +23,7 @@ mspProcessData(fault = NULL, faultStartIndex = NULL, startTime, ...)
 
 }
 \examples{
-mspProcessData(fault = 0,
+mspProcessData(fault = "NOC",
                          faultStartIndex = 8500,
                          startTime = "2016-11-27 00:00:00 CST",
                          multiState = TRUE)
