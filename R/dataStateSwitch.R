@@ -20,9 +20,13 @@
 #' @importFrom dplyr select
 #' @importFrom magrittr %>%
 #'
-#' @examples
-dataStateSwitch <- function(df, angles2, scales2,
-                            angles3, scales3){
+#' @examples nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")
+#' dataStateSwitch(nrml)
+dataStateSwitch <- function(df,
+                            angles2 = list(yaw = 0, pitch = 90, roll = 30),
+                            scales2 = c(1, 0.5, 2),
+                            angles3 = list(yaw = 90, pitch = 0, roll = -30),
+                            scales3 = c(0.25, 0.1, 0.75)){
   mat <- df %>% select(x,y,z) %>% as.matrix
 
   # State 2

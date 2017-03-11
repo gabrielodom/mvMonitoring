@@ -2,11 +2,16 @@
 #'
 #' @description
 #'
-#' @param df
-#' @param fault
-#' @param faultStartIndex
-#' @param period
-#' @param shift
+#' @param df A data frame returned by the processNOCdata() function.
+#' @param fault A character string. Options are "NOC", "A1", "B1", "A2", "B2",
+#'   "A3", or "B3". See "details" of mspProcessData() for more information.
+#' @param faultStartIndex An integer specifying the index at which the faults
+#'   will start.
+#' @param period The observation cycle length. Defaults to one week's worth of
+#'   minute-level observations (10,080 observations).
+#' @param shift The fault parameter for faults "A1" and "B1" corresponding to
+#'   the positive shock value added to features. Defaults to 2. See "details" of
+#'   mspProcessData() for more information.
 #'
 #' @return
 #'
@@ -14,17 +19,16 @@
 #'
 #' @export
 #'
-#' @importFrom dplyr arrange
-#' @importFrom dplyr bind_rows
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
 #' @importFrom magrittr %>%
 #'
-#' @examples
+#' @examples nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")
+#' faultSwitch(nrml, fault = "NOC", faultStartIndex = 8500)
 faultSwitch <- function(df, fault,
                         faultStartIndex,
-                        period, shift = 2){
+                        period = 10080, shift = 2){
   ###  Define the Fault Functions  ###
   # Fault 1A
   fault1A <- function(df, shift){

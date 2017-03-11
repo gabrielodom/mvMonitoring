@@ -1,10 +1,13 @@
 #' Simulate Normal or Fault Observations from a Single-State or Multi-State
 #' Process
 #'
-#' @description
+#' @description Generate single- or multi-state observations under normal
+#'   operating conditions or under fault conditions.
 #'
-#' @param faults
-#' @param faultStartIndex
+#' @param faults A character vector of faults chosen. Options are "NOC", "A1",
+#'   "B1", "A2", "B2", "A3", or "B3". See details for more information.
+#' @param faultStartIndex An integer specifying the index at which the faults
+#'   will start.
 #' @param startTime a POSIXct object specifying the day and time for the
 #'   starting observation.
 #' @param period The observation cycle length. Defaults to one week's worth of
@@ -19,30 +22,27 @@
 #'   pitch = 0, and roll = -30.
 #' @param scales3 Change the principal scales for State 3. Defaults to 0.25,
 #'   0.1, and 0.75.
-#' @param ...
+#' @param ... Lazy dots for internal arguments
 #'
-#' @return An data frame with the following information: \itemize{
-#'   \item{dateTime -- }{A POSIXct column of times starting at the user-defined
-#'   `startTime` argument, length given by the `period` argument, and spacing
-#'   given by the `increment` argument. For example, if the starting value is
-#'   "2016-01-10", period is 10080, and the incrementation is in minutes, then
-#'   this sequence will be one week's worth of observations recorded every
-#'   minute from midnight on the tenth of January.} \item{state -- }{An integer
-#'   column of all 1's (when the `multiState` argument is FALSE), or a column of
-#'   the state values (1, 2 or 3).} \item{x -- }{A double column of generated
-#'   values for the first feature.} \item{y -- }{A double column of generated
-#'   values for the second feature.} \item{z -- }{A double column of generated
-#'   values for the third feature.}}
+#' @return A list of data frames named with the names of the given faults with
+#'   the following information: \itemize{ \item{dateTime -- }{A POSIXct column
+#'   of times starting at the user-defined `startTime` argument, length given by
+#'   the `period` argument, and spacing given by the `increment` argument. For
+#'   example, if the starting value is "2016-01-10", period is 10080, and the
+#'   incrementation is in minutes, then this sequence will be one week's worth
+#'   of observations recorded every minute from midnight on the tenth of
+#'   January.} \item{state -- }{An integer column of all 1's (when the
+#'   `multiState` argument is FALSE), or a column of the state values (1, 2 or
+#'   3).} \item{x -- }{A double column of generated values for the first
+#'   feature.} \item{y -- }{A double column of generated values for the second
+#'   feature.} \item{z -- }{A double column of generated values for the third
+#'   feature.}}
 #'
 #' @details
 #'
 #' @export
 #'
-#' @importFrom dplyr arrange
 #' @importFrom dplyr bind_rows
-#' @importFrom dplyr filter
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval lazy_eval
 #' @importFrom magrittr %>%

@@ -11,6 +11,12 @@ mspProcessData(faults, faultStartIndex, startTime, period = 7 * 24 * 60,
   scales3 = c(0.25, 0.1, 0.75), ...)
 }
 \arguments{
+\item{faults}{A character vector of faults chosen. Options are "NOC", "A1",
+"B1", "A2", "B2", "A3", or "B3". See details for more information.}
+
+\item{faultStartIndex}{An integer specifying the index at which the faults
+will start.}
+
 \item{startTime}{a POSIXct object specifying the day and time for the
 starting observation.}
 
@@ -32,24 +38,26 @@ pitch = 0, and roll = -30.}
 \item{scales3}{Change the principal scales for State 3. Defaults to 0.25,
 0.1, and 0.75.}
 
-\item{...}{}
+\item{...}{Lazy dots for internal arguments}
 }
 \value{
-An data frame with the following information: \itemize{
-  \item{dateTime -- }{A POSIXct column of times starting at the user-defined
-  `startTime` argument, length given by the `period` argument, and spacing
-  given by the `increment` argument. For example, if the starting value is
-  "2016-01-10", period is 10080, and the incrementation is in minutes, then
-  this sequence will be one week's worth of observations recorded every
-  minute from midnight on the tenth of January.} \item{state -- }{An integer
-  column of all 1's (when the `multiState` argument is FALSE), or a column of
-  the state values (1, 2 or 3).} \item{x -- }{A double column of generated
-  values for the first feature.} \item{y -- }{A double column of generated
-  values for the second feature.} \item{z -- }{A double column of generated
-  values for the third feature.}}
+A list of data frames named with the names of the given faults with
+  the following information: \itemize{ \item{dateTime -- }{A POSIXct column
+  of times starting at the user-defined `startTime` argument, length given by
+  the `period` argument, and spacing given by the `increment` argument. For
+  example, if the starting value is "2016-01-10", period is 10080, and the
+  incrementation is in minutes, then this sequence will be one week's worth
+  of observations recorded every minute from midnight on the tenth of
+  January.} \item{state -- }{An integer column of all 1's (when the
+  `multiState` argument is FALSE), or a column of the state values (1, 2 or
+  3).} \item{x -- }{A double column of generated values for the first
+  feature.} \item{y -- }{A double column of generated values for the second
+  feature.} \item{z -- }{A double column of generated values for the third
+  feature.}}
 }
 \description{
-
+Generate single- or multi-state observations under normal
+  operating conditions or under fault conditions.
 }
 \details{
 

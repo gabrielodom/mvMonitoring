@@ -4,10 +4,23 @@
 \alias{faultSwitch}
 \title{Induce the Specified Fault on NOC Observations}
 \usage{
-faultSwitch(df, fault, faultStartIndex, period, shift = 2)
+faultSwitch(df, fault, faultStartIndex, period = 10080, shift = 2)
 }
 \arguments{
-\item{shift}{}
+\item{df}{A data frame returned by the processNOCdata() function.}
+
+\item{fault}{A character string. Options are "NOC", "A1", "B1", "A2", "B2",
+"A3", or "B3". See "details" of mspProcessData() for more information.}
+
+\item{faultStartIndex}{An integer specifying the index at which the faults
+will start.}
+
+\item{period}{The observation cycle length. Defaults to one week's worth of
+minute-level observations (10,080 observations).}
+
+\item{shift}{The fault parameter for faults "A1" and "B1" corresponding to
+the positive shock value added to features. Defaults to 2. See "details" of
+mspProcessData() for more information.}
 }
 \value{
 
@@ -17,4 +30,8 @@ faultSwitch(df, fault, faultStartIndex, period, shift = 2)
 }
 \details{
 
+}
+\examples{
+nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")
+faultSwitch(nrml, fault = "NOC", faultStartIndex = 8500)
 }

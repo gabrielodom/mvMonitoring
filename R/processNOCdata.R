@@ -111,41 +111,4 @@ processNOCdata <- function(startTime,
   }
 
   normal_df
-
-  # ###  And Three States  ###
-  # # State 2
-  # state2_mat <- orig_state_mat %*%
-  #   rotateScale3D(rot_angles = angles2, scale_factors = scales2)
-  # # State 3
-  # state3_mat <- orig_state_mat %*%
-  #   rotateScale3D(rot_angles = angles3, scale_factors = scales3)
-  #
-  # # Combine these
-  # normal_df$xState2 <- state2_mat[,1]
-  # normal_df$yState2 <- state2_mat[,2]
-  # normal_df$zState2 <- state2_mat[,3]
-  # normal_df$xState3 <- state3_mat[,1]
-  # normal_df$yState3 <- state3_mat[,2]
-  # normal_df$zState3 <- state3_mat[,3]
-  #
-  # ###  Hourly Switching Process  ###
-  # state1_df <- normal_df %>%
-  #   filter(state == 1) %>%
-  #   select(dateTime, state, x, y, z, t, err1, err2, err3)
-  # state2_df <- normal_df %>%
-  #   filter(state == 2) %>%
-  #   select(dateTime, state,
-  #          x = xState2, y = yState2, z = zState2,
-  #          t, err1, err2, err3)
-  # state3_df <- normal_df %>%
-  #   filter(state == 3) %>%
-  #   select(dateTime, state,
-  #          x = xState3, y = yState3, z = zState3,
-  #          t, err1, err2, err3)
-  # normal_switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
-  #   arrange(dateTime)
-  #
-  # normal_switch_df
-  # # xts(select(normal_switch_df, -dateTime),
-  # #            order.by = select(normal_switch_df, dateTime)[,1])
 }
