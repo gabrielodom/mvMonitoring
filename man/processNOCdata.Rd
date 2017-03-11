@@ -54,7 +54,20 @@ This function generates data under normal operating conditions
   from a single-state or multi-state process model.
 }
 \details{
-This function is called by the mspProcessData() function.
+This function randomly generates a non-stationary (sinusoidal) and
+  autocorrelated latent variable t with lower and upper bounds given by the
+  arguments "tLower" and "tUpper", respectively, with autocorrelation
+  governed by the "autocorrelation" argument. Necessarily, this coefficient
+  must be less than 1 in absolute value, otherwise the latent variable will
+  be unbounded. Next, this function draws a realization of this random
+  variable t and calculates three functions of it, then jitters these
+  functions with a normal white noise variable (with variance set by
+  "errVar"). These three functions are: \itemize{
+    \item{x : }{x(t) = t + error}
+    \item{y : }{y(t) = t ^ 2 - 3t + error}
+    \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + error}
+  }
+  This function is called by the mspProcessData() function.
 }
 \examples{
 processNOCdata(startTime = "2016-11-27 00:00:00 CST")

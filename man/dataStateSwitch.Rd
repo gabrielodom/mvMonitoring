@@ -20,13 +20,20 @@ dataStateSwitch(df, angles2 = list(yaw = 0, pitch = 90, roll = 30),
 \item{scales3}{Change the principal scales for State 3.}
 }
 \value{
-
+A data frame containing the time index, state, and feature values
+  after state-specific rotation and scaling.
 }
 \description{
-
+Split single-state process observations, apply multiple state
+  projections, and combine these observations into a single data frame,
+  arranged by process time or index.
 }
 \details{
-
+This function splits a process data frame by state, and rotates and
+  scales the observations from states 2 and 3 by the scales and angles
+  specified in the function arguments. After state-specific rotation and
+  scaling, this function combines the observations back together and orders
+  them by process time index.
 }
 \examples{
 nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")

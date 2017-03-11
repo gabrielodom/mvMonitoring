@@ -60,7 +60,8 @@ Generate single- or multi-state observations under normal
   operating conditions or under fault conditions.
 }
 \details{
-
+For details on how the faults are induced, see the "details" of the
+  faultSwitch() function.
 }
 \examples{
 mspProcessData(faults = c("NOC", "A1"),

@@ -1,6 +1,7 @@
 #' Induce the Specified Fault on NOC Observations
 #'
-#' @description
+#' @description Infect the input data frame with a specific fault, then return
+#'   the infected data frame.
 #'
 #' @param df A data frame returned by the processNOCdata() function.
 #' @param fault A character string. Options are "NOC", "A1", "B1", "A2", "B2",
@@ -13,9 +14,77 @@
 #'   the positive shock value added to features. Defaults to 2. See "details" of
 #'   mspProcessData() for more information.
 #'
-#' @return
+#' @return A data frame with the same structure as df, but with faults induced
+#'   across all observations. The mspProcessData() function then subsets the
+#'   observations necessary to corrupt the normal data frame, and binds them
+#'   together by row. See mspProcessData() for more details.
 #'
-#' @details
+#' @details The faults return data frames as follows: \itemize{
+#'   \item{A1 -- }{A data frame with 10080 rows and five columns, corresponding
+#'     by default to one week worth of data recorded at a 1-minute interval (as
+#'     defined by the "period" argument of this function and the "increment"
+#'     argument of the processNOCdata() function). The fault is a system shift
+#'     to each of the three features by 2 (the "shift" argument). The fault
+#'     starts at row 8500 (specified by the argument "faultStartIndex"), and the
+#'     five columns under the fault state are defined here: \itemize{
+#'       \item{dateTime : }{a POSIXct column}
+#'       \item{state : }{the state indicator for the multivariate system, with
+#'         three levels when the argument "multiState" is TRUE and one level
+#'         otherwise}
+#'       \item{x : }{x(t) = t + shift + error}
+#'       \item{y : }{y(t) = t ^ 2 - 3t + shift + error}
+#'       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + shift + error}
+#'     }
+#'     where t is a 10080-entry vector of autocorrelated and non-stationary
+#'     hidden process realizations generated within the processNOCdata() function.
+#'   }
+#'   \item{B1 -- }{A matrix as defined in A1, but with x, y, and z feature
+#'     columns defined as follows: \itemize{
+#'       \item{x : }{x(t) = t + shift + error}
+#'       \item{y : }{y(t) = t ^ 2 - 3t + error}
+#'       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + error}
+#'     }
+#'   }
+#'   \item{A2 -- }{The fault is a drift on each feature by
+#'     (s - faultStartIndex / 10 ^ 3, where s is the observation index. The
+#'     fault starts at "faultStartIndex", and the x, y, and z feature columns
+#'     are defined as follows: \itemize{
+#'       \item{x : }{x(t) = t + drift + error}
+#'       \item{y : }{y(t) = t ^ 2 - 3t + drift + error}
+#'       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + drift + error}
+#'     }
+#'   }
+#'   \item{B2 -- }{The fault is a drift a drift on the "y" and "z" feature by
+#'     (s - faultStartIndex / 10 ^ 3, where s is the observation index. The
+#'     fault starts at "faultStartIndex", and the x, y, and z feature columns
+#'     are defined as follows: \itemize{
+#'       \item{x : }{x(t) = t + error}
+#'       \item{y : }{y(t) = t ^ 2 - 3t + drift + error}
+#'       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + drift + error}
+#'     }
+#'   }
+#'   \item{A3 -- }{The fault is a signal amplificaton in the determining latent
+#'     t vector. The fault starts at "faultStartIndex", and the x, y, and z
+#'     features under the fault state are defined here: \itemize{
+#'       \item{x : }{x(t_*) = t_* + error}
+#'       \item{y : }{y(t_*) = (t_*) ^ 2 - 3t_* + error}
+#'       \item{z : }{z(t_*) = -(t_*) ^ 3 + 3(t_*) ^ 2 + error}
+#'     }
+#'     where t_* = 3 x t x (period - s) / (2 x period) and s is the observation
+#'     index.
+#'   }
+#'   \item{B3 -- }{The fault is a signal amplificaton in the determining latent
+#'     t vector for the "z" feature only. The fault starts at "faultStartIndex",
+#'     and the x, y, and z features under the fault state are defined here:
+#'     \itemize{
+#'       \item{x : }{x(t) = t + error}
+#'       \item{y : }{y(t) = (t) ^ 2 - 3t + error}
+#'       \item{z : }{z(t_*) = -(t_*) ^ 3 + 3(t_*) ^ 2 + error}
+#'     }
+#'     where t_* = 3 x t x (period - s) / (2 x period) and s is the observation
+#'     index.
+#'   }
+#' }
 #'
 #' @export
 #'

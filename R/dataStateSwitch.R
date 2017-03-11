@@ -1,6 +1,8 @@
 #' Alternate Observations in a Data Frame over States
 #'
-#' @description
+#' @description Split single-state process observations, apply multiple state
+#'   projections, and combine these observations into a single data frame,
+#'   arranged by process time or index.
 #'
 #' @param df A data frame returned by processNOCdata() or faultSwitch().
 #' @param angles2 Change the principal angles for State 2.
@@ -8,9 +10,14 @@
 #' @param angles3 Change the principal angles for State 3.
 #' @param scales3 Change the principal scales for State 3.
 #'
-#' @return
+#' @return A data frame containing the time index, state, and feature values
+#'   after state-specific rotation and scaling.
 #'
-#' @details
+#' @details This function splits a process data frame by state, and rotates and
+#'   scales the observations from states 2 and 3 by the scales and angles
+#'   specified in the function arguments. After state-specific rotation and
+#'   scaling, this function combines the observations back together and orders
+#'   them by process time index.
 #'
 #' @export
 #'

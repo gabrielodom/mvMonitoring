@@ -38,7 +38,8 @@
 #'   feature.} \item{z -- }{A double column of generated values for the third
 #'   feature.}}
 #'
-#' @details
+#' @details For details on how the faults are induced, see the "details" of the
+#'   faultSwitch() function.
 #'
 #' @export
 #'
@@ -73,6 +74,7 @@ mspProcessData <- function(faults,
 
   ###  Apply Across Chosen Faults  ###
   df_ls <- lapply(faults, function(x){
+    # browser()
 
     fault_df <- faultSwitch(df = normal_df,
                             fault = x,
@@ -85,7 +87,8 @@ mspProcessData <- function(faults,
                       angles2 = angles2, scales2 = scales2,
                       angles3 = angles3, scales3 = scales3)
     }else{
-      normal_df
+      normal_df$state <- 1
+      normal_df %>% select(dateTime, state, x, y, z)
     }
 
     fault_df <- if(multiState){
@@ -93,7 +96,8 @@ mspProcessData <- function(faults,
                       angles2 = angles2, scales2 = scales2,
                       angles3 = angles3, scales3 = scales3)
     }else{
-      fault_df
+      fault_df$state <- 1
+      fault_df %>% select(dateTime, state, x, y, z)
     }
 
     ###  Make xts Matrix  ###
