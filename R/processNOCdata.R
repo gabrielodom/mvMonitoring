@@ -13,14 +13,6 @@
 #'   seq.POSIXt() function options. Defaults to "min" for minutes.
 #' @param multiState Should the observations be generated from a multi-state
 #'   process? Defaults to TRUE.
-#' @param angles2 Change the principal angles for State 2. Defaults to yaw = 0,
-#'   pitch = 90, and roll = 30.
-#' @param scales2 Change the principal scales for State 2. Defaults to 1, 0.5,
-#'   and 2.
-#' @param angles3 Change the principal angles for State 3. Defaults to yaw = 90,
-#'   pitch = 0, and roll = -30.
-#' @param scales3 Change the principal scales for State 3. Defaults to 0.25,
-#'   0.1, and 0.75.
 #' @param autocorellation The autocorrelation parameter. Must be less than 1 in
 #'   absolute value, or the process generated will be nonstationary. Defaults to
 #'   0.75 in accordance to Kazor et al (2016).
@@ -60,10 +52,6 @@ processNOCdata <- function(startTime,
                            stateDuration = 60,
                            increment = "min",
                            multiState = TRUE,
-                           angles2 = list(yaw = 0, pitch = 90, roll = 30),
-                           scales2 = c(1, 0.5, 2),
-                           angles3 = list(yaw = 90, pitch = 0, roll = -30),
-                           scales3 = c(0.25, 0.1, 0.75),
                            autocorellation = 0.75,
                            tLower = 0.01,
                            tUpper = 2,
@@ -114,48 +102,50 @@ processNOCdata <- function(startTime,
   normal_df$dateTime <- seq.POSIXt(from = as.POSIXct(startTime),
                                    by = "min", length.out = period)
 
-  ###  Escape for Single-State Case  ###
+  ###  Single-State or Multi-State?  ###
   if(multiState != TRUE){
     normal_df$state <- 1
-    return(normal_df)
+  }else{
+    normal_df$state <- rep(rep(1:3, each = stateDuration),
+                           times = period / stateDuration / 3)
   }
 
-  ###  And Three States  ###
-  # State 2
-  state2_mat <- orig_state_mat %*%
-    rotateScale3D(rot_angles = angles2, scale_factors = scales2)
-  # State 3
-  state3_mat <- orig_state_mat %*%
-    rotateScale3D(rot_angles = angles3, scale_factors = scales3)
+  normal_df
 
-  # Combine these, and label the states
-  normal_df$xState2 <- state2_mat[,1]
-  normal_df$yState2 <- state2_mat[,2]
-  normal_df$zState2 <- state2_mat[,3]
-  normal_df$xState3 <- state3_mat[,1]
-  normal_df$yState3 <- state3_mat[,2]
-  normal_df$zState3 <- state3_mat[,3]
-  normal_df$state <- rep(rep(1:3, each = stateDuration),
-                         times = period / stateDuration / 3)
-
-  ###  Hourly Switching Process  ###
-  state1_df <- normal_df %>%
-    filter(state == 1) %>%
-    select(dateTime, state, x, y, z, t, err1, err2, err3)
-  state2_df <- normal_df %>%
-    filter(state == 2) %>%
-    select(dateTime, state,
-           x = xState2, y = yState2, z = zState2,
-           t, err1, err2, err3)
-  state3_df <- normal_df %>%
-    filter(state == 3) %>%
-    select(dateTime, state,
-           x = xState3, y = yState3, z = zState3,
-           t, err1, err2, err3)
-  normal_switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
-    arrange(dateTime)
-
-  normal_switch_df
-  # xts(select(normal_switch_df, -dateTime),
-  #            order.by = select(normal_switch_df, dateTime)[,1])
+  # ###  And Three States  ###
+  # # State 2
+  # state2_mat <- orig_state_mat %*%
+  #   rotateScale3D(rot_angles = angles2, scale_factors = scales2)
+  # # State 3
+  # state3_mat <- orig_state_mat %*%
+  #   rotateScale3D(rot_angles = angles3, scale_factors = scales3)
+  #
+  # # Combine these
+  # normal_df$xState2 <- state2_mat[,1]
+  # normal_df$yState2 <- state2_mat[,2]
+  # normal_df$zState2 <- state2_mat[,3]
+  # normal_df$xState3 <- state3_mat[,1]
+  # normal_df$yState3 <- state3_mat[,2]
+  # normal_df$zState3 <- state3_mat[,3]
+  #
+  # ###  Hourly Switching Process  ###
+  # state1_df <- normal_df %>%
+  #   filter(state == 1) %>%
+  #   select(dateTime, state, x, y, z, t, err1, err2, err3)
+  # state2_df <- normal_df %>%
+  #   filter(state == 2) %>%
+  #   select(dateTime, state,
+  #          x = xState2, y = yState2, z = zState2,
+  #          t, err1, err2, err3)
+  # state3_df <- normal_df %>%
+  #   filter(state == 3) %>%
+  #   select(dateTime, state,
+  #          x = xState3, y = yState3, z = zState3,
+  #          t, err1, err2, err3)
+  # normal_switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
+  #   arrange(dateTime)
+  #
+  # normal_switch_df
+  # # xts(select(normal_switch_df, -dateTime),
+  # #            order.by = select(normal_switch_df, dateTime)[,1])
 }

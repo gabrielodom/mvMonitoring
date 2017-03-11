@@ -5,16 +5,48 @@
 \title{Simulate Normal or Fault Observations from a Single-State or Multi-State
 Process}
 \usage{
-mspProcessData(fault, faultStartIndex, startTime, period = 7 * 24 * 60,
-  angles2 = list(yaw = 0, pitch = 90, roll = 30), scales2 = c(1, 0.5, 2),
-  angles3 = list(yaw = 90, pitch = 0, roll = -30), scales3 = c(0.25, 0.1,
-  0.75), ...)
+mspProcessData(faults, faultStartIndex, startTime, period = 7 * 24 * 60,
+  multiState = TRUE, angles2 = list(yaw = 0, pitch = 90, roll = 30),
+  scales2 = c(1, 0.5, 2), angles3 = list(yaw = 90, pitch = 0, roll = -30),
+  scales3 = c(0.25, 0.1, 0.75), ...)
 }
 \arguments{
+\item{startTime}{a POSIXct object specifying the day and time for the
+starting observation.}
+
+\item{period}{The observation cycle length. Defaults to one week's worth of
+minute-level observations (10,080 observations).}
+
+\item{multiState}{Should the observations be generated from a multi-state
+process? Defaults to TRUE.}
+
+\item{angles2}{Change the principal angles for State 2. Defaults to yaw = 0,
+pitch = 90, and roll = 30.}
+
+\item{scales2}{Change the principal scales for State 2. Defaults to 1, 0.5,
+and 2.}
+
+\item{angles3}{Change the principal angles for State 3. Defaults to yaw = 90,
+pitch = 0, and roll = -30.}
+
+\item{scales3}{Change the principal scales for State 3. Defaults to 0.25,
+0.1, and 0.75.}
+
 \item{...}{}
 }
 \value{
-
+An data frame with the following information: \itemize{
+  \item{dateTime -- }{A POSIXct column of times starting at the user-defined
+  `startTime` argument, length given by the `period` argument, and spacing
+  given by the `increment` argument. For example, if the starting value is
+  "2016-01-10", period is 10080, and the incrementation is in minutes, then
+  this sequence will be one week's worth of observations recorded every
+  minute from midnight on the tenth of January.} \item{state -- }{An integer
+  column of all 1's (when the `multiState` argument is FALSE), or a column of
+  the state values (1, 2 or 3).} \item{x -- }{A double column of generated
+  values for the first feature.} \item{y -- }{A double column of generated
+  values for the second feature.} \item{z -- }{A double column of generated
+  values for the third feature.}}
 }
 \description{
 
@@ -23,7 +55,7 @@ mspProcessData(fault, faultStartIndex, startTime, period = 7 * 24 * 60,
 
 }
 \examples{
-mspProcessData(fault = "NOC",
+mspProcessData(faults = c("NOC", "A1"),
                          faultStartIndex = 8500,
                          startTime = "2016-11-27 00:00:00 CST",
                          multiState = TRUE)

@@ -5,9 +5,7 @@
 \title{Simulate NOC Observations from a Single-State or Multi-State Process}
 \usage{
 processNOCdata(startTime, period = 7 * 24 * 60, stateDuration = 60,
-  increment = "min", multiState = TRUE, angles2 = list(yaw = 0, pitch =
-  90, roll = 30), scales2 = c(1, 0.5, 2), angles3 = list(yaw = 90, pitch =
-  0, roll = -30), scales3 = c(0.25, 0.1, 0.75), autocorellation = 0.75,
+  increment = "min", multiState = TRUE, autocorellation = 0.75,
   tLower = 0.01, tUpper = 2, errVar = 0.01)
 }
 \arguments{
@@ -25,18 +23,6 @@ seq.POSIXt() function options. Defaults to "min" for minutes.}
 
 \item{multiState}{Should the observations be generated from a multi-state
 process? Defaults to TRUE.}
-
-\item{angles2}{Change the principal angles for State 2. Defaults to yaw = 0,
-pitch = 90, and roll = 30.}
-
-\item{scales2}{Change the principal scales for State 2. Defaults to 1, 0.5,
-and 2.}
-
-\item{angles3}{Change the principal angles for State 3. Defaults to yaw = 90,
-pitch = 0, and roll = -30.}
-
-\item{scales3}{Change the principal scales for State 3. Defaults to 0.25,
-0.1, and 0.75.}
 
 \item{autocorellation}{The autocorrelation parameter. Must be less than 1 in
 absolute value, or the process generated will be nonstationary. Defaults to
