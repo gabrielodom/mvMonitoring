@@ -5,7 +5,8 @@
 #'
 #' @param df A data frame returned by the processNOCdata() function.
 #' @param fault A character string. Options are "NOC", "A1", "B1", "A2", "B2",
-#'   "A3", or "B3". See "details" of mspProcessData() for more information.
+#'   "A3", "B3", or "All". See "details" of mspProcessData() for more
+#'   information.
 #' @param faultStartIndex An integer specifying the index at which the faults
 #'   will start.
 #' @param period The observation cycle length. Defaults to one week's worth of

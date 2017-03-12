@@ -48,6 +48,8 @@
 #'     \item{y -- }{A double column of generated values for the second feature.}
 #'     \item{z -- }{A double column of generated values for the third feature.}
 #'     }
+#'   For details on how these features are defined, see the "details" of the
+#'   processNOCdata() function.
 #'
 #' @details For details on how the faults are induced, see the "details" of the
 #'   faultSwitch() function. This function also includes AD-PCA versus MSAD-PCA

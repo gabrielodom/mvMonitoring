@@ -10,7 +10,8 @@ faultSwitch(df, fault, faultStartIndex, period = 10080, shift = 2)
 \item{df}{A data frame returned by the processNOCdata() function.}
 
 \item{fault}{A character string. Options are "NOC", "A1", "B1", "A2", "B2",
-"A3", or "B3". See "details" of mspProcessData() for more information.}
+"A3", "B3", or "All". See "details" of mspProcessData() for more
+information.}
 
 \item{faultStartIndex}{An integer specifying the index at which the faults
 will start.}
