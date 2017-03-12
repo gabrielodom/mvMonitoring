@@ -8,11 +8,12 @@ Process}
 mspProcessData(faults, faultStartIndex, startTime, period = 7 * 24 * 60,
   multiState = TRUE, angles2 = list(yaw = 0, pitch = 90, roll = 30),
   scales2 = c(1, 0.5, 2), angles3 = list(yaw = 90, pitch = 0, roll = -30),
-  scales3 = c(0.25, 0.1, 0.75), ...)
+  scales3 = c(0.25, 0.1, 0.75), adpcaTest = FALSE, msadpcaTest = FALSE,
+  ...)
 }
 \arguments{
 \item{faults}{A character vector of faults chosen. Options are "NOC", "A1",
-"B1", "A2", "B2", "A3", or "B3". See details for more information.}
+"B1", "A2", "B2", "A3", "B3", or "All". See details for more information.}
 
 \item{faultStartIndex}{An integer specifying the index at which the faults
 will start.}
@@ -38,22 +39,35 @@ pitch = 0, and roll = -30.}
 \item{scales3}{Change the principal scales for State 3. Defaults to 0.25,
 0.1, and 0.75.}
 
+\item{adpcaTest}{If "multiState" is TRUE, incorrectly label all the states
+the same. This should only be used to test AD-PCA performance under a true
+multi-state model. Defaults to FALSE.}
+
+\item{msadpcaTest}{If "multiState" is FALSE, incorrectly label all the states
+at random. This should only be used to test MSAD-PCA performance under a
+true single-state model. Defaults to FALSE.}
+
 \item{...}{Lazy dots for internal arguments}
 }
 \value{
 A list of data frames named with the names of the given faults with
-  the following information: \itemize{ \item{dateTime -- }{A POSIXct column
-  of times starting at the user-defined `startTime` argument, length given by
-  the `period` argument, and spacing given by the `increment` argument. For
-  example, if the starting value is "2016-01-10", period is 10080, and the
-  incrementation is in minutes, then this sequence will be one week's worth
-  of observations recorded every minute from midnight on the tenth of
-  January.} \item{state -- }{An integer column of all 1's (when the
-  `multiState` argument is FALSE), or a column of the state values (1, 2 or
-  3).} \item{x -- }{A double column of generated values for the first
-  feature.} \item{y -- }{A double column of generated values for the second
-  feature.} \item{z -- }{A double column of generated values for the third
-  feature.}}
+  the following information: \itemize{
+    \item{dateTime -- }{A POSIXct column of times starting at the user-
+      defined `startTime` argument, length given by the `period` argument,
+      and spacing given by the `increment` argument. For example, if the
+      starting value is "2016-01-10", period is 10080, and the incrementation
+      is in minutes, then this sequence will be one week's worth of
+      observations recorded every minute from midnight on the tenth of
+      January.}
+    \item{state -- }{An integer column of all 1's (when the `multiState`
+      argument is FALSE), or a column of the state values (1, 2 or 3).}
+    \item{altState -- }{If either adpcaTest or msadpcaTest are TRUE, this
+      column will contain incorrect state information used for testing the
+      different treatment arms against their respective controls.}
+    \item{x -- }{A double column of generated values for the first feature.}
+    \item{y -- }{A double column of generated values for the second feature.}
+    \item{z -- }{A double column of generated values for the third feature.}
+    }
 }
 \description{
 Generate single- or multi-state observations under normal
@@ -61,11 +75,36 @@ Generate single- or multi-state observations under normal
 }
 \details{
 For details on how the faults are induced, see the "details" of the
-  faultSwitch() function.
+  faultSwitch() function. This function also includes AD-PCA versus MSAD-PCA
+  treatment arm testing. There are four possibilities to test: \itemize{
+    \item{1. }{The true process has one state, and we correctly assume the
+    true process has one state. In this case, AD-PCA and MSAD-PCA are exactly
+    the same. Draw observations from this state by setting the "multiState"
+    argument to FALSE. The "state" label will correctly mark each observation
+    as from the same state.}
+    \item{2. }{The true process has one state, but we incorrectly assume the
+    true process has multiple states. In this case, AD-PCA should outperform
+    MSAD-PCA in false alarm rates and waiting time to the first alarm. Draw
+    observations from this state by setting the "multiState" argument to
+    FALSE and the "msadpcaTest" argument to TRUE. The "state" label will be
+    contain randomly generated state values (1, 2, and 3 are all equally
+    likely) for each observation.}
+    \item{3. }{The true process has multiple states, but we incorrectly
+    assume the true process has one single states. In this case, MSAD-PCA
+    should outperform AD-PCA in false alarm rates and waiting time to the
+    first alarm. Draw observations from this state by setting the "multiState"
+    argument to TRUE and the "adpcaTest" argument to TRUE. The "state" label
+    will be identical for each observation.}
+    \item{4. }{The true process has multiple states, and we correctly assume
+    the true process has multiple states. In this case, MSAD-PCA
+    should outperform AD-PCA in false alarm rates and waiting time to the
+    first alarm. Draw observations from this state by setting the "multiState"
+    argument to TRUE. The "state" label will correctly mark each observation
+    as from the same state.}
+  }
 }
 \examples{
-mspProcessData(faults = c("NOC", "A1"),
+mspProcessData(faults = "All",
                          faultStartIndex = 8500,
-                         startTime = "2016-11-27 00:00:00 CST",
-                         multiState = TRUE)
+                         startTime = "2016-11-27 00:00:00 CST")
 }

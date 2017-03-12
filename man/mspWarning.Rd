@@ -15,7 +15,7 @@ an alarm to trigger. Defaults to 3.}
 \value{
 An xts matrix of the same dimensions as mspMonitor_object, with a
   recorded negative or positive and type-specific alarm status. Alarm codes
-  are: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared Prediction Error
+  are: 0 = no alarm, 1 = Squared Prediction Error alarm, 2 = Hotelling's T2
   alarm, and 3 = both alarms.
 }
 \description{

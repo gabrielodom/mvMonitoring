@@ -736,6 +736,111 @@ alarmData[61:120,2:4] %>% scatterplot3d()
 # faults_ls$normal[faults_ls$normal[,1] == 2, 2:4] %>% scatterplot3d()
 ```
 
+# Simulation Setup
+We have also collapsed the data generation setup and implementation from this vignette into a function suite. The outward-facing function is called `mspProcessData`, and we now give an example.
+```{r mspProcessEg}
+simFaults_ls <- mspProcessData(faults = "All",
+                               faultStartIndex = 8500,
+                               startTime = "2016-11-27 00:00:00 CST")
+
+```
+This process data was generated from a true three-state model. Therefore, our comparison for this data is the false alarm rate and time to alarm for the MSAD-PCA method to the AD-PCA method. We perform this comparison by overwriting the `state` column of the data frames with a single value (labelling the observations as if they came from a true single-state model).
+
+## True Multi-State Observations
+We first assume that the observations do come from a multi-state process. This means that we will test AD-PCA by incorrectly assuming that all observations come from the same state. We first draw a list of data matrices.
+```{r draw adpcaTest_data}
+adpcaObs_ls <- mspProcessData(faults = "All",
+                              faultStartIndex = 8500,
+                              startTime = "2016-11-27 00:00:00 CST",
+                              multiState = TRUE,
+                              adpcaTest = TRUE)
+```
+
+### False Alarm Rates
+We now look at false alarm rates for multi-state data under normal operating conditions using AD-PCA and MSAD-PCA.
+```{r trueMultiState_FalseAlarmRates}
+###  MSAD-PCA: Assume the Correct State  ###
+# False Alarm Rates (NOC Data)
+msadpca_MS_Results_ls <- mspTrain(data = adpcaObs_ls$NOC[1:8640, 2:4],
+                       labelVector = adpcaObs_ls$NOC[1:8640, 1],
+                       trainObs = 5 * 24 * 60,
+                       updateFreq = 24 * 60,
+                       alpha = 0.001,
+                       lagsIncluded = 0:2)
+
+# Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+sum(msadpca_MS_Results_ls$FaultChecks[,5] %in% c(2,3)) /
+  nrow(msadpca_MS_Results_ls$FaultChecks)
+# The SPE false alarm rate hits 0 at alpha = 0.07.
+sum(msadpca_MS_Results_ls$FaultChecks[,5] %in% c(1,3)) /
+  nrow(msadpca_MS_Results_ls$FaultChecks)
+
+###  AD-PCA: Assume Equal States  ###
+adpca_MS_Results_ls <- mspTrain(data = adpcaObs_ls$NOC[1:8640, 2:4],
+                       labelVector = adpcaObs_ls$NOC[1:8640, 5],
+                       trainObs = 5 * 24 * 60,
+                       updateFreq = 24 * 60,
+                       alpha = 0.001,
+                       lagsIncluded = 0:2)
+
+# Alarm code: 1 = SPE alarm; 2 = T2 alarm; 3 = both
+sum(adpca_MS_Results_ls$FaultChecks[,5] %in% c(2,3)) /
+  nrow(adpca_MS_Results_ls$FaultChecks)
+# The SPE false alarm rate hits 0 at alpha = 0.07.
+sum(adpca_MS_Results_ls$FaultChecks[,5] %in% c(1,3)) /
+  nrow(adpca_MS_Results_ls$FaultChecks)
+```
+
+### Detection Time: Fault 1A
+Next, we measure detection time for Fault 1A for multi-state data under normal operating conditions using AD-PCA and MSAD-PCA.
+```{r trueMultiState_DetectTime}
+###  MSAD-PCA: Assume the Correct State  ###
+# Take our testing data
+testObs <- adpcaObs_ls$A1[8639:10080, 2:4]
+# lag the test data and cut the NA observations
+testObs <- lag.xts(testObs, 0:2)
+testObs <- testObs[-(1:2),]
+# re-attach the *CORRECT* state label
+msad_MS_TestObs <- cbind(adpcaObs_ls$A1[8641:10080, 1], testObs)
+# Run the test data through the Monitor function
+msad_MS_DataandFlags <- mspMonitor(observations = msad_MS_TestObs[,-1],
+                               labelVector = msad_MS_TestObs[,1],
+                         trainingSummary = msadpca_MS_Results_ls$TrainingSpecs)
+# Check for alarms
+msad_MS_Alarm <- msad_MS_DataandFlags
+for(i in 1:nrow(msad_MS_DataandFlags)){
+  msad_MS_Alarm[1:i,] <- mspWarning(msad_MS_Alarm[1:i,])
+}
+
+## Time to first alarm
+# SPE
+min(which(msad_MS_Alarm[,15] %in% c(1,3)))
+# T2
+min(which(msad_MS_Alarm[,15] %in% c(2,3)))
+
+
+
+###  AD-PCA: Assume Equal States  ###
+# Attach the *incorrect* state label instead of the correct label
+ad_MS_TestObs <- cbind(adpcaObs_ls$A1[8641:10080, 5], testObs)
+# Run the test data through the Monitor function
+ad_MS_DataandFlags <- mspMonitor(observations = ad_MS_TestObs[,-1],
+                               labelVector = ad_MS_TestObs[,1],
+                         trainingSummary = adpca_MS_Results_ls$TrainingSpecs)
+# Check for alarms
+ad_MS_Alarm <- ad_MS_DataandFlags
+for(i in 1:nrow(msad_MS_DataandFlags)){
+  ad_MS_Alarm[1:i,] <- mspWarning(ad_MS_Alarm[1:i,])
+}
+
+## Time to first alarm
+# SPE
+min(which(ad_MS_Alarm[,15] %in% c(1,3)))
+# T2
+min(which(ad_MS_Alarm[,15] %in% c(2,3)))
+```
+The SPE statistic for the AD-PCA monitoring scheme never rings an alarm. Interesting.
+
 # Real Data
 This data was sent to use from Kate Newhart in Golden, CO.
 
