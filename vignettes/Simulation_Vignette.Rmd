@@ -852,7 +852,7 @@ We first assume that the observations do come from a multi-state process. This m
 # none of the observations yield alarms. Suppress this with ? "message = FALSE"
 # doesn't work.
 a <- Sys.time()
-msadResults2_ls <- lapply(1:5, function(void){
+msadResults2_ls <- lapply(1:500, function(void){
   ##########   Draw a Random Data Set   ##########
   adpcaObs_ls <- mspProcessData(faults = "All",
                               faultStartIndex = 8500,
@@ -997,11 +997,11 @@ Let's clean up these results.
 FA_rates2 <- lapply(1:length(msadResults2_ls), function(i){
   msadResults2_ls[[i]]$falseAlarmRates
 }) %>% do.call(bind_rows, .)
-# write_csv(FA_rates, path = "false_alarm_rates_20170314.csv")
+write_csv(FA_rates2, path = "false_alarm_rates_20170314.csv")
 detectionTimes2 <- lapply(1:length(msadResults2_ls), function(i){
   msadResults2_ls[[i]]$time2Detect
 }) %>% do.call(bind_rows, .)
-# write_csv(detectionTimes, path = "detection_times_20170314.csv")
+write_csv(detectionTimes2, path = "detection_times_20170314.csv")
 ```
 
 Now we can look at the results.
