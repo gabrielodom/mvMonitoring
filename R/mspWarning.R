@@ -9,7 +9,7 @@
 #'
 #' @return An xts matrix of the same dimensions as mspMonitor_object, with a
 #'   recorded negative or positive and type-specific alarm status. Alarm codes
-#'   are: 0 = no alarm, 1 = Squared Prediction Error alarm, 2 = Hotelling's T2
+#'   are: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared Prediction Error
 #'   alarm, and 3 = both alarms.
 #'
 #' @details This function and the mspMonitor() function are designed to be ran
