@@ -1,3 +1,8 @@
+# This file exists to generation the simulation tabulated results for detection
+# times and the histograms for false alarm rates
+
+######  Multi-State Simulation  ###############################################
+
 # Read in the latest simulation data
 library(readr)
 library(tidyverse)
@@ -82,3 +87,50 @@ FA_rates2$MSAD_SPE %>%
   hist(xlim = c(0, 0.06), main = "MSAD SPE False Alarm Rates")
 FA_rates2$AD_T2 %>%
   hist(xlim = c(0, 0.06), main = "AD T2 False Alarm Rates")
+
+######  Single-State Simulation  ##############################################
+###  Detection Times  ###
+# Read Detection Times Data
+
+# Fault 1A
+ss_detectionTimes %>%
+  filter(Faults == "A1") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
+# Fault 1B
+ss_detectionTimes %>%
+  filter(Faults == "B1") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
+# Fault 2A
+ss_detectionTimes %>%
+  filter(Faults == "A2") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
+# Fault 1B
+ss_detectionTimes %>%
+  filter(Faults == "B2") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
+# Fault 3A
+ss_detectionTimes %>%
+  filter(Faults == "A3") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
+# Fault 3B
+ss_detectionTimes %>%
+  filter(Faults == "B3") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
+###  False Alarm Rates  ###
+# Read in False Alarm Rates Data
+ss_FA_rates[,1] %>% hist(xlim = c(0, 0.02), main = "MSAD SPE False Alarm Rates")
+ss_FA_rates[,3] %>% hist(xlim = c(0, 0.02), main = "AD SPE False Alarm Rates")
+ss_FA_rates[,2] %>% hist(xlim = c(0.05, 0.2), main = "MSAD T2 False Alarm Rates")
+ss_FA_rates[,4] %>% hist(xlim = c(0.05, 0.2), main = "AD T2 False Alarm Rates")

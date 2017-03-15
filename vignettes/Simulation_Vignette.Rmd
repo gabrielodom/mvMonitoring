@@ -855,9 +855,10 @@ library(parallel) # use mclapply on Mac, parLapply on Windows
 library(tidyverse)
 library(xts)
 a <- Sys.time()
-msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
+# msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
+msadResults2_ls <- lapply(1:2, function(void){
   ##########   Draw a Random Data Set   ##########
-  adpcaObs_ls <- mspProcessData(faults = "All",
+  msadpcaObs_ls <- mspProcessData(faults = "All",
                               faultStartIndex = 8500,
                               startTime = "2016-11-27 00:00:00 CST",
                               multiState = TRUE,
@@ -866,8 +867,8 @@ msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
   ##########   False Alarm Rates   ##########
   ###  MSAD-PCA: Assume the Correct State  ###
   # False Alarm Rates (NOC Data)
-  msadpcaNOC_ls <- mspTrain(data = adpcaObs_ls$NOC[, 2:4],
-                                    labelVector = adpcaObs_ls$NOC[, 1],
+  msadpcaNOC_ls <- mspTrain(data = msadpcaObs_ls$NOC[, 2:4],
+                                    labelVector = msadpcaObs_ls$NOC[, 1],
                                     trainObs = 3 * 24 * 60,
                                     updateFreq = 24 * 60,
                                     alpha = 0.001,
@@ -881,9 +882,9 @@ msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
   falseAlarmT2_msad <- sum(msadpcaNOC_ls$FaultChecks[,5] %in% c(1,3)) /
     nrow(msadpcaNOC_ls$FaultChecks)
   
-  ###  AD-PCA: Assume Equal States  ###
-  adpcaNOC_ls <- mspTrain(data = adpcaObs_ls$NOC[, 2:4],
-                                  labelVector = adpcaObs_ls$NOC[, 5],
+  ###  AD-PCA: Incorrectly Assume Equal States  ###
+  adpcaNOC_ls <- mspTrain(data = msadpcaObs_ls$NOC[, 2:4],
+                                  labelVector = msadpcaObs_ls$NOC[, 5],
                                   trainObs = 3 * 24 * 60,
                                   updateFreq = 24 * 60,
                                   alpha = 0.001,
@@ -906,21 +907,21 @@ msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
   ##########   Time to Fault Detection   ##########
   
   # Train the two models
-  msadpca_MS_Results_ls <- mspTrain(data = adpcaObs_ls$NOC[1:7500, 2:4],
-                            labelVector = adpcaObs_ls$NOC[1:7500, 1],
+  msadpca_MS_Results_ls <- mspTrain(data = msadpcaObs_ls$NOC[1:7500, 2:4],
+                            labelVector = msadpcaObs_ls$NOC[1:7500, 1],
                             trainObs = 3 * 24 * 60,
                             updateFreq = 24 * 60,
                             alpha = 0.001,
                             lagsIncluded = 0:2)
-  adpca_MS_Results_ls <- mspTrain(data = adpcaObs_ls$NOC[1:7500, 2:4],
-                          labelVector = adpcaObs_ls$NOC[1:7500, 5],
+  adpca_MS_Results_ls <- mspTrain(data = msadpcaObs_ls$NOC[1:7500, 2:4],
+                          labelVector = msadpcaObs_ls$NOC[1:7500, 5],
                           trainObs = 3 * 24 * 60,
                           updateFreq = 24 * 60,
                           alpha = 0.001,
                           lagsIncluded = 0:2)
   
   # Subset out the normal operating data
-  faultsSimRes <- lapply(adpcaObs_ls[-1], function(mat){
+  faultsSimRes <- lapply(msadpcaObs_ls[-1], function(mat){
     
     ###  MSAD-PCA: Assume the Correct State  ###
     # Take our testing data
@@ -995,61 +996,268 @@ b - a # 91 seconds for each iteration. 15.3 minutes for 10 iterations, 12.1
 # 8 cores, 41.4 minutes for 100 iterations over 8 cores, and 6.7 hours for 1000
 # iterations over 8 cores.
 ```
-The SPE statistic for the AD-PCA monitoring scheme never rings an alarm for Fault 1A. Interesting.
-
 Let's clean up these results.
 ```{r msadSim_Cleaning}
-FA_rates2 <- lapply(1:length(msadResults2_ls), function(i){
+ms_FA_rates2 <- lapply(1:length(msadResults2_ls), function(i){
   msadResults2_ls[[i]]$falseAlarmRates
 }) %>% do.call(bind_rows, .)
-write_csv(FA_rates2, path = "false_alarm_rates_1000_20170314.csv")
-detectionTimes2 <- lapply(1:length(msadResults2_ls), function(i){
+write_csv(ms_FA_rates2, path = "false_alarm_rates_ms_1000_20170314.csv")
+ms_detectionTimes2 <- lapply(1:length(msadResults2_ls), function(i){
   msadResults2_ls[[i]]$time2Detect
 }) %>% do.call(bind_rows, .)
-write_csv(detectionTimes2, path = "detection_times_1000_20170314.csv")
+write_csv(ms_detectionTimes2, path = "detection_times_ms_1000_20170314.csv")
 ```
 
 Now we can look at the results.
 ```{r msadSim_graphics}
 # False Alarm Rates
-FA_rates2[,1] %>% hist(xlim = c(0, 0.05), main = "MSAD SPE False Alarm Rates")
-FA_rates2[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
-FA_rates2[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
-FA_rates2[,4] %>% hist(xlim = c(0, 0.05), main = "AD T2 False Alarm Rates")
+ms_FA_rates2[,1] %>% hist(xlim = c(0, 0.05), main = "MSAD SPE False Alarm Rates")
+ms_FA_rates2[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
+ms_FA_rates2[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
+ms_FA_rates2[,4] %>% hist(xlim = c(0, 0.05), main = "AD T2 False Alarm Rates")
 
 ###  Detection Times  ###
 # Fault 1A
-detectionTimes2 %>%
+ms_detectionTimes2 %>%
   filter(Faults == "A1") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 1B
-detectionTimes2 %>%
+ms_detectionTimes2 %>%
   filter(Faults == "B1") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 2A
-detectionTimes2 %>%
+ms_detectionTimes2 %>%
   filter(Faults == "A2") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 2B
-detectionTimes2 %>%
+ms_detectionTimes2 %>%
   filter(Faults == "B2") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 3A
-detectionTimes2 %>%
+ms_detectionTimes2 %>%
   filter(Faults == "A3") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 3B
-detectionTimes2 %>%
+ms_detectionTimes2 %>%
+  filter(Faults == "B3") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+```
+
+
+## True Single-State Observations
+We first assume that the observations do not come from a multi-state process. This means that we will test MSAD-PCA by incorrectly assuming that observations come from different states: we will assign a state at random to each observation from "1", "2", or "3". We first draw a list of data matrices. Then we look at false alarm rates for multi-state data under normal operating conditions using AD-PCA and MSAD-PCA. We also measure detection time for all faults for single-state data under normal operating conditions using AD-PCA and MSAD-PCA.
+```{r trueSingleState_sim, message = FALSE}
+library(parallel) # use mclapply on Mac, parLapply on Windows
+library(tidyverse)
+library(xts)
+a <- Sys.time()
+# adResults_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
+adResults_ls <- lapply(1:50, function(void){
+  ##########   Draw a Random Data Set   ##########
+  adpcaObs_ls <- mspProcessData(faults = "All",
+                              faultStartIndex = 8500,
+                              startTime = "2016-11-27 00:00:00 CST",
+                              multiState = FALSE,
+                              msadpcaTest = TRUE)
+  
+  ##########   False Alarm Rates   ##########
+  ###  MSAD-PCA: Assume the Incorrect State  ###
+  # False Alarm Rates (NOC Data)
+  msadpcaNOC_ls <- mspTrain(data = adpcaObs_ls$NOC[, 2:4],
+                                    labelVector = adpcaObs_ls$NOC[, 5],
+                                    trainObs = 3 * 24 * 60,
+                                    updateFreq = 24 * 60,
+                                    alpha = 0.001,
+                                    lagsIncluded = 0:2)
+  
+  # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+  # SPE
+  falseAlarmSPE_msad <- sum(msadpcaNOC_ls$FaultChecks[,5] %in% c(2,3)) /
+    nrow(msadpcaNOC_ls$FaultChecks)
+  # T2
+  falseAlarmT2_msad <- sum(msadpcaNOC_ls$FaultChecks[,5] %in% c(1,3)) /
+    nrow(msadpcaNOC_ls$FaultChecks)
+  
+  ###  AD-PCA: Correctly Assume Equal States  ###
+  adpcaNOC_ls <- mspTrain(data = adpcaObs_ls$NOC[, 2:4],
+                                  labelVector = adpcaObs_ls$NOC[, 1],
+                                  trainObs = 3 * 24 * 60,
+                                  updateFreq = 24 * 60,
+                                  alpha = 0.001,
+                                  lagsIncluded = 0:2)
+  
+  # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+  # SPE
+  falseAlarmSPE_ad <- sum(adpcaNOC_ls$FaultChecks[,5] %in% c(2,3)) /
+    nrow(adpcaNOC_ls$FaultChecks)
+  # T2
+  falseAlarmT2_ad <- sum(adpcaNOC_ls$FaultChecks[,5] %in% c(1,3)) /
+    nrow(adpcaNOC_ls$FaultChecks)
+  
+  ###  Return Data Frame  ###
+  FA_rates <- data.frame(MSAD_SPE = falseAlarmSPE_msad,
+                         MSAD_T2 = falseAlarmT2_msad,
+                         AD_SPE = falseAlarmSPE_ad,
+                         AD_T2 = falseAlarmT2_ad)
+  
+  ##########   Time to Fault Detection   ##########
+  
+  # Train the two models
+  msadpca_MS_Results_ls <- mspTrain(data = adpcaObs_ls$NOC[1:7500, 2:4],
+                            labelVector = adpcaObs_ls$NOC[1:7500, 5],
+                            trainObs = 3 * 24 * 60,
+                            updateFreq = 24 * 60,
+                            alpha = 0.001,
+                            lagsIncluded = 0:2)
+  adpca_MS_Results_ls <- mspTrain(data = adpcaObs_ls$NOC[1:7500, 2:4],
+                          labelVector = adpcaObs_ls$NOC[1:7500, 1],
+                          trainObs = 3 * 24 * 60,
+                          updateFreq = 24 * 60,
+                          alpha = 0.001,
+                          lagsIncluded = 0:2)
+  
+  # Subset out the normal operating data
+  faultsSimRes <- lapply(adpcaObs_ls[-1], function(mat){
+    
+    ###  MSAD-PCA: Assume the Incorrect State  ###
+    # Take our testing data
+    testObs <- mat[7499:10080, 2:4]
+    # lag the test data and cut the NA observations
+    testObs <- lag.xts(testObs, 0:2)
+    testObs <- testObs[-(1:2),]
+    # Attach the *incorrect* state label instead of the correct label
+    msad_MS_TestObs <- cbind(mat[7501:10080, 5], testObs)
+    # Run the test data through the Monitor function
+    msad_MS_DataandFlags <- mspMonitor(observations = msad_MS_TestObs[,-1],
+                                       labelVector = msad_MS_TestObs[,1],
+                                       trainingSummary =
+                                         msadpca_MS_Results_ls$TrainingSpecs)
+    # Check for alarms
+    msad_MS_Alarm <- msad_MS_DataandFlags
+    for(i in 1:nrow(msad_MS_DataandFlags)){
+      msad_MS_Alarm[1:i,] <- mspWarning(msad_MS_Alarm[1:i,])
+    }
+    
+    ## Time to first alarm
+    # Use suppressWarnings() on the min() function. If the which() function
+    # returns an integer(0), its minimum is Inf, but it throws a warning. These
+    # warnings will fill the console under heavy repitition, so suppress them.
+    # SPE
+    time2SPE_msad <- which(msad_MS_Alarm[1000:2580,15] %in% c(1,3))
+    time2SPE_msad <- suppressWarnings(min(time2SPE_msad))
+    # T2
+    time2T2_msad <- which(msad_MS_Alarm[1000:2580,15] %in% c(2,3))
+    time2T2_msad <- suppressWarnings(min(time2T2_msad))
+    
+    
+    
+    ###  AD-PCA: Assume Equal States  ###
+    # re-attach the *CORRECT* state label
+    ad_MS_TestObs <- cbind(mat[7501:10080, 1], testObs)
+    # Run the test data through the Monitor function
+    ad_MS_DataandFlags <- mspMonitor(observations = ad_MS_TestObs[,-1],
+                                     labelVector = ad_MS_TestObs[,1],
+                                     trainingSummary =
+                                       adpca_MS_Results_ls$TrainingSpecs)
+    # Check for alarms
+    ad_MS_Alarm <- ad_MS_DataandFlags
+    for(i in 1:nrow(msad_MS_DataandFlags)){
+      ad_MS_Alarm[1:i,] <- mspWarning(ad_MS_Alarm[1:i,])
+    }
+    
+    ## Time to first alarm
+    # SPE
+    time2SPE_ad <- which(ad_MS_Alarm[1000:2580,15] %in% c(1,3))
+    time2SPE_ad <- suppressWarnings(min(time2SPE_ad))
+    # T2
+    time2T2_ad <- which(ad_MS_Alarm[1000:2580,15] %in% c(2,3))
+    time2T2_ad <- suppressWarnings(min(time2T2_ad))
+    
+    ###  Return Data Frame  ###
+    data.frame(MSAD_SPE = time2SPE_msad,
+               MSAD_T2 = time2T2_msad,
+               AD_SPE = time2SPE_ad,
+               AD_T2 = time2T2_ad)
+  }) %>%
+    do.call(bind_rows, .) %>% 
+    mutate(Faults = names(adpcaObs_ls[-1]))
+  
+  ##########   Return a List   ##########
+  list(falseAlarmRates = FA_rates,
+       time2Detect = faultsSimRes)
+})
+b <- Sys.time() 
+b - a # 91 seconds for each iteration. 15.3 minutes for 10 iterations, 12.1 
+# hours for 500 iterations. On parallel Mac, 5.3 minutes for 10 iterations over
+# 8 cores, 41.4 minutes for 100 iterations over 8 cores, and 6.7 hours for 1000
+# iterations over 8 cores.
+```
+
+Let's clean up these results.
+```{r msadSim_Cleaning}
+ss_FA_rates <- lapply(1:length(adResults_ls), function(i){
+  adResults_ls[[i]]$falseAlarmRates
+}) %>% do.call(bind_rows, .)
+# write_csv(ss_FA_rates, path = "false_alarm_rates_ss_1000_20170314.csv")
+ss_detectionTimes <- lapply(1:length(adResults_ls), function(i){
+  adResults_ls[[i]]$time2Detect
+}) %>% do.call(bind_rows, .)
+# write_csv(ss_detectionTimes, path = "detection_times_ss_1000_20170314.csv")
+```
+
+Now we can look at the results.
+```{r msadSim_graphics}
+# False Alarm Rates
+ss_FA_rates[,1] %>% hist(xlim = c(0, 0.02), main = "MSAD SPE False Alarm Rates")
+ss_FA_rates[,3] %>% hist(xlim = c(0, 0.02), main = "AD SPE False Alarm Rates")
+ss_FA_rates[,2] %>% hist(xlim = c(0.05, 0.2), main = "MSAD T2 False Alarm Rates")
+ss_FA_rates[,4] %>% hist(xlim = c(0.05, 0.2), main = "AD T2 False Alarm Rates")
+
+###  Detection Times  ###
+# Fault 1A
+ss_detectionTimes %>%
+  filter(Faults == "A1") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 1B
+ss_detectionTimes %>%
+  filter(Faults == "B1") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 2A
+ss_detectionTimes %>%
+  filter(Faults == "A2") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 2B
+ss_detectionTimes %>%
+  filter(Faults == "B2") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 3A
+ss_detectionTimes %>%
+  filter(Faults == "A3") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 3B
+ss_detectionTimes %>%
   filter(Faults == "B3") %>%
   select(-Faults) %>% 
   sapply(summary)
