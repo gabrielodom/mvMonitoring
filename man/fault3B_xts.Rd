@@ -40,3 +40,4 @@ Three-feature, three-state simulated process data including
   dampening of one of the underlying features in the system.
 }
 \keyword{datasets}
+

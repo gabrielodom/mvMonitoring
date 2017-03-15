@@ -36,3 +36,4 @@ Three-feature, three-state simulated process data under normal
   operating conditions as example data for different included functions.
 }
 \keyword{datasets}
+

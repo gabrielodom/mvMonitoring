@@ -40,3 +40,4 @@ Three-feature, three-state simulated process data including
   positive drift in values for two features.
 }
 \keyword{datasets}
+

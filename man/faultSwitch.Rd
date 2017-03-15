@@ -105,3 +105,4 @@ The faults return data frames as follows: \itemize{
 nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")
 faultSwitch(nrml, fault = "NOC", faultStartIndex = 8500)
 }
+

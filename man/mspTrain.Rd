@@ -128,3 +128,4 @@ mspTrain(data = normal_switch_xts[, -1],
          labelVector = normal_switch_xts[, 1],
          trainObs = nTrainObs)
 }
+

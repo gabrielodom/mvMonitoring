@@ -35,3 +35,4 @@ function is called by rotateScale3D().
 data("normal_switch_xts")
 normal_switch_xts[,-1] \%*\% rotate3D(yaw = -10, pitch = 0, roll = 15)
 }
+

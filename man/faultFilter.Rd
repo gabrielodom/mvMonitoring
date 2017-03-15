@@ -77,3 +77,4 @@ faultFilter(trainData = trainObs,
             testData = testObs,
             updateFreq = nUpdate)
 }
+

@@ -851,8 +851,11 @@ We first assume that the observations do come from a multi-state process. This m
 # We get warnings of "no non-missing arguments to min; returning Inf" when
 # none of the observations yield alarms. Suppress this with ? "message = FALSE"
 # doesn't work.
+library(parallel) # use mclapply on Mac, parLapply on Windows
+library(tidyverse)
+library(xts)
 a <- Sys.time()
-msadResults2_ls <- lapply(1:500, function(void){
+msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
   ##########   Draw a Random Data Set   ##########
   adpcaObs_ls <- mspProcessData(faults = "All",
                               faultStartIndex = 8500,
@@ -988,7 +991,9 @@ msadResults2_ls <- lapply(1:500, function(void){
 })
 b <- Sys.time() 
 b - a # 91 seconds for each iteration. 15.3 minutes for 10 iterations, 12.1 
-# hours for 500 iterations.
+# hours for 500 iterations. On parallel Mac, 5.3 minutes for 10 iterations over
+# 8 cores, 41.4 minutes for 100 iterations over 8 cores, and 6.7 hours for 1000
+# iterations over 8 cores.
 ```
 The SPE statistic for the AD-PCA monitoring scheme never rings an alarm for Fault 1A. Interesting.
 
@@ -997,19 +1002,19 @@ Let's clean up these results.
 FA_rates2 <- lapply(1:length(msadResults2_ls), function(i){
   msadResults2_ls[[i]]$falseAlarmRates
 }) %>% do.call(bind_rows, .)
-write_csv(FA_rates2, path = "false_alarm_rates_20170314.csv")
+write_csv(FA_rates2, path = "false_alarm_rates_1000_20170314.csv")
 detectionTimes2 <- lapply(1:length(msadResults2_ls), function(i){
   msadResults2_ls[[i]]$time2Detect
 }) %>% do.call(bind_rows, .)
-write_csv(detectionTimes2, path = "detection_times_20170314.csv")
+write_csv(detectionTimes2, path = "detection_times_1000_20170314.csv")
 ```
 
 Now we can look at the results.
 ```{r msadSim_graphics}
 # False Alarm Rates
 FA_rates2[,1] %>% hist(xlim = c(0, 0.05), main = "MSAD SPE False Alarm Rates")
-FA_rates[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
-FA_rates[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
+FA_rates2[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
+FA_rates2[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
 FA_rates2[,4] %>% hist(xlim = c(0, 0.05), main = "AD T2 False Alarm Rates")
 
 ###  Detection Times  ###

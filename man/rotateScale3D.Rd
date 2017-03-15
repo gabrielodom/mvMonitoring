@@ -37,3 +37,4 @@ featureScales <- c(0.2, 1, 5)
 normal_switch_xts[,-1] \%*\% rotateScale3D(rot_angles = angles,
                                          scale_factors = featureScales)
 }
+
