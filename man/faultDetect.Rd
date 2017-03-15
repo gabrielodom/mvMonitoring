@@ -69,4 +69,3 @@ detect_ls <- lapply(1:nrow(scaledData), function(i){
 })
 do.call(rbind, detect_ls)
 }
-

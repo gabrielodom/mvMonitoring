@@ -17,4 +17,3 @@ Data from the SM-MBR Bioreactor system over 12 hours. This data
   will be used for testing the mvMonitoring package.
 }
 \keyword{datasets}
-

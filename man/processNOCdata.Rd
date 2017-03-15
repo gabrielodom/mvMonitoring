@@ -72,4 +72,3 @@ This function randomly generates a non-stationary (sinusoidal) and
 \examples{
 processNOCdata(startTime = "2016-11-27 00:00:00 CST")
 }
-

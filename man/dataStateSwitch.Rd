@@ -39,4 +39,3 @@ This function splits a process data frame by state, and rotates and
 nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")
 dataStateSwitch(nrml)
 }
-

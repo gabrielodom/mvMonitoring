@@ -66,4 +66,3 @@ dataAndFlags <- mspMonitor(observations = testObs[, -1],
 # Alarm check the last row of the matrix returned by the mspMonitor function
 mspWarning(dataAndFlags)
 }
-

@@ -41,4 +41,3 @@ Three-feature, three-state simulated process data including
   amplification of the underlying process for each feature in the system.
 }
 \keyword{datasets}
-
