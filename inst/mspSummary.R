@@ -110,7 +110,7 @@ ss_detectionTimes %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
-# Fault 1B
+# Fault 2B
 ss_detectionTimes %>%
   filter(Faults == "B2") %>%
   select(-Faults) %>%
@@ -120,7 +120,7 @@ ss_detectionTimes %>%
 ss_detectionTimes %>%
   filter(Faults == "A3") %>%
   select(-Faults) %>%
-  sapply(mspSummary)
+  sapply(mspSummary) %>% round(3)
 
 # Fault 3B
 ss_detectionTimes %>%
@@ -130,7 +130,7 @@ ss_detectionTimes %>%
 
 ###  False Alarm Rates  ###
 # Read in False Alarm Rates Data
-ss_FA_rates[,1] %>% hist(xlim = c(0, 0.02), main = "MSAD SPE False Alarm Rates")
-ss_FA_rates[,3] %>% hist(xlim = c(0, 0.02), main = "AD SPE False Alarm Rates")
+ss_FA_rates[,1] %>% hist(xlim = c(0, 0.03), main = "MSAD SPE False Alarm Rates")
+ss_FA_rates[,3] %>% hist(xlim = c(0, 0.03), main = "AD SPE False Alarm Rates")
 ss_FA_rates[,2] %>% hist(xlim = c(0.05, 0.2), main = "MSAD T2 False Alarm Rates")
 ss_FA_rates[,4] %>% hist(xlim = c(0.05, 0.2), main = "AD T2 False Alarm Rates")
