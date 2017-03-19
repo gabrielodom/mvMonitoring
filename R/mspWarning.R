@@ -78,15 +78,15 @@ mspWarning <- function(mspMonitor_object,
       # that specific observation have not been checked.
       data_xts[n, "Alarm"] <- 0
 
-      # We now check the last few SPE flags
-      x1 <- as.vector(data_xts[(n - faultsToTriggerAlarm + 1):n, "SPE_Flag"])
+      # We now check the last few T2 flags
+      x1 <- as.vector(data_xts[(n - faultsToTriggerAlarm + 1):n, "T2_Flag"])
       if(identical(x1, alarmCheck)){
         data_xts[n, "Alarm"] <- 1
       }
 
-      # And we also check the last few T2 flags. We will increment the Alarm
+      # And we also check the last few SPE flags. We will increment the Alarm
       #state based on SPE flag status, T2 flag status, or both
-      x2 <- as.vector(data_xts[(n - faultsToTriggerAlarm + 1):n, "T2_Flag"])
+      x2 <- as.vector(data_xts[(n - faultsToTriggerAlarm + 1):n, "SPE_Flag"])
       if(identical(x2, alarmCheck)){
         data_xts[n, "Alarm"] <- data_xts[n, "Alarm"] + 2
       }

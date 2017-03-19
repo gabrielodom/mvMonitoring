@@ -130,10 +130,12 @@ faultFilter <- function(trainData,
   # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
   if(nrow(faultObj) >= faultsToTriggerAlarm){
     for(i in faultsToTriggerAlarm:nrow(faultObj)){
+      # T2
       x1 <- as.vector(faultObj[(i - faultsToTriggerAlarm + 1):i, 4])
       if(identical(x1, alarmCheck)){
         faultObj[i,5] <- 1
       }
+      # SPE
       x2 <- as.vector(faultObj[(i - faultsToTriggerAlarm + 1):i, 2])
       if(identical(x2, alarmCheck)){
         faultObj[i,5] <- faultObj[i,5] + 2
