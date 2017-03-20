@@ -855,8 +855,12 @@ library(parallel) # use mclapply on Mac, parLapply on Windows
 library(tidyverse)
 library(xts)
 a <- Sys.time()
-# msadResults2_ls <- lapply(1:2, function(void){
-msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
+cl <- makeCluster(getOption("cl.cores", 8))
+clusterEvalQ(cl, library(tidyverse))
+clusterEvalQ(cl, library(xts))
+clusterEvalQ(cl, library(mvMonitoring))
+msadResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
+# msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
   ##########   Draw a Random Data Set   ##########
   msadpcaObs_ls <- mspProcessData(faults = "All",
                               faultStartIndex = 8500,
@@ -986,7 +990,7 @@ msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
                AD_T2 = time2T2_ad)
   }) %>%
     do.call(bind_rows, .) %>% 
-    mutate(Faults = names(adpcaObs_ls[-1]))
+    mutate(Faults = names(msadpcaObs_ls[-1]))
   
   ##########   Return a List   ##########
   list(falseAlarmRates = FA_rates,
@@ -996,61 +1000,63 @@ b <- Sys.time()
 b - a # 91 seconds for each iteration. 15.3 minutes for 10 iterations, 12.1 
 # hours for 500 iterations. On parallel Mac, 5.3 minutes for 10 iterations over
 # 8 cores, 41.4 minutes for 100 iterations over 8 cores, and 6.7 hours for 1000
-# iterations over 8 cores.
+# iterations over 8 cores. On parallel Windows, 4.3 minutes for 10 iterations
+# over 8 cores, and x.x hours for 1000 iterations over 8 cores.
+stopCluster(cl)
 ```
 Let's clean up these results.
 ```{r msadSim_Cleaning}
-ms_FA_rates2 <- lapply(1:length(msadResults2_ls), function(i){
-  msadResults2_ls[[i]]$falseAlarmRates
+ms_FA_rates3 <- lapply(1:length(msadResults3_ls), function(i){
+  msadResults3_ls[[i]]$falseAlarmRates
 }) %>% do.call(bind_rows, .)
-write_csv(ms_FA_rates2, path = "false_alarm_rates_ms_1000_20170314.csv")
-ms_detectionTimes2 <- lapply(1:length(msadResults2_ls), function(i){
-  msadResults2_ls[[i]]$time2Detect
+write_csv(ms_FA_rates3, path = "false_alarm_rates_ms_1000_20170319.csv")
+ms_detectionTimes3 <- lapply(1:length(msadResults3_ls), function(i){
+  msadResults3_ls[[i]]$time2Detect
 }) %>% do.call(bind_rows, .)
-write_csv(ms_detectionTimes2, path = "detection_times_ms_1000_20170314.csv")
+write_csv(ms_detectionTimes3, path = "detection_times_ms_1000_20170319.csv")
 ```
 
 Now we can look at the results.
 ```{r msadSim_graphics}
 # False Alarm Rates
-ms_FA_rates2[,1] %>% hist(xlim = c(0, 0.05), main = "MSAD SPE False Alarm Rates")
-ms_FA_rates2[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
-ms_FA_rates2[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
-ms_FA_rates2[,4] %>% hist(xlim = c(0, 0.05), main = "AD T2 False Alarm Rates")
+ms_FA_rates3[,1] %>% hist(xlim = c(0, 0.05), main = "MSAD SPE False Alarm Rates")
+ms_FA_rates3[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
+ms_FA_rates3[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
+ms_FA_rates3[,4] %>% hist(xlim = c(0, 0.05), main = "AD T2 False Alarm Rates")
 
 ###  Detection Times  ###
 # Fault 1A
-ms_detectionTimes2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A1") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 1B
-ms_detectionTimes2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "B1") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 2A
-ms_detectionTimes2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A2") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 2B
-ms_detectionTimes2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "B2") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 3A
-ms_detectionTimes2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A3") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 3B
-ms_detectionTimes2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "B3") %>%
   select(-Faults) %>% 
   sapply(summary)
