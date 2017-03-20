@@ -5,7 +5,8 @@
 \title{Simulate Normal or Fault Observations from a Single-State or Multi-State
 Process}
 \usage{
-mspProcessData(faults, faultStartIndex, startTime, period = 7 * 24 * 60,
+mspProcessData(faults, faultStartIndex, period = 7 * 24 * 60,
+  startTime = Sys.time() - as.difftime(period, units = "mins"),
   multiState = TRUE, angles2 = list(yaw = 0, pitch = 90, roll = 30),
   scales2 = c(1, 0.5, 2), angles3 = list(yaw = 90, pitch = 0, roll = -30),
   scales3 = c(0.25, 0.1, 0.75), adpcaTest = FALSE, msadpcaTest = FALSE,
@@ -18,11 +19,11 @@ mspProcessData(faults, faultStartIndex, startTime, period = 7 * 24 * 60,
 \item{faultStartIndex}{An integer specifying the index at which the faults
 will start.}
 
-\item{startTime}{a POSIXct object specifying the day and time for the
-starting observation.}
-
 \item{period}{The observation cycle length. Defaults to one week's worth of
 minute-level observations (10,080 observations).}
+
+\item{startTime}{a POSIXct object specifying the day and time for the
+starting observation. Defaults to one week prior to the current time.}
 
 \item{multiState}{Should the observations be generated from a multi-state
 process? Defaults to TRUE.}
