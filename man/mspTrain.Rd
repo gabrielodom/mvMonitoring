@@ -33,24 +33,31 @@ an alarm. Defaults to 3}
 \item{...}{Lazy dots for additional internal arguments}
 }
 \value{
-A list with the following components: \itemize{ \item{FaultChecks --
-  }{an xts flagging matrix with the same number of rows as "data". This flag
-  matrix has the following five columns: \itemize{ \item{SPE -- }{the SPE
-  statistic value for each observation in "data"} \item{SPE_Flag -- }{a
-  vector of SPE indicators recording 0 if the test statistic is less than or
-  equal to the critical value passed through from the threshold object}
-  \item{T2 -- }{the T2 statistic value for each observation in "data"}
-  \item{T2_Flag -- }{a vector of T2 fault indicators, defined like SPE_Flag}
-  \item{Alarm -- }{a column indicating if there have been three flags in a
-  row for either the SPE or T2 monitoring statistics or both. Alarm states
-  are as follows: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared
-  Prediction Error alarm, and 3 = both alarms.} } } \item{Non_Alarmed_Obs --
-  }{an xts data matrix of all the non-alarmed observations} \item{Alarms --
-  }{an xts data matrix of the features and specific alarms for Alarmed
-  observations with the alarm codes are listed above} \item{TrainingSpecs --
-  }{a list of k lists, one for each class, with each list containing the
-  specific threshold object returned by the internal threshold() function for
-  that class. See the threshold() function's help file for more details.} }
+A list with the following components: \itemize{
+  \item{FaultChecks -- }{an xts flagging matrix with the same number of rows
+    as "data". This flag matrix has the following five columns: \itemize{
+      \item{SPE -- }{the SPE statistic value for each observation in "data"}
+      \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the test
+        statistic is less than or equal to the critical value passed through
+        from the threshold object}
+      \item{T2 -- }{the T2 statistic value for each observation in "data"}
+      \item{T2_Flag -- }{a vector of T2 fault indicators, defined like
+        SPE_Flag}
+      \item{Alarm -- }{a column indicating if there have been three flags in
+        a row for either the SPE or T2 monitoring statistics or both. Alarm
+        states are as follows: 0 = no alarm, 1 = Hotelling's T2 alarm,
+        2 = Squared Prediction Error alarm, and 3 = both alarms.}
+      }
+  }
+  \item{Non_Alarmed_Obs -- }{an xts data matrix of all the non-alarmed
+    observations}
+  \item{Alarms -- }{an xts data matrix of the features and specific alarms
+    for Alarmed observations with the alarm codes are listed above}
+  \item{TrainingSpecs -- }{a list of k lists, one for each class, with each
+    list containing the specific threshold object returned by the internal
+    threshold() function for that class. See the threshold() function's help
+    file for more details.}
+  }
 }
 \description{
 This function performs Multi-State Adaptive-Dynamic PCA on a
