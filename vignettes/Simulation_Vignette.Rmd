@@ -1148,7 +1148,7 @@ adResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
                           lagsIncluded = 0:2)
   
   # Subset out the normal operating data
-  faultsSimRes <- lapply(adpcaObs_ls[names(adpcaObs_ls) != "NOC"]),
+  faultsSimRes <- lapply(adpcaObs_ls[names(adpcaObs_ls) != "NOC"],
                          function(mat){
     
     ###  MSAD-PCA: Assume the Incorrect State  ###
