@@ -46,37 +46,37 @@ mspSummary <- function(vec,
 
 
 # Fault 1A
-detection_times2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A1") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
 # Fault 1B
-detection_times2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "B1") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
 # Fault 2A
-detection_times2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A2") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
-# Fault 1B
-detection_times2 %>%
+# Fault 2B
+ms_detectionTimes3 %>%
   filter(Faults == "B2") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
 # Fault 3A
-detection_times2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A3") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
 # Fault 3B
-detection_times2 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "B3") %>%
   select(-Faults) %>%
   sapply(mspSummary)
@@ -84,9 +84,9 @@ detection_times2 %>%
 
 ###  False Alarm Rates  ###
 FA_rates2 <- read_csv("~/Box Sync/Consulting/Dr. Hering/MV_Process_Control/MVSPC/Simulation_Data/false_alarm_rates_1000_20170314.csv")
-FA_rates2$MSAD_SPE %>%
+ms_FA_rates3$MSAD_SPE %>%
   hist(xlim = c(0, 0.06), main = "MSAD SPE False Alarm Rates")
-FA_rates2$AD_T2 %>%
+ms_FA_rates3$AD_T2 %>%
   hist(xlim = c(0, 0.06), main = "AD T2 False Alarm Rates")
 
 ######  Single-State Simulation  ##############################################

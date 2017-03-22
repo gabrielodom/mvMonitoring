@@ -8,10 +8,10 @@
 #'   "B1", "A2", "B2", "A3", "B3", or "All". See details for more information.
 #' @param faultStartIndex An integer specifying the index at which the faults
 #'   will start.
-#' @param startTime a POSIXct object specifying the day and time for the
-#'   starting observation.
 #' @param period The observation cycle length. Defaults to one week's worth of
 #'   minute-level observations (10,080 observations).
+#' @param startTime a POSIXct object specifying the day and time for the
+#'   starting observation. Defaults to one week prior to the current time.
 #' @param multiState Should the observations be generated from a multi-state
 #'   process? Defaults to TRUE.
 #' @param angles2 Change the principal angles for State 2. Defaults to yaw = 0,
@@ -93,8 +93,9 @@
 #'                          startTime = "2016-11-27 00:00:00 CST")
 mspProcessData <- function(faults,
                            faultStartIndex,
-                           startTime,
                            period = 7 * 24 * 60,
+                           startTime = Sys.time() - as.difftime(period,
+                                                                units = "mins"),
                            multiState = TRUE,
                            angles2 = list(yaw = 0, pitch = 90, roll = 30),
                            scales2 = c(1, 0.5, 2),
