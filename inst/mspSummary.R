@@ -4,9 +4,10 @@
 ######  Multi-State Simulation  ###############################################
 
 # Read in the latest simulation data
+library(xts)
 library(readr)
-library(tidyverse)
 library(reshape2)
+library(tidyverse)
 detection_times2 <- read_csv("~/Box Sync/Consulting/Dr. Hering/MV_Process_Control/MVSPC/Simulation_Data/detection_times_1000_20170314.csv")
 
 # Table out summary of detection times
