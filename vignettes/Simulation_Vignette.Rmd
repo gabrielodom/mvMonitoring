@@ -925,7 +925,8 @@ msadResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
                           lagsIncluded = 0:2)
   
   # Subset out the normal operating data
-  faultsSimRes <- lapply(msadpcaObs_ls[-1], function(mat){
+  faultsSimRes <- lapply(msadpcaObs_ls[names(msadpcaObs_ls) != "NOC"],
+                         function(mat){
     
     ###  MSAD-PCA: Assume the Correct State  ###
     # Take our testing data
@@ -990,7 +991,7 @@ msadResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
                AD_T2 = time2T2_ad)
   }) %>%
     do.call(bind_rows, .) %>% 
-    mutate(Faults = names(msadpcaObs_ls[-1]))
+    mutate(Faults = names(msadpcaObs_ls[names(msadpcaObs_ls) != "NOC"]))
   
   ##########   Return a List   ##########
   list(falseAlarmRates = FA_rates,
@@ -1147,7 +1148,8 @@ adResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
                           lagsIncluded = 0:2)
   
   # Subset out the normal operating data
-  faultsSimRes <- lapply(adpcaObs_ls[-1], function(mat){
+  faultsSimRes <- lapply(adpcaObs_ls[names(adpcaObs_ls) != "NOC"]),
+                         function(mat){
     
     ###  MSAD-PCA: Assume the Incorrect State  ###
     # Take our testing data
@@ -1212,7 +1214,7 @@ adResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
                AD_T2 = time2T2_ad)
   }) %>%
     do.call(bind_rows, .) %>% 
-    mutate(Faults = names(adpcaObs_ls[-1]))
+    mutate(Faults = names(adpcaObs_ls[names(adpcaObs_ls) != "NOC"]))
   
   ##########   Return a List   ##########
   list(falseAlarmRates = FA_rates,

@@ -71,8 +71,8 @@
 #'       \item{y : }{y(t_*) = (t_*) ^ 2 - 3t_* + error}
 #'       \item{z : }{z(t_*) = -(t_*) ^ 3 + 3(t_*) ^ 2 + error}
 #'     }
-#'     where t_* = 3 x t x (period - s) / (2 x period) and s is the observation
-#'     index.
+#'     where t_* = 5 x t x (period - s) / (period - faultStartIndex) and s is
+#'     the observation index.
 #'   }
 #'   \item{B3 -- }{The fault is a signal amplificaton in the determining latent
 #'     t vector for the "z" feature only. The fault starts at "faultStartIndex",
@@ -139,7 +139,7 @@ faultSwitch <- function(df, fault,
 
   # Fault 3A
   fault3A <- function(df, faultStartIndex, period){
-    amplify_vec <- 2 * (1:period - faultStartIndex) /
+    amplify_vec <- 5 * (1:period - faultStartIndex) /
       (period - faultStartIndex) + 1
     amplify_vec[amplify_vec < 1] <- 1
     df %>%
