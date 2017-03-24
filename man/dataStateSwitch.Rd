@@ -21,7 +21,8 @@ dataStateSwitch(df, angles2 = list(yaw = 0, pitch = 90, roll = 30),
 }
 \value{
 A data frame containing the time index, state, and feature values
-  after state-specific rotation and scaling.
+  after state-specific rotation and scaling; this data frame also contains
+  the other columns of df that aren't the feature values.
 }
 \description{
 Split single-state process observations, apply multiple state

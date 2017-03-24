@@ -107,7 +107,10 @@ mspProcessData <- function(faults,
   lazy_ls <- lazy_dots(...)
 
   if(identical(faults, "All")){
-    faults <- c("NOC", "A1", "B1", "A2", "B2", "A3", "B3")
+    faults <- c("NOC",
+                "A1", "B1", "C1",
+                "A2", "B2", "C2",
+                "A3", "B3", "C3")
   }
 
   # Single-state NOC observations
@@ -124,22 +127,38 @@ mspProcessData <- function(faults,
     fault_df <- faultSwitch(df = normal_df,
                             fault = x,
                             faultStartIndex = faultStartIndex,
-                            period = period)
+                            period = period,
+                            postStateSplit = FALSE)
+    # fault_xts <- xts(fault_df %>% select(x, y, z, state),
+    #                  order.by = fault_df[,8])
+    # mspGraphsGrid(fault_xts)
 
     ###  Modify and Combine the Observations  ###
     normal_df <- if(multiState){
       dataStateSwitch(normal_df,
                       angles2 = angles2, scales2 = scales2,
-                      angles3 = angles3, scales3 = scales3)
+                      angles3 = angles3, scales3 = scales3) %>%
+        select(dateTime, state, x, y, z)
     }else{
       normal_df$state <- 1
       normal_df %>% select(dateTime, state, x, y, z)
     }
 
     fault_df <- if(multiState){
-      dataStateSwitch(fault_df,
+      df <- dataStateSwitch(fault_df,
                       angles2 = angles2, scales2 = scales2,
                       angles3 = angles3, scales3 = scales3)
+      # df_xts <- xts(df %>% select(x, y, z, state),
+      #                  order.by = df[,1])
+      # mspGraphsGrid(df_xts)
+      df2 <- faultSwitch(df, fault = x,
+                  faultStartIndex = faultStartIndex,
+                  period = period, postStateSplit = TRUE) %>%
+        select(dateTime, state, x, y, z)
+      # df2_xts <- xts(df2 %>% select(x, y, z, state),
+      #                  order.by = df2[,1])
+      # mspGraphsGrid(df2_xts)
+      df2
     }else{
       fault_df$state <- 1
       fault_df %>% select(dateTime, state, x, y, z)
@@ -172,3 +191,19 @@ mspProcessData <- function(faults,
   names(df_ls) <- faults
   df_ls
 }
+
+#
+# ###  Fault 3C  ###
+# # This fault requires us to infect the underlying t vector with a drift,
+# # but only for Feature Y in state 2. We can do this by taking the fault_df
+# # object, and multiplying it by the inverse of the Scale matrix of state 2
+# # and then by the inverse of the rotation matrix of state 2.
+# if(x == "C3"){
+#   df <- dataStateSwitch(fault_df,
+#                         angles2 = angles2, scales2 = scales2,
+#                         angles3 = angles3, scales3 = scales3)
+# }else{
+#   dataStateSwitch(fault_df,
+#                   angles2 = angles2, scales2 = scales2,
+#                   angles3 = angles3, scales3 = scales3)
+# }

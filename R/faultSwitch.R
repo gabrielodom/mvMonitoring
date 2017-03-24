@@ -98,22 +98,34 @@
 #' faultSwitch(nrml, fault = "NOC", faultStartIndex = 8500)
 faultSwitch <- function(df, fault,
                         faultStartIndex,
-                        period = 10080, shift = 2){
+                        period = 10080, shift = 2,
+                        postStateSplit = FALSE){
+  # browser()
+
   ###  Define the Fault Functions  ###
   # Fault 1A
   fault1A <- function(df, shift){
     df %>%
-      select(dateTime, state, t, x, y, z) %>%
       mutate(x = x + shift,
              y = y + shift,
-             z = z + shift)
+             z = z + shift) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
   }
 
   # Fault1B
   fault1B <- function(df, shift){
     df %>%
-      select(dateTime, state, t, x, y, z) %>%
-      mutate(x = x + shift)
+      mutate(x = x + shift) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
+  }
+
+  # Fault 1C
+  fault1C <- function(df, shift){
+    df %>%
+      mutate(state3Ind = state == 3) %>%
+      mutate(x = x + state3Ind * shift / 4,
+             z = z + state3Ind * shift / 4) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
   }
 
   # Fault 2A
@@ -121,10 +133,10 @@ faultSwitch <- function(df, fault,
     drift_vec <- (1:period - faultStartIndex) / 10 ^ 3
     drift_vec[drift_vec < 0] <- 0
     df %>%
-      select(dateTime, state, t, x, y, z) %>%
       mutate(x = x + drift_vec,
              y = y + drift_vec,
-             z = z + drift_vec)
+             z = z + drift_vec) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
   }
 
   # Fault 2B
@@ -132,9 +144,19 @@ faultSwitch <- function(df, fault,
     drift_vec <- (1:period - faultStartIndex) / 10 ^ 3
     drift_vec[drift_vec < 0] <- 0
     df %>%
-      select(dateTime, state, t, x, y, z) %>%
       mutate(y = y + drift_vec,
-             z = z + drift_vec)
+             z = z + drift_vec) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
+  }
+
+  # Fault 2C
+  fault2C <- function(df, faultStartIndex, period){
+    drift_vec <- 1.5 * (1:period - faultStartIndex) / (period - faultStartIndex)
+    drift_vec[drift_vec < 0] <- 0
+    df %>%
+      mutate(state2Ind = state == 2) %>%
+      mutate(y = y - state2Ind * drift_vec) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
   }
 
   # Fault 3A
@@ -143,11 +165,11 @@ faultSwitch <- function(df, fault,
       (period - faultStartIndex) + 1
     amplify_vec[amplify_vec < 1] <- 1
     df %>%
-      select(dateTime, state, t, err1, err2, err3) %>%
       mutate(t = amplify_vec * t) %>%
       mutate(x = t + err1,
              y = t ^ 2 - 3 * t + err2,
-             z = -t ^ 3 + 3 * t ^ 2 + err3)
+             z = -t ^ 3 + 3 * t ^ 2 + err3) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
   }
 
   # Fault 3B
@@ -155,21 +177,59 @@ faultSwitch <- function(df, fault,
     t_log <- df$t
     t_log[faultStartIndex:period] <- log(t_log[faultStartIndex:period])
     df %>%
-      select(dateTime, state, t, err1, err2, err3) %>%
       mutate(t_damp = t_log) %>%
       mutate(x = t + err1,
              y = t ^ 2 - 3 * t + err2,
-             z = -t_damp ^ 3 + 3 * t_damp ^ 2 + err3)
+             z = -t_damp ^ 3 + 3 * t_damp ^ 2 + err3) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
+  }
+
+  # Fault 3C
+  fault3C <- function(df, faultStartIndex, period){
+    # amplify_vec <- 5 * (1:period - faultStartIndex) /
+    #   (period - faultStartIndex) + 1
+    # amplify_vec[amplify_vec < 1] <- 1
+    df %>%
+      mutate(state2Ind = state == 2) %>%
+      # Remember that this is 1 + whatever the coefficent is, because
+      # y already has err2 in it.
+      mutate(err2Mod = (2 * err2 - 0.25) * state2Ind) %>%
+      mutate(y = y + err2Mod) %>%
+      select(dateTime, state, t, x, y, z, err1, err2, err3)
   }
 
   ###  Return the Faulted Data  ###
-  switch(fault,
-         NOC = df,
-         A1 = fault1A(df, shift = shift),
-         B1 = fault1B(df, shift = shift),
-         A2 = fault2A(df, faultStartIndex = faultStartIndex, period = period),
-         B2 = fault2B(df, faultStartIndex = faultStartIndex, period = period),
-         A3 = fault3A(df, faultStartIndex = faultStartIndex, period = period),
-         B3 = fault3B(df, faultStartIndex = faultStartIndex, period = period))
+  df <- if(postStateSplit == FALSE){
+    switch(fault,
+           NOC = df,
+           A1  = fault1A(df, shift = shift),
+           B1  = fault1B(df, shift = shift),
+           C1  = df,
+           A2  = fault2A(df, faultStartIndex = faultStartIndex,
+                        period = period),
+           B2  = fault2B(df, faultStartIndex = faultStartIndex,
+                        period = period),
+           C2  = df,
+           A3  = fault3A(df, faultStartIndex = faultStartIndex,
+                        period = period),
+           B3  = fault3B(df, faultStartIndex = faultStartIndex,
+                        period = period),
+           C3  = df)
+  }else{
+    switch(fault,
+           NOC = df,
+           A1  = df,
+           B1  = df,
+           C1  = fault1C(df, shift = shift),
+           A2  = df,
+           B2  = df,
+           C2  = fault2C(df, faultStartIndex = faultStartIndex,
+                        period = period),
+           A3  = df,
+           B3  = df,
+           C3  = fault3C(df, faultStartIndex = faultStartIndex,
+                         period = period))
+  }
 
+  df
 }
