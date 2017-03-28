@@ -53,7 +53,8 @@ mspGraphsGrid <- function(data_xts){
     theme(panel.grid = element_blank(),
           axis.title.y = element_blank(),
           plot.title = element_text(hjust = 0.5),
-          legend.position = c(0.12, 0.85)) + # legend.justification = c(1,0),
+          legend.position = c(0.12, 0.85),
+          legend.background = element_blank()) + # legend.justification = c(1,0),
     guides(color = guide_legend(override.aes = list(size = 2))) +
     ggtitle("Feature X") +
     geom_vline(xintercept = as.numeric(faultStart), size = 1)
