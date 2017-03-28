@@ -5,7 +5,8 @@
 #'   operating conditions or under fault conditions.
 #'
 #' @param faults A character vector of faults chosen. Options are "NOC", "A1",
-#'   "B1", "A2", "B2", "A3", "B3", or "All". See details for more information.
+#'   "B1", "C1", "A2", "B2", "C2", "A3", "B3", "C3", or "All". See details for
+#'   more information.
 #' @param faultStartIndex An integer specifying the index at which the faults
 #'   will start.
 #' @param period The observation cycle length. Defaults to one week's worth of
