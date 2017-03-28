@@ -14,7 +14,8 @@ mspProcessData(faults, faultStartIndex, period = 7 * 24 * 60,
 }
 \arguments{
 \item{faults}{A character vector of faults chosen. Options are "NOC", "A1",
-"B1", "A2", "B2", "A3", "B3", or "All". See details for more information.}
+"B1", "C1", "A2", "B2", "C2", "A3", "B3", "C3", or "All". See details for
+more information.}
 
 \item{faultStartIndex}{An integer specifying the index at which the faults
 will start.}
