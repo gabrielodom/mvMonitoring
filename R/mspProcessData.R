@@ -87,6 +87,7 @@
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval lazy_eval
 #' @importFrom magrittr %>%
+#' @importFrom stats runif
 #' @importFrom xts xts
 #'
 #' @examples mspProcessData(faults = "All",
