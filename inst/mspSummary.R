@@ -46,47 +46,73 @@ mspSummary <- function(vec,
 
 
 # Fault 1A
-ms_detectionTimes3 %>%
+ms_detectionTimes5 %>%
   filter(Faults == "A1") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
 # Fault 1B
-ms_detectionTimes3 %>%
+ms_detectionTimes5 %>%
   filter(Faults == "B1") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
+# Fault 1C (State 3)
+# 8500 / 60 < 142, so the next state start at 142 * 60 = 8520. The fault state
+# is one after that, so another 60 minutes. This fault starts at 80, so the
+# earliest we should detect a fault is at 80. We need to remove all "alarms"
+# that happen before 80, because these are false.
+ms_detectionTimes4 %>%
+  filter(Faults == "C1") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
 # Fault 2A
-ms_detectionTimes3 %>%
+ms_detectionTimes5 %>%
   filter(Faults == "A2") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
 # Fault 2B
-ms_detectionTimes3 %>%
+ms_detectionTimes5 %>%
   filter(Faults == "B2") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
+# Fault 2C (State 2)
+# 8500 / 60 < 142, so the next state start at 142 * 60 = 8520. This fault starts
+# at 20, so the earliest we should detect a fault is at 20.
+ms_detectionTimes4 %>%
+  filter(Faults == "C2") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
 # Fault 3A
-ms_detectionTimes3 %>%
+ms_detectionTimes5 %>%
   filter(Faults == "A3") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
 # Fault 3B
-ms_detectionTimes3 %>%
+ms_detectionTimes5 %>%
   filter(Faults == "B3") %>%
+  select(-Faults) %>%
+  sapply(mspSummary)
+
+# Fault 3C (State 2)
+# 8500 / 60 < 142, so the next state start at 142 * 60 = 8520. This fault starts
+# at 20, so the earliest we should detect a fault is at 20.
+ms_detectionTimes4 %>%
+  filter(Faults == "C3") %>%
   select(-Faults) %>%
   sapply(mspSummary)
 
 
 ###  False Alarm Rates  ###
 FA_rates2 <- read_csv("~/Box Sync/Consulting/Dr. Hering/MV_Process_Control/MVSPC/Simulation_Data/false_alarm_rates_1000_20170314.csv")
-ms_FA_rates3$MSAD_SPE %>%
+ms_FA_rates5$MSAD_SPE %>%
   hist(xlim = c(0, 0.06), main = "MSAD SPE False Alarm Rates")
-ms_FA_rates3$AD_T2 %>%
+ms_FA_rates5$AD_T2 %>%
   hist(xlim = c(0, 0.06), main = "AD T2 False Alarm Rates")
 
 ######  Single-State Simulation  ##############################################
