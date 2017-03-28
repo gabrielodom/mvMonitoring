@@ -859,10 +859,11 @@ cl <- makeCluster(getOption("cl.cores", 8))
 clusterEvalQ(cl, library(tidyverse))
 clusterEvalQ(cl, library(xts))
 clusterEvalQ(cl, library(mvMonitoring))
-msadResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
+msadResults5_ls <- parLapply(cl = cl, 1:100, function(void){
 # msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
+  
   ##########   Draw a Random Data Set   ##########
-  msadpcaObs_ls <- mspProcessData(faults = "All",
+  msadpcaObs_ls <- mspProcessData(faults = c("NOC", "C1", "C2", "C3"), # "All"
                               faultStartIndex = 8500,
                               startTime = "2016-11-27 00:00:00 CST",
                               multiState = TRUE,
@@ -927,6 +928,8 @@ msadResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
   # Subset out the normal operating data
   faultsSimRes <- lapply(msadpcaObs_ls[names(msadpcaObs_ls) != "NOC"],
                          function(mat){
+    # Testing the apply statement
+    # mat <- msadpcaObs_ls$C1
     
     ###  MSAD-PCA: Assume the Correct State  ###
     # Take our testing data
@@ -953,9 +956,11 @@ msadResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
     # returns an integer(0), its minimum is Inf, but it throws a warning. These
     # warnings will fill the console under heavy repitition, so suppress them.
     # SPE
+    # All alarms: which(msad_MS_Alarm[1:2580,15] %in% c(2,3))
     time2SPE_msad <- which(msad_MS_Alarm[1000:2580,15] %in% c(2,3))
     time2SPE_msad <- suppressWarnings(min(time2SPE_msad))
     # T2
+    # All alarms: which(msad_MS_Alarm[1:2580,15] %in% c(1,3))
     time2T2_msad <- which(msad_MS_Alarm[1000:2580,15] %in% c(1,3))
     time2T2_msad <- suppressWarnings(min(time2T2_msad))
     
@@ -978,9 +983,11 @@ msadResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
     ## Time to first alarm
     # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
     # SPE
+    # All alarms: which(ad_MS_Alarm[,15] %in% c(2,3))
     time2SPE_ad <- which(ad_MS_Alarm[1000:2580,15] %in% c(2,3))
     time2SPE_ad <- suppressWarnings(min(time2SPE_ad))
     # T2
+    # All alarms: which(ad_MS_Alarm[,15] %in% c(1,3))
     time2T2_ad <- which(ad_MS_Alarm[1000:2580,15] %in% c(1,3))
     time2T2_ad <- suppressWarnings(min(time2T2_ad))
     
@@ -1007,14 +1014,14 @@ stopCluster(cl)
 ```
 Let's clean up these results.
 ```{r msadSim_Cleaning}
-ms_FA_rates3 <- lapply(1:length(msadResults3_ls), function(i){
-  msadResults3_ls[[i]]$falseAlarmRates
+ms_FA_rates5 <- lapply(1:length(msadResults5_ls), function(i){
+  msadResults5_ls[[i]]$falseAlarmRates
 }) %>% do.call(bind_rows, .)
-write_csv(ms_FA_rates3, path = "false_alarm_rates_ms_1000_20170319.csv")
-ms_detectionTimes3 <- lapply(1:length(msadResults3_ls), function(i){
-  msadResults3_ls[[i]]$time2Detect
+write_csv(ms_FA_rates4, path = "false_alarm_rates_ms_1000_20170323.csv")
+ms_detectionTimes5 <- lapply(1:length(msadResults5_ls), function(i){
+  msadResults5_ls[[i]]$time2Detect
 }) %>% do.call(bind_rows, .)
-write_csv(ms_detectionTimes3, path = "detection_times_ms_1000_20170319.csv")
+write_csv(ms_detectionTimes4, path = "detection_times_ms_1000_20170323.csv")
 ```
 
 Now we can look at the results.
