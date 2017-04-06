@@ -5,15 +5,17 @@
 #'
 #' @param data An xts data matrix
 #' @param labelVector Class labels as a logical (two states only) or finite
-#'   numeric (two or more states) vector with length equal to the number of rows
-#'   in "data". For data with only one state, this will be a vector of 1s.
+#'   numeric (two or more states) vector or matrix column (not from data frame)
+#'   with length equal to the number of rows in "data". For data with only one
+#'   state, this will be a vector of 1s. Note: the value numeric(0) may not be
+#'   used as a label.
 #' @param trainObs The number of observations upon which to train the algorithm
 #' @param updateFreq The algorithm update frequency. Defaults to half as many
 #'   observations as the training frequency.
 #' @param Dynamic Specify if the PCA algorithm should include lagged variables.
 #'   Defaults to TRUE.
 #' @param lagsIncluded A vector of lags to include. If Dynamic = TRUE, specify
-#'   which lags to include. Defaults to c(0, -1), signifying that the Dynamic
+#'   which lags to include. Defaults to c(0, 1), signifying that the Dynamic
 #'   process observations will include current observations and observations
 #'   from one time step previous. See "Details" for more information.
 #' @param faultsToTriggerAlarm The number of sequential faults needed to trigger

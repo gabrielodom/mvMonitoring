@@ -12,7 +12,8 @@ mspTrain(data, labelVector, trainObs, updateFreq = ceiling(0.5 * trainObs),
 
 \item{labelVector}{Class labels as a logical (two states only) or finite
 numeric (two or more states) vector with length equal to the number of rows
-in "data". For data with only one state, this will be a vector of 1s.}
+in "data". For data with only one state, this will be a vector of 1s. The
+value numeric(0) may not be used as a label.}
 
 \item{trainObs}{The number of observations upon which to train the algorithm}
 
@@ -23,7 +24,7 @@ observations as the training frequency.}
 Defaults to TRUE.}
 
 \item{lagsIncluded}{A vector of lags to include. If Dynamic = TRUE, specify
-which lags to include. Defaults to c(0, -1), signifying that the Dynamic
+which lags to include. Defaults to c(0, 1), signifying that the Dynamic
 process observations will include current observations and observations
 from one time step previous. See "Details" for more information.}
 
