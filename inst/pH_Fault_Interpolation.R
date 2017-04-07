@@ -214,10 +214,11 @@ ggplot(data = pH_10m_df, aes(x = dateTime, y = ras_temp)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
-ras_temp_1min <- pH_10m_df %>%
-  select(dateTime, ras_temp) %>%
-  left_join(pH_1min_Seq, .) %>%
-  fill(ras_temp, .direction = "down")
+oneMin_ls <- list(ras_temp = pH_10m_df %>%
+                    select(dateTime, ras_temp) %>%
+                    left_join(pH_1min_Seq, .) %>%
+                    fill(ras_temp, .direction = "down") %>%
+                    select(ras_temp))
 # the fill() function is apparently smart enough to recognise the original NAs
 
 MADs_df$ras_temp <- 0
@@ -237,7 +238,8 @@ ggplot(data = pH_10m_df, aes(x = dateTime, y = bio_2_do)) +
 bio_1_do_1min <- pH_10m_df %>%
   select(dateTime, bio_1_do) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(bio_1_do, .direction = "down")
+  fill(bio_1_do, .direction = "down") %>%
+  select(bio_1_do)
 # Now add noise for values greater than 0.25. The observations greater than
 # 0.25 could easily follow a uniform distribution
 bio_1_do_sd <- pH_10m_df %>%
@@ -255,10 +257,13 @@ bio_1_do_sd_df <- MADs_df %>%
   fill(bio_1_do, .direction = "down")
 
 bio_1_do_1min$bio_1_do <- sapply(1:nrow(bio_1_do_1min), function(i){
-  bio_1_do_1min[i,2] + rnorm(1, sd = bio_1_do_sd_df[i,2])
+  bio_1_do_1min[i,1] + rnorm(1, sd = bio_1_do_sd_df[i,2])
 })
 
-ggplot(data = bio_1_do_1min,
+oneMin_ls$bio_1_do <- bio_1_do_1min
+rm(bio_1_do_1min, bio_1_do_sd_df, bio_1_do_sd)
+
+ggplot(data = oneMin_ls$bio_1_do,
        aes(x = dateTime, y = bio_1_do)) +
   geom_point(alpha = 0.1)
 
@@ -266,7 +271,8 @@ ggplot(data = bio_1_do_1min,
 bio_2_do_1min <- pH_10m_df %>%
   select(dateTime, bio_2_do) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(bio_2_do, .direction = "down")
+  fill(bio_2_do, .direction = "down") %>%
+  select(bio_2_do)
 # Now add noise for values greater than 0.5. The observations greater than
 # 0.5 could easily follow a uniform distribution
 bio_2_do_sd <- pH_10m_df %>%
@@ -284,10 +290,12 @@ bio_2_do_sd_df <- MADs_df %>%
   fill(bio_2_do, .direction = "down")
 
 bio_2_do_1min$bio_2_do <- sapply(1:nrow(bio_2_do_1min), function(i){
-  bio_2_do_1min[i,2] + rnorm(1, sd = bio_2_do_sd_df[i,2])
+  bio_2_do_1min[i,1] + rnorm(1, sd = bio_2_do_sd_df[i,2])
 })
+oneMin_ls$bio_2_do <- bio_2_do_1min
+rm(bio_2_do_1min, bio_2_do_sd_df, bio_2_do_sd)
 
-ggplot(data = bio_2_do_1min,
+ggplot(data = oneMin_ls$bio_2_do,
        aes(x = dateTime, y = bio_2_do)) +
   geom_point(alpha = 0.1)
 
@@ -336,20 +344,24 @@ naIndex1 <- which(pH_10m_df$mbr_1_level < 9.7 &
                     (pH_10m_df$dateTime < as.POSIXct("2010-04-22 14:50:00 CDT") |
                        pH_10m_df$dateTime > as.POSIXct("2010-04-22 18:10:00 CDT")))
 pH_10m_df[naIndex1, "mbr_1_level"] <- NA
-mbr_1_level_1min <- pH_10m_df %>%
+oneMin_ls$mbr_1_level <- pH_10m_df %>%
   select(dateTime, mbr_1_level) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(mbr_1_level, .direction = "down")
+  fill(mbr_1_level, .direction = "down") %>%
+  select(mbr_1_level)
+rm(naIndex1)
 
 # 2
 naIndex2 <- which(pH_10m_df$mbr_2_level < 9.25 &
                     (pH_10m_df$dateTime < as.POSIXct("2010-04-22 00:00:00 CDT") |
                        pH_10m_df$dateTime > as.POSIXct("2010-04-22 18:10:00 CDT")))
 pH_10m_df[naIndex2, "mbr_2_level"] <- NA
-mbr_2_level_1min <- pH_10m_df %>%
+oneMin_ls$mbr_2_level <- pH_10m_df %>%
   select(dateTime, mbr_2_level) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(mbr_2_level, .direction = "down")
+  fill(mbr_2_level, .direction = "down") %>%
+  select(mbr_2_level)
+rm(naIndex2)
 
 MADs_df$mbr_2_level <- MADs_df$mbr_1_level <- 0
 
@@ -379,10 +391,11 @@ ggplot(data = pH_10m_df[1:1440,], aes(x = dateTime, y = sewage_flow)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
-sewage_flow_1min <- pH_10m_df %>%
+oneMin_ls$sewage_flow <- pH_10m_df %>%
   select(dateTime, sewage_flow) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(sewage_flow, .direction = "down")
+  fill(sewage_flow, .direction = "down") %>%
+  select(sewage_flow)
 
 MADs_df$sewage_flow <- 0
 
@@ -396,14 +409,16 @@ ggplot(data = pH_10m_df[1:144,], aes(x = dateTime, y = bio_2_blow_flow)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
-bio_1_blow_flow_1min <- pH_10m_df %>%
+oneMin_ls$bio_1_blow_flow <- pH_10m_df %>%
   select(dateTime, bio_1_blow_flow) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(bio_1_blow_flow, .direction = "down")
-bio_2_blow_flow_1min <- pH_10m_df %>%
+  fill(bio_1_blow_flow, .direction = "down") %>%
+  select(bio_1_blow_flow)
+oneMin_ls$bio_2_blow_flow <- pH_10m_df %>%
   select(dateTime, bio_2_blow_flow) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(bio_2_blow_flow, .direction = "down")
+  fill(bio_2_blow_flow, .direction = "down") %>%
+  select(bio_2_blow_flow)
 
 MADs_df$bio_2_blow_flow <- MADs_df$bio_1_blow_flow <- 0
 
@@ -470,15 +485,17 @@ ggplot(data = pH_10m_df, aes(x = dateTime, y = bio_2_temp)) +
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
 pH_10m_df[!is.na(pH_10m_df$bio_1_temp) & pH_10m_df$bio_1_temp < 58, "bio_1_temp"] <- NA
-bio_1_temp_1min <- pH_10m_df %>%
+oneMin_ls$bio_1_temp <- pH_10m_df %>%
   select(dateTime, bio_1_temp) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(bio_1_temp, .direction = "down")
+  fill(bio_1_temp, .direction = "down") %>%
+  select(bio_1_temp)
 pH_10m_df[!is.na(pH_10m_df$bio_2_temp) & pH_10m_df$bio_2_temp < 58, "bio_2_temp"] <- NA
-bio_2_temp_1min <- pH_10m_df %>%
+oneMin_ls$bio_2_temp <- pH_10m_df %>%
   select(dateTime, bio_2_temp) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(bio_2_temp, .direction = "down")
+  fill(bio_2_temp, .direction = "down") %>%
+  select(bio_2_temp)
 
 MADs_df$bio_2_temp <- MADs_df$bio_1_temp <- 0
 
@@ -544,9 +561,10 @@ index_tss <- index_tss * c(rep(1, 9279),
 bio_2_tss_log_1min_jitter[which(index_tss == 1)] <- 0
 plot(bio_2_tss_log_1min_jitter)
 
-bio_tss_jitter <- pH_1min_Seq
-bio_tss_jitter$log1 <- bio_1_tss_log_1min_jitter
-bio_tss_jitter$log2 <- bio_2_tss_log_1min_jitter
+tss_jitter <- pH_1min_Seq
+tss_jitter$log_bio1 <- bio_1_tss_log_1min_jitter
+tss_jitter$log_bio2 <- bio_2_tss_log_1min_jitter
+rm(bio_1_tss_log_1min_jitter, bio_2_tss_log_1min_jitter, index_tss)
 
 MADs_df$bio_2_tss_log <- MADs_df$bio_1_tss_log <- 0
 
@@ -557,10 +575,11 @@ ggplot(data = pH_10m_df[1:1440,], aes(x = dateTime, y = batch_volume)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
-batch_volume_1min <- pH_10m_df %>%
+oneMin_ls$batch_volume <- pH_10m_df %>%
   select(dateTime, batch_volume) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(batch_volume, .direction = "down")
+  fill(batch_volume, .direction = "down") %>%
+  select(batch_volume)
 
 MADs_df$batch_volume <- 0
 
@@ -574,10 +593,11 @@ ggplot(data = pH_10m_df, aes(x = dateTime, y = perm_tank_level)) +
   geom_point()
 pH_10m_df[!is.na(pH_10m_df$perm_tank_level) & pH_10m_df$perm_tank_level < 2,
           "perm_tank_level"] <- NA
-perm_tank_level_1min <- pH_10m_df %>%
+oneMin_ls$perm_tank_level <- pH_10m_df %>%
   select(dateTime, perm_tank_level) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(perm_tank_level, .direction = "down")
+  fill(perm_tank_level, .direction = "down") %>%
+  select(perm_tank_level)
 
 MADs_df$perm_tank_level <- 0
 
@@ -588,10 +608,11 @@ ggplot(data = pH_10m_df, aes(x = dateTime, y = ras_do)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
-ras_do_1min <- pH_10m_df %>%
+oneMin_ls$ras_do <- pH_10m_df %>%
   select(dateTime, ras_do) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(ras_do, .direction = "down")
+  fill(ras_do, .direction = "down") %>%
+  select(ras_do)
 
 MADs_df$ras_do <- 0
 
@@ -605,10 +626,11 @@ ggplot(data = pH_10m_df, aes(x = dateTime, y = ras_ph)) +
 pH_10m_df[!is.na(pH_10m_df$ras_ph) &
             (pH_10m_df$ras_ph < 5.4 | pH_10m_df$ras_ph > 9),
           "ras_ph"] <- NA
-ras_ph_1min <- pH_10m_df %>%
+oneMin_ls$ras_ph <- pH_10m_df %>%
   select(dateTime, ras_ph) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(ras_ph, .direction = "down")
+  fill(ras_ph, .direction = "down") %>%
+  select(ras_ph)
 
 MADs_df$ras_ph <- 0
 
@@ -642,6 +664,8 @@ ras_tss_1min_jitter <- c(rnorm(9279, sd = 0.186 / (1.5 * sqrt(2 / pi))),
                          rnorm(n1min - 9279, sd = 0.053 / sqrt(2 / pi)))
 ras_tssResid %>% plot(ylim = c(-1, 0.5))
 ras_tss_1min_jitter %>% plot(ylim = c(-1, 0.5))
+tss_jitter$log_ras <- ras_tss_1min_jitter
+rm(ras_tss_1min_jitter)
 
 MADs_df$ras_tss_log <- 0
 
@@ -677,12 +701,102 @@ ggplot(data = pH_10m_df, aes(x = dateTime, y = ambient_temp)) +
 pH_10m_df[!is.na(pH_10m_df$ambient_temp) &
             pH_10m_df$ambient_temp < 30,
           "ambient_temp"] <- NA
-ambient_temp_1min <- pH_10m_df %>%
+oneMin_ls$ambient_temp <- pH_10m_df %>%
   select(dateTime, ambient_temp) %>%
   left_join(pH_1min_Seq, .) %>%
-  fill(ambient_temp, .direction = "down")
+  fill(ambient_temp, .direction = "down") %>%
+  select(ambient_temp)
 
 MADs_df$ambient_temp <- 0
+
+######  The jitterInterpolate() Function  ######
+# # We need to modify the way the jitterInterpolate function handles features with
+# # variance equal to 0. The MASS::mvrnorm function can't.
+# testMASS <- mvrnorm(n = 900, mu = rep(0, 34),
+#         Sigma = diag((1 / 1:34) ^ 2, ncol = 34, nrow = 34))
+# testBase <- sapply(rep(c(1,0),5), function(sigma){
+#   rnorm(n = 5, mean = 0, sd = sigma)
+# })
+# testMASS[,6] %>% plot(ylim = c(-1, 1))
+# testBase[,6] %>% plot(ylim = c(-1, 1))
+
+jitterInterpolate <- function(data, SDs_df, index, numInterpol){
+  # data = a time series data frame with the first column as the time index
+  # SDs_df = a data frame of standard deviations. has the same time index as
+  # data
+  # index = we interpolate values between index and index + 1
+  # numInterpol = how many values will we interpolate
+  require(dplyr)
+
+  p <- data %>% ncol() - 1
+  data_names <- colnames(data) %>% sapply(as.name)
+
+  mads_vec <- sapply(2:(p + 1), function(i){
+    SDs_df[index,] %>% select(eval(data_names[[i]])) %>% as.numeric()
+  })
+
+  # Generate the jitter values
+  # The MASS::mvrnorm function requires a PD covariance matrix, which does not
+  #   allow for feature variance to equal 0. For features under strict linear
+  #   interpolation or LOCF, we need to generate "errors" form a degenerate
+  #   distribution, so the jitter is constantly 0.
+  jitter_mat <- sapply(mads_vec, function(sigma){
+    rnorm(n = numInterpol, mean = 0, sd = sigma)
+  })
+  # jitter_mat <- mvrnorm(n = numInterpol,
+  #                       mu = rep(0, p),
+  #                       Sigma = diag(mads_vec ^ 2, ncol = p, nrow = p))
+  # The columns of the jitter matrix are the error values to add to the
+  # interpolated values between index and index + 1. Our covariance matrix is
+  # diagonal because we assume local independence of the features.
+
+  # Now for the interpolation. I couldn't find an easy way to interpolate
+  # between two vectors, so we're going to bind some scalar interpolations
+  # together
+  interpol_mat <- matrix(0, nrow = numInterpol, ncol = p)
+  for(i in 1:p){
+    # If we have 1 NA, we'll hit this if statement
+    if(anyNA(data[index:(index + 1), i + 1])){
+      # Now that we know one of the values are NA, are they both?
+      if(all(is.na(data[index:(index + 1), i + 1]))){
+        # If all values are NA, then the values between should be NA too
+        interpol_mat[,i] <- rep(NA, numInterpol)
+      }else{
+        # If they are not both NA, then impute a constant between
+        interpol_mat[,i] <- approx(data[index:(index + 1), i + 1],
+                                   method = "constant",
+                                   n = numInterpol)$y
+      }
+    }else{
+      interpol_mat[,i] <- approx(data[index:(index + 1), i + 1],
+                                 method = "linear",
+                                 n = numInterpol)$y
+    }
+  }
+
+
+  # We now have interpolated values and a matrix of errors of the same size,
+  # let's add them together
+  drift_mat <- interpol_mat + jitter_mat
+  # Some of the values don't make real sense - it's possible, for instance, to
+  # generate negative values from the white noise distribution. Because of the
+  # physical design of the system, negative values (for the most part) are
+  # impossible. We will have to truncate these values after generation.
+  drift_mat[drift_mat < 0] <- 0
+
+  # We can use the seq.POSIXt function to create a sequences of times between
+  # time index and time index + 1
+  dateTime <- seq.POSIXt(from = data[index,1],
+                         to = data[(index + 1),1],
+                         length.out = numInterpol + 2)[2:(numInterpol + 1)]
+  dateTime <- data.frame(dateTime = dateTime)
+
+  # We can now bind the POSIX information to the drift matrix
+  interpolated_df <- as.data.frame(drift_mat)
+  interpolated_df <- bind_cols(dateTime, interpolated_df)
+  names(interpolated_df) <- names(data)
+  bind_rows(data[index,], interpolated_df)
+}
 
 
 ######  Downscaling  ######
@@ -692,16 +806,6 @@ MADs_df$ambient_temp <- 0
 # function from Data_Cleaning_and_Interpolation_Summary.Rmd
 names(pH_10m_df) %in% names(MADs_df)
 ncol(pH_10m_df)
-
-# We need to modify the way the jitterInterpolate function handles features with
-# variance equal to 0. The MASS::mvrnorm function can't.
-testMASS <- mvrnorm(n = 900, mu = rep(0, 34),
-        Sigma = diag((1 / 1:34) ^ 2, ncol = 34, nrow = 34))
-testBase <- sapply(rep(c(1,0),5), function(sigma){
-  rnorm(n = 5, mean = 0, sd = sigma)
-})
-testMASS[,6] %>% plot(ylim = c(-1, 1))
-testBase[,6] %>% plot(ylim = c(-1, 1))
 
 pH_10to1_df <- pblapply(1:(nrow(pH_10m_df) - 1),
                         function(i) {
@@ -717,13 +821,13 @@ pH_10to1_df <- bind_rows(pH_10to1_df, pH_10m_df[4464,])
 
 # Add in the hard-coded jitters (for the three tss variables)
 pH_10to1_df$bio_1_tss_log <- pH_10to1_df$bio_1_tss_log +
-  bio_tss_jitter$log1
+  tss_jitter$log_bio1
 pH_10to1_df$bio_2_tss_log <- pH_10to1_df$bio_2_tss_log +
-  bio_tss_jitter$log2
+  tss_jitter$log_bio2
 # There is a hard ceiling on ras_tss, so we need to replicate that. Replace all
 # values greater than 9.9 (on the log scale) with 9.9.
 pH_10to1_df$ras_tss_log <- pH_10to1_df$ras_tss_log +
-  ras_tss_1min_jitter
+  tss_jitter$log_ras
 pH_10to1_df$ras_tss_log[!is.na(pH_10to1_df$ras_tss_log) &
                           pH_10to1_df$ras_tss_log > 9.9] <- 9.9
 
@@ -747,22 +851,25 @@ ggplot(data = ambient_temp_1min,
 # Overall, I think we're downscaling very well.
 
 ######  Combine the Interpolated Data Frames  ######
+oneMin_df <- oneMin_ls %>% bind_cols()
+rm(oneMin_ls)
+
 pH_inter_df <- pH_10to1_df %>% left_join(pH_1min_Seq, .)
-pH_inter_df$ambient_temp <- ambient_temp_1min$ambient_temp
-pH_inter_df$batch_volume <- batch_volume_1min$batch_volume
-pH_inter_df$bio_1_blow_flow <- bio_1_blow_flow_1min$bio_1_blow_flow
-pH_inter_df$bio_1_do <- bio_1_do_1min$bio_1_do
-pH_inter_df$bio_1_temp <- bio_1_temp_1min$bio_1_temp
-pH_inter_df$bio_2_blow_flow <- bio_2_blow_flow_1min$bio_2_blow_flow
-pH_inter_df$bio_2_do <- bio_2_do_1min$bio_2_do
-pH_inter_df$bio_2_temp <- bio_2_temp_1min$bio_2_temp
-pH_inter_df$mbr_1_level <- mbr_1_level_1min$mbr_1_level
-pH_inter_df$mbr_2_level <- mbr_2_level_1min$mbr_2_level
-pH_inter_df$perm_tank_level <- perm_tank_level_1min$perm_tank_level
-pH_inter_df$ras_do <- ras_do_1min$ras_do
-pH_inter_df$ras_ph <- ras_ph_1min$ras_ph
-pH_inter_df$ras_temp <- ras_temp_1min$ras_temp
-pH_inter_df$sewage_flow <- sewage_flow_1min$sewage_flow
+pH_inter_df$ambient_temp <- oneMin_df$ambient_temp
+pH_inter_df$batch_volume <- oneMin_df$batch_volume
+pH_inter_df$bio_1_blow_flow <- oneMin_df$bio_1_blow_flow
+pH_inter_df$bio_1_do <- oneMin_df$bio_1_do
+pH_inter_df$bio_1_temp <- oneMin_df$bio_1_temp
+pH_inter_df$bio_2_blow_flow <- oneMin_df$bio_2_blow_flow
+pH_inter_df$bio_2_do <- oneMin_df$bio_2_do
+pH_inter_df$bio_2_temp <- oneMin_df$bio_2_temp
+pH_inter_df$mbr_1_level <- oneMin_df$mbr_1_level
+pH_inter_df$mbr_2_level <- oneMin_df$mbr_2_level
+pH_inter_df$perm_tank_level <- oneMin_df$perm_tank_level
+pH_inter_df$ras_do <- oneMin_df$ras_do
+pH_inter_df$ras_ph <- oneMin_df$ras_ph
+pH_inter_df$ras_temp <- oneMin_df$ras_temp
+pH_inter_df$sewage_flow <- oneMin_df$sewage_flow
 pH_inter_df$bio_1_tss <- NULL
 pH_inter_df$bio_2_tss <- NULL
 pH_inter_df$ras_tss <- NULL

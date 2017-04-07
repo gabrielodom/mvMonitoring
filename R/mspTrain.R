@@ -7,9 +7,10 @@
 #' @param labelVector Class labels as a logical (two states only) or finite
 #'   numeric (two or more states) vector or matrix column (not from data frame)
 #'   with length equal to the number of rows in "data". For data with only one
-#'   state, this will be a vector of 1s. Note: the value numeric(0) may not be
-#'   used as a label.
-#' @param trainObs The number of observations upon which to train the algorithm
+#'   state, this will be a vector of 1s.
+#' @param trainObs The number of observations upon which to train the algorithm.
+#'   This will be split based on class information by a priori class membership
+#'   proportion.
 #' @param updateFreq The algorithm update frequency. Defaults to half as many
 #'   observations as the training frequency.
 #' @param Dynamic Specify if the PCA algorithm should include lagged variables.
@@ -151,44 +152,49 @@ mspTrain <- function(data,
   data <- data[-(1:max(abs(lagsIncluded))),]
 
   classes <- unique(labelVector)
+  # We have to do this because of how data_ls is subsetted
+  names(classes) <- LETTERS[1:length(classes)]
   if(is.vector(labelVector)){
     labelVector <- matrix(labelVector, ncol = 1)
   }
+  memberProp <- sapply(classes, function(x){
+    sum(labelVector == x) / nrow(labelVector)
+  })
   classData <- cbind(labelVector[-(1:max(abs(lagsIncluded))),], data)
   data_ls <- lapply(1:length(classes), function(i){
     data_df <- classData[classData[,1] == classes[i],]
     data_df[, -1]
   })
-  names(data_ls) <- classes
+  names(data_ls) <- names(classes)
 
-  monitorResults <- lapply(classes, function(i){
+  monitorResults <- lapply(1:length(classes), function(i){
     do.call(processMonitor,
-            args = c(list(data = data_ls[[i]],
-                          trainObs = floor(trainObs / length(classes)),
-                          updateFreq = floor(updateFreq / length(classes)),
+            args = c(list(data = data_ls[[names(classes)[i]]],
+                          trainObs = floor(trainObs * memberProp[i]),
+                          updateFreq = floor(updateFreq * memberProp[i]),
                           faultsToTriggerAlarm = faultsToTriggerAlarm),
                      lazy_eval(ls)))
   })
 
-  names(monitorResults) <- classes
+  names(monitorResults) <- names(classes)
 
   # Fault Checks data matrix
-  FaultChecks <- lapply(classes, function(i){
-    monitorResults[[i]]$FaultChecks
+  FaultChecks <- lapply(1:length(classes), function(i){
+    monitorResults[[names(classes)[i]]]$FaultChecks
   })
   FaultChecks <- do.call(rbind, FaultChecks)
 
   # Non-alarmed observations data matrix
-  Non_Alarmed_Obs <- lapply(classes, function(i){
-    monitorResults[[i]]$Non_Alarmed_Obs
+  Non_Alarmed_Obs <- lapply(1:length(classes), function(i){
+    monitorResults[[names(classes)[i]]]$Non_Alarmed_Obs
   })
   Non_Alarmed_Obs <- do.call(rbind, Non_Alarmed_Obs)
   Non_Alarmed_Obs <- cbind(classData[index(Non_Alarmed_Obs), 1],
                            Non_Alarmed_Obs)
 
   # Alarmed observations and corresponding alarm codes data matrix
-  Alarms <- lapply(classes, function(i){
-    monitorResults[[i]]$Alarms
+  Alarms <- lapply(1:length(classes), function(i){
+    monitorResults[[names(classes)[i]]]$Alarms
   })
   # Some of the alarm xts matrices are empty, and neither merge.xts() nor
   # rbind.xts() will work to bind an empty xts to a non-empty xts. Therefore,
@@ -210,8 +216,8 @@ mspTrain <- function(data,
   }
 
   # Training Specifications list for flagging future observations
-  TrainingSpecs <- lapply(classes, function(i){
-    monitorResults[[i]]$TrainingSpecs
+  TrainingSpecs <- lapply(1:length(classes), function(i){
+    monitorResults[[names(classes)[i]]]$TrainingSpecs
   })
   names(TrainingSpecs) <- classes
 

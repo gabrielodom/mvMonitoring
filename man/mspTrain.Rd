@@ -11,11 +11,13 @@ mspTrain(data, labelVector, trainObs, updateFreq = ceiling(0.5 * trainObs),
 \item{data}{An xts data matrix}
 
 \item{labelVector}{Class labels as a logical (two states only) or finite
-numeric (two or more states) vector with length equal to the number of rows
-in "data". For data with only one state, this will be a vector of 1s. The
-value numeric(0) may not be used as a label.}
+numeric (two or more states) vector or matrix column (not from data frame)
+with length equal to the number of rows in "data". For data with only one
+state, this will be a vector of 1s.}
 
-\item{trainObs}{The number of observations upon which to train the algorithm}
+\item{trainObs}{The number of observations upon which to train the algorithm.
+This will be split based on class information by a priori class membership
+proportion.}
 
 \item{updateFreq}{The algorithm update frequency. Defaults to half as many
 observations as the training frequency.}
