@@ -39,6 +39,7 @@
 #'
 #' @export
 #'
+#'
 #' @examples
 #' data("normal_switch_xts")
 #' scaledData <- scale(normal_switch_xts[,-1])

@@ -1,6 +1,4 @@
 
-
-library(fitdistrplus) # For bio_x_tss
 library(magrittr)
 library(scales)
 library(plyr)
@@ -10,7 +8,7 @@ library(mvMonitoring)
 library(pbapply)
 
 ######  Load the Data  ######
-load("data/pH_fault_data.ave")
+load("inst/extdata/pH_fault_data.ave")
 D.Ave.q %>% str
 D.Ave.q %>% head(1) # Starts 10 April, 2010 at 01:10
 D.Ave.q %>% tail(1) # Ends 11 May, 2010 at 01:00
@@ -229,7 +227,7 @@ MADs_df$ras_temp <- 0
 #   dissolved O2 measure is less than 0.25, perform strict linear interpolation?
 #   No, LOCF (see bio_x_blow_flow), otherwise add some error with constant
 #   sd = 0.1
-ggplot(data = pH_10m_df, aes(x = dateTime, y = bio_2_do)) +
+ggplot(data = pH_10m_df[1:1440,], aes(x = dateTime, y = bio_2_do)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_hline(yintercept = 0.5) +
@@ -387,7 +385,7 @@ MADs_df$perm_turb <- mod %>% residuals() %>% mad() / sqrt(2 / pi)
 ### sewage_flow
 # sewage_flow - LOCF (due to the multi-state structure). Interpolation will
 #   distort the underlying multi-state cycles
-ggplot(data = pH_10m_df[1:1440,], aes(x = dateTime, y = sewage_flow)) +
+ggplot(data = pH_10m_df[1:576,], aes(x = dateTime, y = sewage_flow)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
@@ -405,7 +403,7 @@ MADs_df$sewage_flow <- 0
 #   more appropriate than interpolation. This is curious, because I don't know
 #   what is driving the state membership. This may also imply that dissolved O2
 #   has a similar underlying effect.
-ggplot(data = pH_10m_df[1:144,], aes(x = dateTime, y = bio_2_blow_flow)) +
+ggplot(data = pH_10m_df[1:576,], aes(x = dateTime, y = bio_1_blow_flow)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
@@ -426,7 +424,7 @@ MADs_df$bio_2_blow_flow <- MADs_df$bio_1_blow_flow <- 0
 ### sewage_level
 # sewage_level - jittered interpolation; fit a cubic spline, and calculate an
 #   error variance from the spline residuals
-ggplot(data = pH_10m_df, aes(x = dateTime, y = sewage_level)) +
+ggplot(data = pH_10m_df[288:720,], aes(x = dateTime, y = sewage_level)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
@@ -446,7 +444,7 @@ MADs_df$sewage_level <- mod %>% residuals() %>% mad() / sqrt(2 / pi)
 #   signal. Interpolate linearly and calculate an error variance from the spline
 #   residuals. NOTE: splines won't work - the signal period is too short. Use
 #   the "all.knots = TRUE" argument pick out the signal.
-ggplot(data = pH_10m_df[1:288,], aes(x = dateTime, y = bio_2_level)) +
+ggplot(data = pH_10m_df[1:576,], aes(x = dateTime, y = bio_2_level)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()
@@ -503,7 +501,7 @@ MADs_df$bio_2_temp <- MADs_df$bio_1_temp <- 0
 ### bio_x_tss
 # bio_x_tss - long signal; truncate all values < 3500, log transform, fit
 #   a spline, calculate exponential (?) residuals
-ggplot(data = pH_10m_df[1:930,], aes(x = dateTime, y = log(bio_2_tss))) +
+ggplot(data = pH_10m_df, aes(x = dateTime, y = log(bio_1_tss))) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   # geom_hline(yintercept = 3500) +
@@ -516,10 +514,10 @@ noNA <- pH_10m_df %>%
   na.omit
 mod <- smooth.spline(noNA$bio_1_tss_log ~ noNA$dateTime)
 bio_1_tssResid <- mod %>% residuals()
-descdist(bio_1_tssResid)
-fitdist(bio_1_tssResid + 1,
-        "weibull", method = "mle", lower = c(0.001, 0.001),
-        start = list(scale = 1, shape = 1))
+# descdist(bio_1_tssResid)
+# fitdist(bio_1_tssResid + 1,
+#         "weibull", method = "mle", lower = c(0.001, 0.001),
+#         start = list(scale = 1, shape = 1))
 # Neither the Weibull nor the Log-Normal match the distribution of the residuals
 bio_1_tssResid %>% plot()
 # After a two hours of trial and error, I think this mixture distribution fits
@@ -571,7 +569,7 @@ MADs_df$bio_2_tss_log <- MADs_df$bio_1_tss_log <- 0
 
 ### batch_volume
 # batch_volume - LOCF
-ggplot(data = pH_10m_df[1:1440,], aes(x = dateTime, y = batch_volume)) +
+ggplot(data = pH_10m_df[288:1440,], aes(x = dateTime, y = batch_volume)) +
   scale_x_datetime(labels = date_format("%m-%d"),
                    minor_breaks = date_breaks("1 day")) +
   geom_point()

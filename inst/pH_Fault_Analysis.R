@@ -7,6 +7,14 @@ pH_df[,31:41] %>% sapply(unique)
 #   mbr_1_mode, mbr_2_mode, mbr_flux_mode,
 #   bio_1_temp, bio_2_temp
 
+
+# Continuous Observations
+pH_obs_df <- pH_df %>% select(-bio_1_phase, -bio_2_phase,
+                              -mbr_1_state, -mbr_2_state,
+                              -mbr_1_mode, -mbr_2_mode, -mbr_flux_mode,
+                              -bio_1_temp, -bio_2_temp)
+pH_obs_xts <- xts(pH_obs_df[,-1], order.by = pH_obs_df[,1])
+
 # Label Matrix
 pH_labels_df <- pH_df %>% select(dateTime,
                                  bio_1_phase, bio_2_phase, # Useful
@@ -95,12 +103,6 @@ pH_labels_df %<>% mutate(bio_blower = (bio_1_blower + 2) * bio_2_blower)
 
 pH_labels_xts <- xts(pH_labels_df[,-1], order.by = pH_labels_df[,1])
 
-# Continuous Observations
-pH_obs_df <- pH_df %>% select(-bio_1_phase, -bio_2_phase,
-                              -mbr_1_state, -mbr_2_state,
-                              -mbr_1_mode, -mbr_2_mode, -mbr_flux_mode,
-                              -bio_1_temp, -bio_2_temp)
-pH_obs_xts <- xts(pH_obs_df[,-1], order.by = pH_obs_df[,1])
 
 ######  AD-PCA  ######
 
@@ -113,9 +115,36 @@ pH_df_AD_Results_ls <- mspTrain(data = pH_obs_xts[1:trainStart,],
                                            trainObs = 10080,
                                            updateFreq = 1440,
                                            alpha = 0.001,
-                                           faultsToTriggerAlarm = 10,
+                                           faultsToTriggerAlarm = 5,
                                            lagsIncluded = 0:1,
                                            var.amnt = 0.90)
+
+###  Testing  ###
+# Lag the Test Data
+laggedOneDay <- lag.xts(pH_obs_xts[trainStart:dfEnd,], 0:1)
+laggedOneDay[1,32:62] <- pH_obs_xts[(trainStart - 1),]
+
+# Execute the monitoring function
+pH_AD_DandF <- mspMonitor(observations = laggedOneDay,
+                          labelVector = rep(1, nrow(laggedOneDay)),
+                          trainingSummary = pH_df_AD_Results_ls$TrainingSpecs)
+
+# Check for Alarms
+# These lines will test each line as if it was just received:
+pH_AD_AlarmData <- pH_AD_DandF
+# Just under 5 minutes to run. At 11 minutes without the ifelse modification
+for(i in 1:nrow(pH_AD_DandF)){
+  if(i < (5 + 1)){
+    pH_AD_AlarmData[1:i,] <- mspWarning(pH_AD_AlarmData[1:i,],
+                                        faultsToTriggerAlarm = 5)
+  }else{
+    pH_AD_AlarmData[(i - 5):i,] <- mspWarning(pH_AD_AlarmData[(i - 5):i,],
+                                        faultsToTriggerAlarm = 5)
+  }
+}
+
+pH_AD_AlarmData[,ncol(pH_AD_AlarmData)] %>% plot(main = "AD Alarms")
+
 
 ######  MSAD-PCA  ######
 
@@ -125,6 +154,29 @@ pH_df_MSAD_Results_ls <- mspTrain(data = pH_obs_xts[1:trainStart,],
                                 trainObs = 10080,
                                 updateFreq = 1440,
                                 alpha = 0.001,
-                                faultsToTriggerAlarm = 10,
+                                faultsToTriggerAlarm = 5,
                                 lagsIncluded = 0:1,
                                 var.amnt = 0.90)
+
+###  Testing  ###
+
+# Execute the monitoring function
+pH_MSAD_DandF <- mspMonitor(observations = laggedOneDay,
+                          labelVector = pH_labels_xts[trainStart:dfEnd,"bio_blower"],
+                          trainingSummary = pH_df_MSAD_Results_ls$TrainingSpecs)
+
+# Check for Alarms
+# These lines will test each line as if it was just received:
+pH_MSAD_AlarmData <- pH_MSAD_DandF
+# Just under 5 minutes to run. At 11 minutes without the ifelse modification
+for(i in 1:nrow(pH_MSAD_DandF)){
+  if(i < (5 + 1)){
+    pH_MSAD_AlarmData[1:i,] <- mspWarning(pH_MSAD_AlarmData[1:i,],
+                                        faultsToTriggerAlarm = 5)
+  }else{
+    pH_MSAD_AlarmData[(i - 5):i,] <- mspWarning(pH_MSAD_AlarmData[(i - 5):i,],
+                                              faultsToTriggerAlarm = 5)
+  }
+}
+
+pH_MSAD_AlarmData[,ncol(pH_MSAD_AlarmData)] %>% plot(main = "MSAD Alarms")

@@ -49,7 +49,10 @@
 #' the xts matrix necessary for the mspWarning() function.
 #'
 #' @export
+#'
+#' @importFrom plyr ldply
 #' @importFrom xts lag.xts
+#' @importFrom zoo index
 #'
 #' @examples
 #' data("normal_switch_xts")
@@ -81,6 +84,7 @@ mspMonitor <- function(observations,
   # browser()
 
   classes <- unique(labelVector)
+  names(classes) <- LETTERS[1:length(classes)]
 
   # If our user accidentally sends in a vector instead of an xts matrix
   if(is.null(dim(observations))){
@@ -97,17 +101,23 @@ mspMonitor <- function(observations,
   # that rows come from different classes
   dataAndFaults <- lapply(1:nrow(classData), function(i){
     # Subset out the appropriate training information for that observation
-    train_ls <- trainingSummary[[classData[i,1]]]
+    train_ls <- trainingSummary[names(trainingSummary) %in% classData[i,1]][[1]]
     # Centre and scale the observation
     centredObs <- as.matrix(classData[i, -1] - train_ls$muTrain)
     scaledObs <- centredObs %*% train_ls$RootPrecisTrain
     # Now apply fault detection
     faultObj <- faultDetect(threshold_object = train_ls,
                             observation = scaledObs)
-    # Bind the flagging info to the original observation
-    cbind(classData[i,], faultObj)
+    # Bind the flagging info to the original observation. We need this as a
+    # data frame because plyr::laply won't preserve the index information at
+    # binding.
+    xx <- cbind(classData[i,], faultObj)
+    data.frame(dateTime = index(xx), xx[,-1])
   })
-  obsAndFlags <- do.call(rbind, dataAndFaults)
+  # Use ldply instead of do.call(rbind, .) becuase rbind.xts() can't handle the
+  # object size necessary to bind a large list.
+  obsAndFlags <- ldply(dataAndFaults)
+  obsAndFlags <- xts(obsAndFlags[,-1], order.by = obsAndFlags[,1])
   obsAndFlags <- cbind(obsAndFlags, NA)
   colnames(obsAndFlags)[ncol(obsAndFlags)] <- "Alarm"
 
