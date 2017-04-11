@@ -8,8 +8,8 @@ library(xts)
 library(readr)
 library(reshape2)
 library(tidyverse)
-detection_times2 <- read_csv("~/Box Sync/Consulting/Dr. Hering/MV_Process_Control/MVSPC/Simulation_Data/detection_times_1000_20170314.csv")
-
+detection_times2 <- read_csv("~/Users/gabriel_odom/Box Sync/Consulting/Dr. Hering/MV_Process_Control/MVSPC/Simulation_Data/detection_times_ms_1000_20170323.csv")
+detection_times_ms <- read_csv("C:/Users/gabriel_odom/Box Sync/Consulting/Dr. Hering/MV_Process_Control/MVSPC/Simulation_Data/detection_times_ms_1000_20170323.csv")
 # Table out summary of detection times
 mspSummary <- function(vec,
                        quants = c(0, 0.05, 0.25, 0.5, 0.75, 0.95, 1),

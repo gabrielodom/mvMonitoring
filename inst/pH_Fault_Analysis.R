@@ -144,6 +144,12 @@ for(i in 1:nrow(pH_AD_DandF)){
 }
 
 pH_AD_AlarmData[,ncol(pH_AD_AlarmData)] %>% plot(main = "AD Alarms")
+pH_AD_AlarmData[1:7603,ncol(pH_AD_AlarmData)] %>%
+  plot(main = "AD Alarms",
+       ylim = c(0,3),
+       yaxt = "n")
+axis(side = 2, at = 0:3, labels = c("None", "T2", "SPE", "Both"))
+write.csv(pH_AD_AlarmData, file = "pH_AD_Alarms.csv")
 
 
 ######  MSAD-PCA  ######
@@ -180,3 +186,9 @@ for(i in 1:nrow(pH_MSAD_DandF)){
 }
 
 pH_MSAD_AlarmData[,ncol(pH_MSAD_AlarmData)] %>% plot(main = "MSAD Alarms")
+pH_MSAD_AlarmData[1:7603, ncol(pH_MSAD_AlarmData)] %>%
+  plot(main = "MSAD Alarms",
+       ylim = c(0,3),
+       yaxt = "n")
+axis(side = 2, at = 0:3, labels = c("None", "T2", "SPE", "Both"))
+write.csv(pH_MSAD_AlarmData, file = "pH_MSAD_Alarms.csv")
