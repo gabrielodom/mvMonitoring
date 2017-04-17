@@ -5,7 +5,7 @@
 #'
 #' @param mspMonitor_object An xts matrix returned by the mspMonitor() function
 #' @param faultsToTriggerAlarm Specifies how many sequential faults will cause
-#'   an alarm to trigger. Defaults to 3.
+#'   an alarm to trigger. Defaults to 5.
 #'
 #' @return An xts matrix of the same dimensions as mspMonitor_object, with a
 #'   recorded negative or positive and type-specific alarm status. Alarm codes
@@ -33,15 +33,12 @@
 #'
 #' @examples
 #' nrml <- mspProcessData(faults = "NOC")
-#' # The state values are recorded in the first column.
 #' n <- nrow(nrml)
-#' nTrainObs <- floor(0.4 * n)
 #'
 #' # Calculate the training summary, but save five observations for monitoring.
 #' trainResults_ls <- mspTrain(data = nrml[1:(n - 5), -1],
 #'                             labelVector = nrml[1:(n - 5), 1],
-#'                             trainObs = nTrainObs,
-#'                             lagsIncluded = 0:1)
+#'                             trainObs = 4032)
 #'
 #' # While training, we included 1 lag (the default), so we will also lag the
 #' # observations we will test.
@@ -59,7 +56,7 @@
 #' mspWarning(dataAndFlags)
 #'
 mspWarning <- function(mspMonitor_object,
-                       faultsToTriggerAlarm = 3){
+                       faultsToTriggerAlarm = 5){
 
   data_xts <- mspMonitor_object
   n <- nrow(data_xts)

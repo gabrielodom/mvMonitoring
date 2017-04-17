@@ -40,6 +40,7 @@
 #' scaledData <- scale(nrml[,-1])
 #' pca_obj <- pca(scaledData)
 #' threshold(pca_object = pca_obj)
+#'
 threshold <- function(pca_object, alpha = 0.001, ...){
   UseMethod("threshold")
 }

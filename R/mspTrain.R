@@ -20,7 +20,7 @@
 #'   process observations will include current observations and observations
 #'   from one time step previous. See "Details" for more information.
 #' @param faultsToTriggerAlarm The number of sequential faults needed to trigger
-#'   an alarm. Defaults to 3
+#'   an alarm. Defaults to 5.
 #' @param ... Lazy dots for additional internal arguments
 #'
 #' @return A list with the following components: \itemize{
@@ -121,12 +121,10 @@
 #'
 #' @examples
 #' nrml <- mspProcessData(faults = "NOC")
-#' nTrainObs <- floor(0.4 * nrow(nrml))
-#' # The state values are recorded in the first column.
 #'
 #' mspTrain(data = nrml[, -1],
 #'          labelVector = nrml[, 1],
-#'          trainObs = nTrainObs)
+#'          trainObs = 4032)
 #'
 mspTrain <- function(data,
                      labelVector,
@@ -134,7 +132,7 @@ mspTrain <- function(data,
                      updateFreq = ceiling(0.5 * trainObs),
                      Dynamic = TRUE,
                      lagsIncluded = c(0, 1),
-                     faultsToTriggerAlarm = 3,
+                     faultsToTriggerAlarm = 5,
                      ...){
 
   ls <- lazy_dots(...)

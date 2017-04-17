@@ -5,7 +5,7 @@
 \title{Multi-State Adaptive-Dynamic Process Training}
 \usage{
 mspTrain(data, labelVector, trainObs, updateFreq = ceiling(0.5 * trainObs),
-  Dynamic = TRUE, lagsIncluded = c(0, 1), faultsToTriggerAlarm = 3, ...)
+  Dynamic = TRUE, lagsIncluded = c(0, 1), faultsToTriggerAlarm = 5, ...)
 }
 \arguments{
 \item{data}{An xts data matrix}
@@ -31,7 +31,7 @@ process observations will include current observations and observations
 from one time step previous. See "Details" for more information.}
 
 \item{faultsToTriggerAlarm}{The number of sequential faults needed to trigger
-an alarm. Defaults to 3}
+an alarm. Defaults to 5.}
 
 \item{...}{Lazy dots for additional internal arguments}
 }
@@ -131,11 +131,9 @@ This function is designed to identify and sort out sequences of
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
-nTrainObs <- floor(0.4 * nrow(nrml))
-# The state values are recorded in the first column.
 
 mspTrain(data = nrml[, -1],
          labelVector = nrml[, 1],
-         trainObs = nTrainObs)
+         trainObs = 4032)
 
 }

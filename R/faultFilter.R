@@ -10,7 +10,7 @@
 #'   must be returned to update the training data matrix and move it forward.
 #' @param ... Lazy dots for additional internal arguments
 #' @param faultsToTriggerAlarm Specifies how many sequential faults will cause
-#'   an alarm to trigger. Defaults to 3.
+#'   an alarm to trigger. Defaults to 5.
 #'
 #' @return A list of class "fault_ls" with the following:
 #'   \itemize{
@@ -61,20 +61,14 @@
 #' # Select the data under state 1
 #' data <- nrml[nrml[,1] == 1]
 #'
-#' # Split the data into testing and training data sets
-#' nTrainObs <- floor(0.2 * nrow(data))
-#' nUpdate <- floor(0.5 * nTrainObs)
-#' trainObs <- data[1:nTrainObs, -1]
-#' testObs <- data[(nTrainObs + 1):nrow(data), -1]
-#'
-#' faultFilter(trainData = trainObs,
-#'             testData = testObs,
-#'             updateFreq = nUpdate)
+#' faultFilter(trainData = data[1:672, -1],
+#'             testData = data[673:3360, -1],
+#'             updateFreq = 336)
 #'
 faultFilter <- function(trainData,
                         testData,
                         updateFreq,
-                        faultsToTriggerAlarm = 3,
+                        faultsToTriggerAlarm = 5,
                         ...){
 
   # browser()

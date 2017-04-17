@@ -5,7 +5,7 @@
 \title{Adaptive Process Training}
 \usage{
 processMonitor(data, trainObs, updateFreq = ceiling(0.5 * trainObs),
-  faultsToTriggerAlarm = 3, ...)
+  faultsToTriggerAlarm = 5, ...)
 }
 \arguments{
 \item{data}{An xts data matrix}
@@ -17,7 +17,7 @@ the function updates. Defaults to half as many observations as the number
 of training observations.}
 
 \item{faultsToTriggerAlarm}{The number of sequential faults needed to trigger
-an alarm. Defaults to 3.}
+an alarm. Defaults to 5.}
 
 \item{...}{Lazy dots for additional internal arguments}
 }
@@ -66,10 +66,8 @@ faultFilter() function.
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
-# Select the data under state 1
 data <- nrml[nrml[,1] == 1]
-nTrainObs <- floor(0.4 * nrow(data))
 
-processMonitor(data = data[,-1], trainObs = nTrainObs)
+processMonitor(data = data[,-1], trainObs = 672)
 
 }

@@ -4,13 +4,13 @@
 \alias{mspWarning}
 \title{Process Alarms}
 \usage{
-mspWarning(mspMonitor_object, faultsToTriggerAlarm = 3)
+mspWarning(mspMonitor_object, faultsToTriggerAlarm = 5)
 }
 \arguments{
 \item{mspMonitor_object}{An xts matrix returned by the mspMonitor() function}
 
 \item{faultsToTriggerAlarm}{Specifies how many sequential faults will cause
-an alarm to trigger. Defaults to 3.}
+an alarm to trigger. Defaults to 5.}
 }
 \value{
 An xts matrix of the same dimensions as mspMonitor_object, with a
@@ -41,15 +41,12 @@ This function requires an xts matrix returned by the mspMonitor() function.
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
-# The state values are recorded in the first column.
 n <- nrow(nrml)
-nTrainObs <- floor(0.4 * n)
 
 # Calculate the training summary, but save five observations for monitoring.
 trainResults_ls <- mspTrain(data = nrml[1:(n - 5), -1],
                             labelVector = nrml[1:(n - 5), 1],
-                            trainObs = nTrainObs,
-                            lagsIncluded = 0:1)
+                            trainObs = 4032)
 
 # While training, we included 1 lag (the default), so we will also lag the
 # observations we will test.

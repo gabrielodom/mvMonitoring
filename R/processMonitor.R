@@ -9,7 +9,7 @@
 #'   the function updates. Defaults to half as many observations as the number
 #'   of training observations.
 #' @param faultsToTriggerAlarm The number of sequential faults needed to trigger
-#'   an alarm. Defaults to 3.
+#'   an alarm. Defaults to 5.
 #'
 #' @return A list with the following components:
 #'   \itemize{
@@ -57,16 +57,14 @@
 #'
 #' @examples
 #' nrml <- mspProcessData(faults = "NOC")
-#' # Select the data under state 1
 #' data <- nrml[nrml[,1] == 1]
-#' nTrainObs <- floor(0.4 * nrow(data))
 #'
-#' processMonitor(data = data[,-1], trainObs = nTrainObs)
+#' processMonitor(data = data[,-1], trainObs = 672)
 #'
 processMonitor <- function(data,
                            trainObs,
                            updateFreq = ceiling(0.5 * trainObs),
-                           faultsToTriggerAlarm = 3,
+                           faultsToTriggerAlarm = 5,
                            ...){
 
   ls <- lazy_dots(...)
