@@ -57,9 +57,9 @@
 #' @importFrom stats cov
 #'
 #' @examples
-#' data("normal_switch_xts")
+#' nrml <- mspProcessData(faults = "NOC")
 #' # Select the data under state 1
-#' data <- normal_switch_xts[normal_switch_xts[,1] == 1]
+#' data <- nrml[nrml[,1] == 1]
 #'
 #' # Split the data into testing and training data sets
 #' nTrainObs <- floor(0.2 * nrow(data))
@@ -70,6 +70,7 @@
 #' faultFilter(trainData = trainObs,
 #'             testData = testObs,
 #'             updateFreq = nUpdate)
+#'
 faultFilter <- function(trainData,
                         testData,
                         updateFreq,

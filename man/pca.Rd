@@ -4,13 +4,13 @@
 \alias{pca}
 \title{PCA for Data Scatter Matrix}
 \usage{
-pca(data, var.amnt = 0.95, ...)
+pca(data, var.amnt = 0.9, ...)
 }
 \arguments{
 \item{data}{A centred-and-scaled data matrix or xts matrix}
 
 \item{var.amnt}{The energy proportion to preserve in the projection, which
-dictates the number of principal components to keep. Defaults to 0.95.}
+dictates the number of principal components to keep. Defaults to 0.90.}
 
 \item{...}{Lazy dots for additional internal arguments}
 }
@@ -45,7 +45,8 @@ This function takes in a training data matrix, without the label
 This internal function is called by faultFilter().
 }
 \examples{
-data("normal_switch_xts")
-scaledData <- scale(normal_switch_xts[,-1])
-pca(scaledData, var.amnt = 0.9)
+nrml <- mspProcessData(faults = "NOC")
+scaledData <- scale(nrml[,-1])
+pca(scaledData)
+
 }

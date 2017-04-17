@@ -69,8 +69,10 @@ A list of data frames named with the names of the given faults with
     \item{y -- }{A double column of generated values for the second feature.}
     \item{z -- }{A double column of generated values for the third feature.}
     }
-  For details on how these features are defined, see the "details" of the
-  processNOCdata() function.
+  If the user only specifies one fault, then this function will return the
+  single xts matrix, instead of a list of one matrix. For details on how
+  these features are defined, see the "details" of the processNOCdata()
+  function.
 }
 \description{
 Generate single- or multi-state observations under normal

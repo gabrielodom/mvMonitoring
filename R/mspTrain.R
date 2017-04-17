@@ -120,13 +120,14 @@
 #' @importFrom xts is.xts
 #'
 #' @examples
-#' data("normal_switch_xts")
-#' nTrainObs <- floor(0.4 * nrow(normal_switch_xts))
+#' nrml <- mspProcessData(faults = "NOC")
+#' nTrainObs <- floor(0.4 * nrow(nrml))
 #' # The state values are recorded in the first column.
 #'
-#' mspTrain(data = normal_switch_xts[, -1],
-#'          labelVector = normal_switch_xts[, 1],
+#' mspTrain(data = nrml[, -1],
+#'          labelVector = nrml[, 1],
 #'          trainObs = nTrainObs)
+#'
 mspTrain <- function(data,
                      labelVector,
                      trainObs,

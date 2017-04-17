@@ -32,6 +32,6 @@ This function is used only in data generation of the package vignette. This
 function is called by rotateScale3D().
 }
 \examples{
-data("normal_switch_xts")
-normal_switch_xts[,-1] \%*\% rotate3D(yaw = -10, pitch = 0, roll = 15)
+rotate3D(yaw = -10, pitch = 0, roll = 15)
+
 }

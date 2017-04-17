@@ -130,11 +130,12 @@ This function is designed to identify and sort out sequences of
   \url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
 }
 \examples{
-data("normal_switch_xts")
-nTrainObs <- floor(0.4 * nrow(normal_switch_xts))
+nrml <- mspProcessData(faults = "NOC")
+nTrainObs <- floor(0.4 * nrow(nrml))
 # The state values are recorded in the first column.
 
-mspTrain(data = normal_switch_xts[, -1],
-         labelVector = normal_switch_xts[, 1],
+mspTrain(data = nrml[, -1],
+         labelVector = nrml[, 1],
          trainObs = nTrainObs)
+
 }

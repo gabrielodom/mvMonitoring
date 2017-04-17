@@ -36,10 +36,10 @@
 #' @export
 #'
 #' @examples
-#' data("normal_switch_xts")
-#' scaledData <- scale(normal_switch_xts[,-1])
-#' pca_obj <- pca(scaledData, var.amnt = 0.9)
-#' threshold(pca_object = pca_obj, alpha = 0.05)
+#' nrml <- mspProcessData(faults = "NOC")
+#' scaledData <- scale(nrml[,-1])
+#' pca_obj <- pca(scaledData)
+#' threshold(pca_object = pca_obj)
 threshold <- function(pca_object, alpha = 0.001, ...){
   UseMethod("threshold")
 }

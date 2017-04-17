@@ -62,25 +62,26 @@ information returned by the mspTrain function. This function will return
 the xts matrix necessary for the mspWarning() function.
 }
 \examples{
-data("normal_switch_xts")
+nrml <- mspProcessData(faults = "NOC")
 # The state values are recorded in the first column.
-n <- nrow(normal_switch_xts)
+n <- nrow(nrml)
 nTrainObs <- floor(0.4 * n)
 
 # Calculate the training summary, but save five observations for monitoring.
-trainResults_ls <- mspTrain(data = normal_switch_xts[1:(n - 5), -1],
-                            labelVector = normal_switch_xts[1:(n - 5), 1],
+trainResults_ls <- mspTrain(data = nrml[1:(n - 5), -1],
+                            labelVector = nrml[1:(n - 5), 1],
                             trainObs = nTrainObs,
-                            lagsIncluded = c(0, -1))
+                            lagsIncluded = 0:1)
 
 # While training, we included 1 lag (the default), so we will also lag the
 # observations we will test.
-testObs <- normal_switch_xts[(n - 6):n, -1]
+testObs <- nrml[(n - 6):n, -1]
 testObs <- xts:::lag.xts(testObs, 0:1)
 testObs <- testObs[-1,]
-testObs <- cbind(normal_switch_xts[(n - 5):n, 1], testObs)
+testObs <- cbind(nrml[(n - 5):n, 1], testObs)
 
 mspMonitor(observations = testObs[, -1],
            labelVector = testObs[, 1],
            trainingSummary = trainResults_ls$TrainingSpecs)
+
 }

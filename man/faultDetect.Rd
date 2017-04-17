@@ -50,22 +50,12 @@ This function takes in a threshold object returned by the
 This internal function is called by faultFilter().
 }
 \examples{
-data("normal_switch_xts")
-scaledData <- scale(normal_switch_xts[,-1])
-pca_obj <- pca(scaledData, var.amnt = 0.9)
-thresh_obj <- threshold(pca_object = pca_obj, alpha = 0.05)
+nrml <- mspProcessData(faults = "NOC")
+scaledData <- scale(nrml[,-1])
+pca_obj <- pca(scaledData)
+thresh_obj <- threshold(pca_object = pca_obj)
 
-# Check a single observation. We see this observation is within the normal
-# operating conditions at alpha = 0.05.
-faultDetect(threshold_object = thresh_obj, observation = scaledData[1,])
+faultDetect(threshold_object = thresh_obj,
+            observation = scaledData[1,])
 
-# According to the Squared Prediction Error statistic, this observation is
-# outside the range of "normal" operation at the 0.05 level.
-faultDetect(threshold_object = thresh_obj, observation = scaledData[20,])
-
-# We can also check an entire data matrix:
-detect_ls <- lapply(1:nrow(scaledData), function(i){
-     faultDetect(threshold_object = thresh_obj, scaledData[i,])
-})
-do.call(rbind, detect_ls)
 }

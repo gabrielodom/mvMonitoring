@@ -6,7 +6,7 @@
 #'
 #' @param data A centred-and-scaled data matrix or xts matrix
 #' @param var.amnt The energy proportion to preserve in the projection, which
-#'   dictates the number of principal components to keep. Defaults to 0.95.
+#'   dictates the number of principal components to keep. Defaults to 0.90.
 #' @param ... Lazy dots for additional internal arguments
 #'
 #' @return A list of class "pca" with the following:
@@ -36,10 +36,11 @@
 #' @export
 #'
 #' @examples
-#' data("normal_switch_xts")
-#' scaledData <- scale(normal_switch_xts[,-1])
-#' pca(scaledData, var.amnt = 0.9)
-pca <- function(data, var.amnt = 0.95, ...){
+#' nrml <- mspProcessData(faults = "NOC")
+#' scaledData <- scale(nrml[,-1])
+#' pca(scaledData)
+#'
+pca <- function(data, var.amnt = 0.90, ...){
 UseMethod("pca")
 }
 
@@ -48,7 +49,7 @@ UseMethod("pca")
 #'
 #' @importFrom stats cor
 #'
-pca.matrix <- function(data, var.amnt = 0.95, ...){
+pca.matrix <- function(data, var.amnt = 0.90, ...){
 
         R <- cor(data, use = "pairwise.complete.obs")
         eigenR <- eigen(R)

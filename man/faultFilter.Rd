@@ -63,9 +63,9 @@ This function is essentially a wrapper function to call and organize
 This internal function is called by processMonitor().
 }
 \examples{
-data("normal_switch_xts")
+nrml <- mspProcessData(faults = "NOC")
 # Select the data under state 1
-data <- normal_switch_xts[normal_switch_xts[,1] == 1]
+data <- nrml[nrml[,1] == 1]
 
 # Split the data into testing and training data sets
 nTrainObs <- floor(0.2 * nrow(data))
@@ -76,4 +76,5 @@ testObs <- data[(nTrainObs + 1):nrow(data), -1]
 faultFilter(trainData = trainObs,
             testData = testObs,
             updateFreq = nUpdate)
+
 }

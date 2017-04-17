@@ -49,8 +49,10 @@
 #'     \item{y -- }{A double column of generated values for the second feature.}
 #'     \item{z -- }{A double column of generated values for the third feature.}
 #'     }
-#'   For details on how these features are defined, see the "details" of the
-#'   processNOCdata() function.
+#'   If the user only specifies one fault, then this function will return the
+#'   single xts matrix, instead of a list of one matrix. For details on how
+#'   these features are defined, see the "details" of the processNOCdata()
+#'   function.
 #'
 #' @details For details on how the faults are induced, see the "details" of the
 #'   faultSwitch() function. This function also includes AD-PCA versus MSAD-PCA
@@ -188,7 +190,15 @@ mspProcessData <- function(faults,
     xts(normal_w_fault_df[,-1], order.by = normal_df[,1])
   })
   names(df_ls) <- faults
-  df_ls
+
+  # If the user only wants one matrix, don't give them a list.
+  if(length(faults) == 1){
+    obj <- df_ls[[1]]
+  }else{
+    obj <- df_ls
+  }
+
+  obj
 }
 
 #
