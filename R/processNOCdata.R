@@ -23,16 +23,17 @@
 #'
 #' @return An data frame with the following information: \itemize{
 #'   \item{dateTime -- }{A POSIXct column of times starting at the user-defined
-#'   `startTime` argument, length given by the `period` argument, and spacing
-#'   given by the `increment` argument. For example, if the starting value is
-#'   "2016-01-10", period is 10080, and the incrementation is in minutes, then
-#'   this sequence will be one week's worth of observations recorded every
-#'   minute from midnight on the tenth of January.} \item{state -- }{An integer
-#'   column of all 1's (when the `multiState` argument is FALSE), or a column of
-#'   the state values (1, 2 or 3).} \item{x -- }{A double column of generated
-#'   values for the first feature.} \item{y -- }{A double column of generated
-#'   values for the second feature.} \item{z -- }{A double column of generated
-#'   values for the third feature.}}
+#'     `startTime` argument, length given by the `period` argument, and spacing
+#'     given by the `increment` argument. For example, if the starting value is
+#'     "2016-01-10", period is 10080, and the incrementation is in minutes, then
+#'     this sequence will be one week's worth of observations recorded every
+#'     minute from midnight on the tenth of January.}
+#'   \item{state -- }{An integer column of all 1's (when the `multiState`
+#'     argument is FALSE), or a column of the state values (1, 2 or 3).}
+#'   \item{x -- }{A double column of generated values for the first feature.}
+#'   \item{y -- }{A double column of generated values for the second feature.}
+#'   \item{z -- }{A double column of generated values for the third feature.}
+#'   }
 #'
 #' @details This function randomly generates a non-stationary (sinusoidal) and
 #'   autocorrelated latent variable t with lower and upper bounds given by the
@@ -47,7 +48,8 @@
 #'     \item{y : }{y(t) = t ^ 2 - 3t + error}
 #'     \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + error}
 #'   }
-#'   This function is called by the mspProcessData() function.
+#'   This function is called by the mspProcessData() function. See
+#'   ?mspProcessData for more details.
 #'
 #' @export
 #'
@@ -59,8 +61,8 @@
 #' @importFrom magrittr %>%
 #' @importFrom stats rnorm
 #'
-#' @examples processNOCdata(startTime = "2016-11-27 00:00:00 CST")
-processNOCdata <- function(startTime,
+#' @examples processNOCdata()
+processNOCdata <- function(startTime = "2015-05-16 10:00:00 CST",
                            period = 7 * 24 * 60,
                            stateDuration = 60,
                            increment = "min",

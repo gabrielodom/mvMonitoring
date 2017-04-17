@@ -12,13 +12,30 @@
 #'
 #' @return A data frame containing the time index, state, and feature values
 #'   after state-specific rotation and scaling; this data frame also contains
-#'   the other columns of df that aren't the feature values.
+#'   the other columns of df that aren't the feature values. This data frame has
+#'   \itemize{
+#'     \item{dateTime - }{a POSIX column of the time stamps for each
+#'       observation}
+#'     \item{state - }{column of state membership (1, 2, or 3)}
+#'     \item{x - }{the process values for the first feature, corresponding to
+#'       t + random error}
+#'     \item{y - }{the process values for the second feature, corresponding to
+#'       t ^ 2 - 3 * t + random error}
+#'     \item{z - }{the process values for the third feature, corresponding to
+#'       -t ^ 3 + 3 * t ^ 2 + random error}
+#'     \item{t - }{the non-stationary and autocorrelated latent feature}
+#'     \item{err1 - }{a Gaussian white noise vector}
+#'     \item{err2 - }{a Gaussian white noise vector}
+#'     \item{err3 - }{a Gaussian white noise vector}
+#'   }
 #'
 #' @details This function splits a process data frame by state, and rotates and
 #'   scales the observations from states 2 and 3 by the scales and angles
 #'   specified in the function arguments. After state-specific rotation and
 #'   scaling, this function combines the observations back together and orders
-#'   them by process time index.
+#'   them by process time index. This function takes in data frame returned by
+#'   processNOCdata() or faultSwitch(). This function calls rotateScale3D() and
+#'   is called internally by mspProcessData().
 #'
 #' @export
 #'
@@ -29,7 +46,7 @@
 #' @importFrom dplyr select
 #' @importFrom magrittr %>%
 #'
-#' @examples nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")
+#' @examples nrml <- processNOCdata()
 #' dataStateSwitch(nrml)
 dataStateSwitch <- function(df,
                             angles2 = list(yaw = 0, pitch = 90, roll = 30),

@@ -4,9 +4,9 @@
 \alias{processNOCdata}
 \title{Simulate NOC Observations from a Single-State or Multi-State Process}
 \usage{
-processNOCdata(startTime, period = 7 * 24 * 60, stateDuration = 60,
-  increment = "min", multiState = TRUE, autocorellation = 0.75,
-  tLower = 0.01, tUpper = 2, errVar = 0.01)
+processNOCdata(startTime = "2015-05-16 10:00:00 CST", period = 7 * 24 * 60,
+  stateDuration = 60, increment = "min", multiState = TRUE,
+  autocorellation = 0.75, tLower = 0.01, tUpper = 2, errVar = 0.01)
 }
 \arguments{
 \item{startTime}{a POSIXct object specifying the day and time for the
@@ -38,16 +38,17 @@ variables.}
 \value{
 An data frame with the following information: \itemize{
   \item{dateTime -- }{A POSIXct column of times starting at the user-defined
-  `startTime` argument, length given by the `period` argument, and spacing
-  given by the `increment` argument. For example, if the starting value is
-  "2016-01-10", period is 10080, and the incrementation is in minutes, then
-  this sequence will be one week's worth of observations recorded every
-  minute from midnight on the tenth of January.} \item{state -- }{An integer
-  column of all 1's (when the `multiState` argument is FALSE), or a column of
-  the state values (1, 2 or 3).} \item{x -- }{A double column of generated
-  values for the first feature.} \item{y -- }{A double column of generated
-  values for the second feature.} \item{z -- }{A double column of generated
-  values for the third feature.}}
+    `startTime` argument, length given by the `period` argument, and spacing
+    given by the `increment` argument. For example, if the starting value is
+    "2016-01-10", period is 10080, and the incrementation is in minutes, then
+    this sequence will be one week's worth of observations recorded every
+    minute from midnight on the tenth of January.}
+  \item{state -- }{An integer column of all 1's (when the `multiState`
+    argument is FALSE), or a column of the state values (1, 2 or 3).}
+  \item{x -- }{A double column of generated values for the first feature.}
+  \item{y -- }{A double column of generated values for the second feature.}
+  \item{z -- }{A double column of generated values for the third feature.}
+  }
 }
 \description{
 This function generates data under normal operating conditions
@@ -67,8 +68,9 @@ This function randomly generates a non-stationary (sinusoidal) and
     \item{y : }{y(t) = t ^ 2 - 3t + error}
     \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + error}
   }
-  This function is called by the mspProcessData() function.
+  This function is called by the mspProcessData() function. See
+  ?mspProcessData for more details.
 }
 \examples{
-processNOCdata(startTime = "2016-11-27 00:00:00 CST")
+processNOCdata()
 }

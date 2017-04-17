@@ -4,8 +4,8 @@
 \alias{faultSwitch}
 \title{Induce the Specified Fault on NOC Observations}
 \usage{
-faultSwitch(df, fault, faultStartIndex, period = 10080, shift = 2,
-  postStateSplit = FALSE)
+faultSwitch(df, fault, period = 7 * 24 * 60, faultStartIndex = round(0.8433
+  * period), shift = 2, postStateSplit = FALSE)
 }
 \arguments{
 \item{df}{A data frame returned by the processNOCdata() function.}
@@ -14,11 +14,11 @@ faultSwitch(df, fault, faultStartIndex, period = 10080, shift = 2,
 "B2", "C2", "A3", "B3", or "C3". See "details" of mspProcessData() for more
 information.}
 
-\item{faultStartIndex}{An integer specifying the index at which the faults
-will start.}
-
 \item{period}{The observation cycle length. Defaults to one week's worth of
 minute-level observations (10,080 observations).}
+
+\item{faultStartIndex}{An integer specifying the index at which the faults
+will start. Defaults to roughly 85 percent through the cycle.}
 
 \item{shift}{The fault parameter for faults "A1" and "B1" corresponding to
 the positive shock value added to features. Defaults to 2. See "details" of
@@ -31,7 +31,8 @@ Defaults to FALSE. Make this argument TRUE for faults 1C, 2C, 3C.}
 A data frame with the same structure as df, but with faults induced
   across all observations. The mspProcessData() function then subsets the
   observations necessary to corrupt the normal data frame, and binds them
-  together by row. See mspProcessData() for more details.
+  together by row. This function is called by mspProcessData(). See
+  ?mspProcessData for more details.
 }
 \description{
 Infect the input data frame with a specific fault, then return
@@ -130,6 +131,6 @@ The faults return data frames as follows: \itemize{
 }
 }
 \examples{
-nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")
-faultSwitch(nrml, fault = "NOC", faultStartIndex = 8500)
+nrml <- processNOCdata()
+faultSwitch(nrml, fault = "NOC")
 }

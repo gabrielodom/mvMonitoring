@@ -7,10 +7,10 @@
 #' @param fault A character string. Options are "NOC", "A1", "B1", "C1", "A2",
 #'   "B2", "C2", "A3", "B3", or "C3". See "details" of mspProcessData() for more
 #'   information.
-#' @param faultStartIndex An integer specifying the index at which the faults
-#'   will start.
 #' @param period The observation cycle length. Defaults to one week's worth of
 #'   minute-level observations (10,080 observations).
+#' @param faultStartIndex An integer specifying the index at which the faults
+#'   will start. Defaults to roughly 85 percent through the cycle.
 #' @param shift The fault parameter for faults "A1" and "B1" corresponding to
 #'   the positive shock value added to features. Defaults to 2. See "details" of
 #'   mspProcessData() for more information.
@@ -20,7 +20,8 @@
 #' @return A data frame with the same structure as df, but with faults induced
 #'   across all observations. The mspProcessData() function then subsets the
 #'   observations necessary to corrupt the normal data frame, and binds them
-#'   together by row. See mspProcessData() for more details.
+#'   together by row. This function is called by mspProcessData(). See
+#'   ?mspProcessData for more details.
 #'
 #' @details The faults return data frames as follows: \itemize{
 #'   \item{A1 -- }{A data frame with 10080 rows and five columns, corresponding
@@ -120,11 +121,12 @@
 #' @importFrom dplyr select
 #' @importFrom magrittr %>%
 #'
-#' @examples nrml <- processNOCdata(startTime = "2016-11-27 00:00:00 CST")
-#' faultSwitch(nrml, fault = "NOC", faultStartIndex = 8500)
+#' @examples nrml <- processNOCdata()
+#' faultSwitch(nrml, fault = "NOC")
 faultSwitch <- function(df, fault,
-                        faultStartIndex,
-                        period = 10080, shift = 2,
+                        period = 7 * 24 * 60,
+                        faultStartIndex =  round(0.8433 * period),
+                        shift = 2,
                         postStateSplit = FALSE){
   # browser()
 
