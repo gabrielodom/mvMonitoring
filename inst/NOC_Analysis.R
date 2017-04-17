@@ -77,11 +77,12 @@ rm(NOC_1min)
 # write_csv(NOC_xts_labels, "NOC_Continuous_Clean_Labels_20170329.csv")
 
 
-###  Implement the mspTrain Function  ###
+######  Implement the mspTrain Function  ######
 # My memory can't hold all 111k observations, so I want to run this on the
-# last 60 days.
-# True Multi-state Observations
-trainMins <- (nrow(NOC_xts) - 60 * 24 * 30):nrow(NOC_xts)
+# last 60 days. Kazor et al used the first 40 days, so do that too.
+
+###  True Multi-state Observations  ###
+trainMins <- 1:(60 * 24 * 20)
 Sys.time()
 NOC_MS_blower_ls <- mspTrain(data = NOC_xts[trainMins,],
                           # Split on the blowers
@@ -92,17 +93,22 @@ NOC_MS_blower_ls <- mspTrain(data = NOC_xts[trainMins,],
                           faultsToTriggerAlarm = 5,
                           lagsIncluded = 0:1,
                           var.amnt = 0.90)
-Sys.time() # 46.5 minutes for 60 days, but we use increase phyisical memory use
-# from 18% to 80%. We don't have the memory for the entire data set.
+Sys.time() # 14.5 minutes for the first 40 days, 46.5 minutes for the last 60
+# days, but we increased phyisical memory use from 18% to 80%. We don't have
+# the memory for the entire data set.
 
 setwd("~/GitHub/mvMonitoring/mvMonitoring/data")
 saveRDS(NOC_MS_blower_ls, file = "NOC_Results_byBlower2_20170329.rds")
 NOC_MS_blower_ls <- readRDS("NOC_Results_byBlower2_20170329.rds")
 
 # False Alarm rate MS
-5423 / 70897
+nrow(NOC_MS_blower_ls$FaultChecks)
+# T2
+length(which(NOC_MS_blower_ls$Alarms[,85] %in% c(1,3))) / 45721
+# SPE
+length(which(NOC_MS_blower_ls$Alarms[,85] %in% c(2,3))) / 45721
 
-# No Multi-state Observations
+###  No Multi-state Observations  ###
 Sys.time()
 NOC_SS_blower_ls <- mspTrain(data = NOC_xts[trainMins,],
                           # Split on the blowers
@@ -113,12 +119,29 @@ NOC_SS_blower_ls <- mspTrain(data = NOC_xts[trainMins,],
                           faultsToTriggerAlarm = 5,
                           lagsIncluded = 0:1,
                           var.amnt = 0.90)
-Sys.time() # 56 minutes for 60 days, but we use increase phyisical memory use
-# from 18% to 80%. We don't have the memory for the entire data set.
+trainMins2 <- (60 * 24 * 20 + 1 - 10080):(60 * 24 * 40)
+NOC_SS_blower_ls2 <- mspTrain(data = NOC_xts[trainMins2,],
+                             # Split on the blowers
+                             labelVector = rep(1, length(trainMins2)),
+                             trainObs = 10080,
+                             updateFreq = 4320,
+                             alpha = 0.001,
+                             faultsToTriggerAlarm = 5,
+                             lagsIncluded = 0:1,
+                             var.amnt = 0.90)
+Sys.time() # 14.5 minutes for the first 40 days, 56 minutes for the last 60
+# days, but we increased phyisical memory use from 18% to 80%. We don't have
+# the memory for the entire data set.
 
 setwd("~/GitHub/mvMonitoring/mvMonitoring/data")
 saveRDS(NOC_SS_blower_ls, file = "NOC_SS_Results_byBlower2_20170330.rds")
 NOC_SS_blower_ls <- readRDS("NOC_SS_Results_byBlower2_20170330.rds")
 
-# False Alarm rate SS
-38 / 33082
+# False Alarm rate sS
+nrow(NOC_SS_blower_ls$FaultChecks) + nrow(NOC_SS_blower_ls2$FaultChecks)
+# T2
+(length(which(NOC_SS_blower_ls$Alarms[,85] %in% c(1,3))) +
+    length(which(NOC_SS_blower_ls2$Alarms[,85] %in% c(1,3)))) / 47518
+# SPE
+(length(which(NOC_SS_blower_ls$Alarms[,85] %in% c(2,3))) +
+    length(which(NOC_SS_blower_ls2$Alarms[,85] %in% c(2,3)))) / 47518

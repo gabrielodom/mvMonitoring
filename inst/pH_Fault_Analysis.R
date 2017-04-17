@@ -108,10 +108,10 @@ pH_labels_xts <- xts(pH_labels_df[,-1], order.by = pH_labels_df[,1])
 
 ### Training Set 1 ###
 # Train on all obervations up to the 19th:
-trainStart <- which(pH_df$dateTime == as.POSIXct("2010-04-19 00:00:00 CDT"))
+testStart <- which(pH_df$dateTime == as.POSIXct("2010-04-19 00:00:00 CDT"))
 dfEnd <- nrow(pH_obs_xts)
-pH_df_AD_Results_ls <- mspTrain(data = pH_obs_xts[1:trainStart,],
-                                           labelVector = rep(1, trainStart),
+pH_df_AD_Results_ls <- mspTrain(data = pH_obs_xts[1:testStart,],
+                                           labelVector = rep(1, testStart),
                                            trainObs = 10080,
                                            updateFreq = 1440,
                                            alpha = 0.001,
@@ -121,8 +121,8 @@ pH_df_AD_Results_ls <- mspTrain(data = pH_obs_xts[1:trainStart,],
 
 ###  Testing  ###
 # Lag the Test Data
-laggedOneDay <- lag.xts(pH_obs_xts[trainStart:dfEnd,], 0:1)
-laggedOneDay[1,32:62] <- pH_obs_xts[(trainStart - 1),]
+laggedOneDay <- lag.xts(pH_obs_xts[testStart:dfEnd,], 0:1)
+laggedOneDay[1,32:62] <- pH_obs_xts[(testStart - 1),]
 
 # Execute the monitoring function
 pH_AD_DandF <- mspMonitor(observations = laggedOneDay,
@@ -151,12 +151,15 @@ pH_AD_AlarmData[1:7603,ncol(pH_AD_AlarmData)] %>%
 axis(side = 2, at = 0:3, labels = c("None", "T2", "SPE", "Both"))
 write.csv(pH_AD_AlarmData, file = "pH_AD_Alarms.csv")
 
+# First alarm:
+pH_AD_AlarmData[pH_AD_AlarmData[,67] != 0]
+
 
 ######  MSAD-PCA  ######
 
 ### Training Set 1 ###
-pH_df_MSAD_Results_ls <- mspTrain(data = pH_obs_xts[1:trainStart,],
-                                labelVector = pH_labels_xts[1:trainStart,"bio_blower"],
+pH_df_MSAD_Results_ls <- mspTrain(data = pH_obs_xts[1:testStart,],
+                                labelVector = pH_labels_xts[1:testStart,"bio_blower"],
                                 trainObs = 10080,
                                 updateFreq = 1440,
                                 alpha = 0.001,
@@ -168,7 +171,7 @@ pH_df_MSAD_Results_ls <- mspTrain(data = pH_obs_xts[1:trainStart,],
 
 # Execute the monitoring function
 pH_MSAD_DandF <- mspMonitor(observations = laggedOneDay,
-                          labelVector = pH_labels_xts[trainStart:dfEnd,"bio_blower"],
+                          labelVector = pH_labels_xts[testStart:dfEnd,"bio_blower"],
                           trainingSummary = pH_df_MSAD_Results_ls$TrainingSpecs)
 
 # Check for Alarms
@@ -192,3 +195,5 @@ pH_MSAD_AlarmData[1:7603, ncol(pH_MSAD_AlarmData)] %>%
        yaxt = "n")
 axis(side = 2, at = 0:3, labels = c("None", "T2", "SPE", "Both"))
 write.csv(pH_MSAD_AlarmData, file = "pH_MSAD_Alarms.csv")
+
+pH_MSAD_AlarmData[pH_MSAD_AlarmData[,67] != 0] %>% head(10)

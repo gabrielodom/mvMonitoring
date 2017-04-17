@@ -261,9 +261,6 @@ bio_1_do_1min$bio_1_do <- sapply(1:nrow(bio_1_do_1min), function(i){
 oneMin_ls$bio_1_do <- bio_1_do_1min
 rm(bio_1_do_1min, bio_1_do_sd_df, bio_1_do_sd)
 
-ggplot(data = oneMin_ls$bio_1_do,
-       aes(x = dateTime, y = bio_1_do)) +
-  geom_point(alpha = 0.1)
 
 # 2
 bio_2_do_1min <- pH_10m_df %>%
@@ -292,10 +289,6 @@ bio_2_do_1min$bio_2_do <- sapply(1:nrow(bio_2_do_1min), function(i){
 })
 oneMin_ls$bio_2_do <- bio_2_do_1min
 rm(bio_2_do_1min, bio_2_do_sd_df, bio_2_do_sd)
-
-ggplot(data = oneMin_ls$bio_2_do,
-       aes(x = dateTime, y = bio_2_do)) +
-  geom_point(alpha = 0.1)
 
 
 ### mbr_x_inf_flow
@@ -843,9 +836,6 @@ ggplot(data = pH_10to1_df,
 #   sewage_flow_1min, bio_1_blow_flow_1min, bio_2_blow_flow_1min, bio_1_temp_1min,
 #   bio_2_temp_1min, perm_tank_level_1min, ras_do_1min, ras_ph_1min, and
 #   ambent_temp_1min
-ggplot(data = ambient_temp_1min,
-       aes(x = dateTime, y = ambient_temp)) +
-  geom_point(alpha = 0.1)
 # Overall, I think we're downscaling very well.
 
 ######  Combine the Interpolated Data Frames  ######
