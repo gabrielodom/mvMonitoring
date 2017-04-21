@@ -82,3 +82,7 @@ mspMonitor(observations = testObs[, -1],
            trainingSummary = trainResults_ls$TrainingSpecs)
 
 }
+\seealso{
+Calls: \code{\link{faultDetect}}. Pipe flow: \code{\link{mspTrain}}
+  into \code{mspMonitor} into \code{\link{mspWarning}}.
+}

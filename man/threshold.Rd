@@ -43,7 +43,7 @@ This function takes in a pca object returned by the pca() function
   similar T2 threshold, and the projection and Lambda Inverse (1 /
   eigenvalues) matrices passed through from the pca() function call.
 
-This internal function is called by faultFilter().
+  This internal function is called by faultFilter().
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
@@ -51,4 +51,7 @@ scaledData <- scale(nrml[,-1])
 pca_obj <- pca(scaledData)
 threshold(pca_object = pca_obj)
 
+}
+\seealso{
+Called by: \code{\link{faultFilter}}.
 }

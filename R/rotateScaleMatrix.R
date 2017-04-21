@@ -16,8 +16,12 @@
 #'   how these angles behave in scatterplot3d functionality (from package
 #'   scatterplot3d).
 #'
-#' This function is used only in data generation of the package vignette. This
-#' function calls rotate3D().
+#'   This function is used only in data generation in the package vignette
+#'   (version 1) and the dataStateSwitch() function within the mspProcessData()
+#'   function. This function calls rotate3D().
+#'
+#' @seealso Calls: \code{\link{rotate3D}}. Called by
+#'   \code{\link{dataStateSwitch}}.
 #'
 #' @export
 #'

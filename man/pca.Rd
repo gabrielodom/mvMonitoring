@@ -42,11 +42,14 @@ This function takes in a training data matrix, without the label
   rows of the data matrix, and a T2 test statistic vector similar to the SPE
   vector.
 
-This internal function is called by faultFilter().
+  This internal function is called by faultFilter().
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
 scaledData <- scale(nrml[,-1])
 pca(scaledData)
 
+}
+\seealso{
+Called by: \code{\link{faultFilter}}.
 }

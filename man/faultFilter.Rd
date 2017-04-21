@@ -60,7 +60,7 @@ This function is essentially a wrapper function to call and organize
   processMonitor() function, wherein the testing and training data sets move
   forward in time across the entire data matrix.
 
-This internal function is called by processMonitor().
+  This internal function is called by processMonitor().
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
@@ -71,4 +71,8 @@ faultFilter(trainData = data[1:672, -1],
             testData = data[673:3360, -1],
             updateFreq = 336)
 
+}
+\seealso{
+Calls: \code{\link{pca}}, \code{\link{threshold}},
+  \code{\link{faultDetect}}. Called by: \code{\link{processMonitor}}.
 }

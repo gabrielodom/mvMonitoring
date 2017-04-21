@@ -46,7 +46,10 @@
 #'   processMonitor() function, wherein the testing and training data sets move
 #'   forward in time across the entire data matrix.
 #'
-#' This internal function is called by processMonitor().
+#'   This internal function is called by processMonitor().
+#'
+#' @seealso Calls: \code{\link{pca}}, \code{\link{threshold}},
+#'   \code{\link{faultDetect}}. Called by: \code{\link{processMonitor}}.
 #'
 #' @export
 #'

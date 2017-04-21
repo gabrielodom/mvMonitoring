@@ -111,3 +111,9 @@ For details on how the faults are induced, see the "details" of the
 \examples{
 mspProcessData(faults = "All")
 }
+\seealso{
+Calls: \code{\link{processNOCdata}}, \code{\link{faultSwitch}},
+  \code{\link{dataStateSwitch}}. Simulation pipe flow: \code{mspProcessData}
+  into \code{\link{mspTrain}} into \code{\link{mspMonitor}} into
+  \code{\link{mspWarning}}.
+}

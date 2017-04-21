@@ -137,3 +137,7 @@ mspTrain(data = nrml[, -1],
          trainObs = 4032)
 
 }
+\seealso{
+Calls: \code{\link{processMonitor}}. Pipe flow: \code{mspTrain}
+  into \code{\link{mspMonitor}} into \code{\link{mspWarning}}.
+}

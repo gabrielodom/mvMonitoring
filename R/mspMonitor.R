@@ -48,6 +48,9 @@
 #' information returned by the mspTrain function. This function will return
 #' the xts matrix necessary for the mspWarning() function.
 #'
+#' @seealso Calls: \code{\link{faultDetect}}. Pipe flow: \code{\link{mspTrain}}
+#'   into \code{mspMonitor} into \code{\link{mspWarning}}.
+#'
 #' @export
 #'
 #' @importFrom plyr ldply

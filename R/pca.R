@@ -31,7 +31,9 @@
 #'   rows of the data matrix, and a T2 test statistic vector similar to the SPE
 #'   vector.
 #'
-#' This internal function is called by faultFilter().
+#'   This internal function is called by faultFilter().
+#'
+#' @seealso Called by: \code{\link{faultFilter}}.
 #'
 #' @export
 #'

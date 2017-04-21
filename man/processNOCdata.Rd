@@ -74,3 +74,6 @@ This function randomly generates a non-stationary (sinusoidal) and
 \examples{
 processNOCdata()
 }
+\seealso{
+Called by: \code{\link{mspProcessData}}.
+}

@@ -46,8 +46,10 @@
 #'   Dynamic PCA described in the details of the mspTrain() function. See
 #'   the mspTrain() function's help file for further details.
 #'
-#' This internal function is called by mspTrain(). This function calls the
-#' faultFilter() function.
+#'   This internal function is called by mspTrain(). This function calls the
+#'   faultFilter() function.
+#'
+#' @seealso Calls: \code{\link{faultFilter}}. Called by: \code{\link{mspTrain}}.
 #'
 #' @export
 #'

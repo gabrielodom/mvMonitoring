@@ -28,10 +28,13 @@ When plotting with the package scatterplot3d, the default perpective
   is such that the pitch action appears as a roll while the roll action
   appears as a pitch.
 
-This function is used only in data generation of the package vignette. This
-function is called by rotateScale3D().
+  This function is used only in data generation of the package vignette. This
+  function is called by rotateScale3D().
 }
 \examples{
 rotate3D(yaw = -10, pitch = 0, roll = 15)
 
+}
+\seealso{
+Called by: \code{\link{rotateScale3D}}.
 }

@@ -26,7 +26,10 @@
 #'   mspTrain() function, which was designed to check multiple past
 #'   observations.
 #'
-#' This function requires an xts matrix returned by the mspMonitor() function.
+#'   This function requires an xts matrix returned by the mspMonitor() function.
+#'
+#' @seealso Pipe flow: \code{\link{mspTrain}} into \code{\link{mspMonitor}}
+#'   into \code{mspWarning}.
 #'
 #' @export
 #' @importFrom xts lag.xts

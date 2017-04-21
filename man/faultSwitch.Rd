@@ -134,3 +134,6 @@ The faults return data frames as follows: \itemize{
 nrml <- processNOCdata()
 faultSwitch(nrml, fault = "NOC")
 }
+\seealso{
+Called by: \code{\link{mspProcessData}}.
+}
