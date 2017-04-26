@@ -14,27 +14,42 @@
 #'
 #' @return A list of class "fault_ls" with the following:
 #'   \itemize{
-#'     \item{faultObj -- }{an xts flagging matrix with the same number of rows as
+#'     \item{faultObj -- }{An xts flagging matrix with the same number of rows as
 #'       "testData". This flag matrix has the following five columns:
 #'         \itemize{
-#'           \item{SPE -- }{the SPE statistic value for each observation in
-#'             "testData"}
-#'           \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the
+#'           \item{SPE -- }{The SPE statistic value for each observation in
+#'             "testData". This statistic is defined as
+#'             \deqn{
+#'               SPE_i = (\textbf{X}_i - \textbf{Y}_i * \textbf{P}^T) *
+#'                (\textbf{X}_i - \textbf{Y}_i * \textbf{P}^T)^T,
+#'             }
+#'             where \eqn{\textbf{X}_i} is the \eqn{i^{th}} observation vector,
+#'             \eqn{\textbf{Y}_i} is the reduced-feature projection of the
+#'             observation \eqn{\textbf{X}_i}, and \eqn{\textbf{P}} is the
+#'             projection matrix such that \eqn{\textbf{X}_i\textbf{P} =
+#'             \textbf{Y}_i}.}
+#'           \item{SPE_Flag -- }{A vector of SPE indicators recording 0 if the
 #'             test statistic is less than or equal to the critical value
-#'             passed through from the threshold object}
-#'           \item{T2 -- }{the T2 statistic value for each observation in
-#'             "testData"}
-#'           \item{T2_Flag -- }{a vector of T2 fault indicators, defined like
-#'             SPE_Flag}
-#'           \item{Alarm -- }{a column indicating if there have been three flags
+#'             passed through from the threshold object.}
+#'           \item{T2 -- }{The T2 statistic value for each observation in
+#'             "testData". This statistic is defined as
+#'             \deqn{
+#'                T^2_i = \textbf{Y}_i * \textbf{D}^{-1} * \textbf{Y}_i^T,
+#'             }
+#'             where \eqn{\textbf{Y}_i = \textbf{X}_i\textbf{P}} is the reduced-
+#'             feature projection of the observation \eqn{\textbf{X}_i}, and
+#'             \eqn{\textbf{D}} is the diagonal matrix of eigenvalues.}
+#'           \item{T2_Flag -- }{A vector of T2 fault indicators, defined like
+#'             SPE_Flag.}
+#'           \item{Alarm -- }{A column indicating if there have been three flags
 #'             in a row for either the SPE or T2 monitoring statistics or both.
 #'             Alarm states are as follows: 0 = no alarm, 1 = Hotelling's T2
 #'             alarm, 2 = Squared Prediction Error alarm, and 3 = both alarms.}
 #'         }
 #'       }
-#'     \item{nonAlarmedTestObs -- }{an xts matrix of the first updateFreq number
-#'       of rows of the training data which were not alarmed}
-#'     \item{trainSpecs -- }{the threshold object returned by the internal
+#'     \item{nonAlarmedTestObs -- }{An xts matrix of the first updateFreq number
+#'       of rows of the training data which were not alarmed.}
+#'     \item{trainSpecs -- }{The threshold object returned by the internal
 #'       threshold() function. See the threshold() function's help file for more
 #'       details.}
 #'   }
