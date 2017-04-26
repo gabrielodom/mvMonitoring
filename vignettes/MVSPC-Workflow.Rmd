@@ -184,19 +184,18 @@ This section provides a fully-commented code walkthrough for the main `msp` func
 
 ## Generating Synthetic Data
 First begin by generating multi-state data from a fault scenario. This code will yield observations under Fault 2A, as described the Synthetic Fault Induction section. We choose the default options for the period length (7 days \* 24 hours \* 60 minutes = 10,080 observations), the starting index of the fault (8500 out of 10080), and the time stamp for beggining the data is 16 May of 2016 at 10:00AM (my wedding anniversary). As we can see from the `str()` function, we have an `xts` matrix with 10080 rows and four columns (the state indicator and the three features).
-```{r, message = FALSE, warning = FALSE}
-library(tidyverse)
+```{r, message = FALSE}
 library(mvMonitoring)
-fault2A_xts <- mspProcessData(faults = "A2",
+fault1A_xts <- mspProcessData(faults = "A1",
                               period = 7 * 24 * 60,
                               faultStartIndex = 8500,
                               startTime = "2015-05-16 10:00:00 CST")
 
-str(fault2A_xts)
+str(fault1A_xts)
 ```
 
 ## Train the Fault Detection Threshold
-Now that these observations are generated and stored in memory, the `mspTrain` function can train the MSAD-PCA model. We will save the last 60 observations (one hour's worth) for testing. The `mspTrain` function takes in the training data set partitioned between the observation and the label column. If this function errors, make sure the label column is not included in the data matrix -- this will cause a singularity in the data. The function will
+Now that these observations are generated and stored in memory, the `mspTrain` function can train the MSAD-PCA model. The last 1620 observations (27 hours' worth) will be saved for testing. The `mspTrain` function takes in the training data set partitioned between the observation and the label column. If this function errors, make sure the label column is not included in the data matrix -- this will cause a singularity in the data. The function will
 1. Train on the first three days' worth of observations, as set by `trainObs`.
 1. Scan the fourth day for anomalies, as set by `updateFreq`.
 1. Remove any alarmed observations.
@@ -206,17 +205,16 @@ Now that these observations are generated and stored in memory, the `mspTrain` f
 
 Furthermore, the `Dynamic = TRUE` option means that the `mspTrain` function will include the lags specified by the `lagsIncluded` argument. Finally, the number of sequential anomalous observations necessary to raise an alarm is set at 5 by the `faultsToTriggerAlarm` argument. These last three arguments are set to their defaults.
 ```{r}
-train2A_xts <- fault2A_xts[1:10020,]
+train1A_xts <- fault1A_xts[1:8461,]
 # This function will run in 13 seconds on the author's machine.
-train2A_ls <- mspTrain(data = train2A_xts[,-1],
-                       labelVector = train2A_xts[,1],
+train1A_ls <- mspTrain(data = train1A_xts[,-1],
+                       labelVector = train1A_xts[,1],
                        trainObs = 3 * 24 * 60,
                        updateFreq = 1 * 24 * 60,
                        Dynamic = TRUE,
                        lagsIncluded = 0:1,
                        faultsToTriggerAlarm = 5)
 ```
-
 The `mspTrain` function returns a list of four objects:
 
  - `FaultChecks`: An `xts` matrix of monitoring statistics and associated indicators for all observations after the burn-in of `trainObs`. It will have 10080 - `trainObs` number of rows and five columns:
@@ -237,8 +235,55 @@ The `mspTrain` function returns a list of four objects:
      
 
 ## Test New Observations for Anomalies
+The training data summary was given by `mspTrain`, so this information can now be used to monitor incoming observations for system faults.
+
+### Adding Lagged Features
+First, concatenate the last given observation from the training set as "row 0" of the test data set. This will enable `mspMonitor` to include lag-1 features. Similarly, one would include the last $k$ observations of the training set should the process dictate the need for any lag-$k$ features. Because the Fault Start Index was set to 8500, this testing window will show the change point between observations generated under normal conditions and those generated under a fault state.
+```{r, message = FALSE}
+library(xts)
+test1A_xts <- fault1A_xts[8460:8520, -1]
+lagTest1A_xts <- lag.xts(test1A_xts, 0:1)
+lagTest1A_xts <- cbind(fault1A_xts[8461:8520,1],
+                       lagTest1A_xts[-1,])
+head(lagTest1A_xts)
+```
+
+### Monitoring the Test Data
+With the lagged test observations in the working environment, the `mspMonitor` function can be applied. This function (similarly to `mspTrain`) takes in the label information as a separate argument from the input data. Further, the `mspMonitor` function takes in the `TrainingSpecs` object returned in the results list from `mspTrain`. Notice that the first six rows of the monitor matrix are the exact same as the first six rows of the lagged test matrix, except that the rows of the monitor matrix have the monitoring statistic and corresponding indicator columns appended.
+```{r}
+monitor1A_xts <- mspMonitor(observations = lagTest1A_xts[,-1],
+                            labelVector = lagTest1A_xts[,1],
+                            trainingSummary = train1A_ls$TrainingSpecs)
+head(monitor1A_xts)
+```
 
 
 ## Warn Operators during Alarms
+Note that all `Alarm` codes in the monitor matrix above are recorded with `NA` values. This is because the `mspMonitor` function does not check the sequential flag conditions of the monitor matrix. This is the responsibility of the `mspWarning` function. Because the `mspWarning` function is designed to test one incoming observation at a time through a script or batch file, the following example is designed to mimic the behavior of the `mspWarning` function as each new observation comes online.
+```{r}
+alarm1A_xts <- monitor1A_xts
+for(i in 1:nrow(alarm1A_xts)){
+  if(i < (5 + 1)){
+    alarm1A_xts[1:i,] <- mspWarning(alarm1A_xts[1:i,])
+  }else{
+    alarm1A_xts[(i - 5):i,] <- mspWarning(alarm1A_xts[(i - 5):i,])
+  }
+}
+```
+The fault was introduced at index 8500, which corresponds to about 40 minutes into the test hour.
+```{r}
+plot(alarm1A_xts[, ncol(alarm1A_xts)],
+     main = "Alarm Codes for Test Data")
+```
+ The alarm codes are 
 
+- "0": No alarm.
+- "1": Hotelling's $T^2$ alarm.
+- "2": Squared Prediction Error alarm.
+- "3": Both alarms.
 
+<br>
+<br>
+
+# Package Implementation in Practice
+Kathryn B. Newhart will send me a brief discussion of how she has implemented this package in wastewater treatment monitoring at a facility in Golden, CO.
