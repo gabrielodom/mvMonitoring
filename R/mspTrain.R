@@ -127,7 +127,7 @@
 #'
 #' mspTrain(data = nrml[, -1],
 #'          labelVector = nrml[, 1],
-#'          trainObs = 4032)
+#'          trainObs = 4320)
 #'
 mspTrain <- function(data,
                      labelVector,

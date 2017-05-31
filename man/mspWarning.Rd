@@ -46,7 +46,7 @@ n <- nrow(nrml)
 # Calculate the training summary, but save five observations for monitoring.
 trainResults_ls <- mspTrain(data = nrml[1:(n - 5), -1],
                             labelVector = nrml[1:(n - 5), 1],
-                            trainObs = 4032)
+                            trainObs = 4320)
 
 # While training, we included 1 lag (the default), so we will also lag the
 # observations we will test.
