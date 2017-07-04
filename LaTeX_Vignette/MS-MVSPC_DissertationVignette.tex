@@ -249,6 +249,17 @@ This section provides a fully commented code walk-through for the main \texttt{m
 
 
 {\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'devtools' was built under R version 3.4.1}}\begin{alltt}
+\hlkwd{library}\hlstd{(xts)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'xts' was built under R version 3.4.1}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: zoo}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'zoo'}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following objects are masked from 'package:base':\\\#\# \\\#\#\ \ \ \  as.Date, as.Date.numeric}}\begin{alltt}
 \hlcom{# install.packages("BMS") # If necessary}
 \hlkwd{build}\hlstd{(}\hlstr{"C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring"}\hlstd{)}
 \end{alltt}
@@ -310,17 +321,76 @@ Now that these observations are generated and stored in memory, the \texttt{mspT
 
 
 Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain} function will include the lags specified by the \texttt{lagsIncluded} argument. Finally, the number of sequential anomalous observations necessary to raise an alarm is set at 5 by the \texttt{faultsToTriggerAlarm} argument. These last three arguments are set to their defaults.
-% ```{r}
-% train1A_xts <- fault1A_xts[1:8461,]
-% # This function will run in 13 seconds on the author's machine.
-% train1A_ls <- mspTrain(data = train1A_xts[,-1],
-%                        labelVector = train1A_xts[,1],
-%                        trainObs = 3 * 24 * 60,
-%                        updateFreq = 1 * 24 * 60,
-%                        Dynamic = TRUE,
-%                        lagsIncluded = 0:1,
-%                        faultsToTriggerAlarm = 5)
-% ```
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{train1A_xts} \hlkwb{<-} \hlstd{fault1A_xts[}\hlnum{1}\hlopt{:}\hlnum{8461}\hlstd{,]}
+\hlcom{# This function will run in 13 seconds on the author's machine.}
+\hlstd{train1A_ls} \hlkwb{<-} \hlkwd{mspTrain}\hlstd{(}\hlkwc{data} \hlstd{= train1A_xts[,}\hlopt{-}\hlnum{1}\hlstd{],}
+                       \hlkwc{labelVector} \hlstd{= train1A_xts[,}\hlnum{1}\hlstd{],}
+                       \hlkwc{trainObs} \hlstd{=} \hlnum{3} \hlopt{*} \hlnum{24} \hlopt{*} \hlnum{60}\hlstd{,}
+                       \hlkwc{updateFreq} \hlstd{=} \hlnum{1} \hlopt{*} \hlnum{24} \hlopt{*} \hlnum{60}\hlstd{,}
+                       \hlkwc{Dynamic} \hlstd{=} \hlnum{TRUE}\hlstd{,}
+                       \hlkwc{lagsIncluded} \hlstd{=} \hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,}
+                       \hlkwc{faultsToTriggerAlarm} \hlstd{=} \hlnum{5}\hlstd{)}
+\hlkwd{str}\hlstd{(train1A_ls)}
+\end{alltt}
+\begin{verbatim}
+## List of 4
+##  $ FaultChecks    :An 'xts' object on 2015-05-19 08:59:00/2015-05-22 07:00:00 containing:
+##   Data: num [1:4142, 1:5] 0.364 0.425 0.821 1.004 0.864 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : NULL
+##   ..$ : chr [1:5] "SPE" "SPE_Flag" "T2" "T2_Flag" ...
+##   Indexed by objects of class: [POSIXct,POSIXt] TZ: 
+##   xts Attributes:  
+##  NULL
+##  $ Non_Alarmed_Obs:An 'xts' object on 2015-05-19 08:59:00/2015-05-22 07:00:00 containing:
+##   Data: num [1:4142, 1:7] 2 3 1 1 1 1 1 1 1 1 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : NULL
+##   ..$ : chr [1:7] "state" "x" "y" "z" ...
+##   Indexed by objects of class: [POSIXct,POSIXt] TZ: 
+##   xts Attributes:  
+##  NULL
+##  $ Alarms         :An 'xts' object of zero-width
+##  $ TrainingSpecs  :List of 3
+##   ..$ 1:List of 6
+##   .. ..$ SPE_threshold   : Named num 4.7
+##   .. .. ..- attr(*, "names")= chr "99.9%"
+##   .. ..$ T2_threshold    : Named num 59.7
+##   .. .. ..- attr(*, "names")= chr "99.9%"
+##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.424 -0.384 0.437 0.433 -0.308 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.206 0 0 1.513
+##   .. ..$ muTrain         : Named num [1:6] 1.38 -2.09 2.96 1.37 -2.05 ...
+##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.54 0 0 0 0 ...
+##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
+##   ..$ 2:List of 6
+##   .. ..$ SPE_threshold   : Named num 1.35
+##   .. .. ..- attr(*, "names")= chr "99.9%"
+##   .. ..$ T2_threshold    : Named num 76.8
+##   .. .. ..- attr(*, "names")= chr "99.9%"
+##   .. ..$ projectionMatrix: num [1:6, 1:3] -0.4995 -0.0334 0.4931 -0.5255 -0.1688 ...
+##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.285 0 0 0 0.72 ...
+##   .. ..$ muTrain         : Named num [1:6] 2.977 -0.566 -4.498 2.951 -0.591 ...
+##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 1.07 0 0 0 0 ...
+##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
+##   ..$ 3:List of 6
+##   .. ..$ SPE_threshold   : Named num 5.85
+##   .. .. ..- attr(*, "names")= chr "99.9%"
+##   .. ..$ T2_threshold    : Named num 80.7
+##   .. .. ..- attr(*, "names")= chr "99.9%"
+##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.396 0.454 0.454 -0.153 0.461 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.276 0 0 0.499
+##   .. ..$ muTrain         : Named num [1:6] 0.528 0.272 1.44 0.568 0.258 ...
+##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 16.4 0 0 0 0 ...
+##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 The \texttt{mspTrain} function returns a list of four objects:
 \begin{enumerate}
 \item \texttt{FaultChecks}: An \texttt{xts} matrix of monitoring statistics and associated indicators for all observations after the burn-in of \texttt{trainObs}. It will have 10080 - \texttt{trainObs} number of rows and five columns:
@@ -362,42 +432,91 @@ The training data summary was given by \texttt{mspTrain}, so this information ca
 
 \subsubsection{Adding Lagged Features}
 First, concatenate the last given observation from the training set as ``row 0'' of the test data set. This will enable \texttt{mspMonitor} to include lag-1 features. Similarly, one would include the last $k$ observations of the training set should the process dictate the need for any lag-$k$ features. Because the Fault Start Index was set to 8500, this testing window will show the change point between observations generated under normal conditions and those generated under a fault state.
-% ```{r, message = FALSE}
-% library(xts)
-% test1A_xts <- fault1A_xts[8460:8520, -1]
-% lagTest1A_xts <- lag.xts(test1A_xts, 0:1)
-% lagTest1A_xts <- cbind(fault1A_xts[8461:8520,1],
-%                        lagTest1A_xts[-1,])
-% head(lagTest1A_xts)
-% ```
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{test1A_xts} \hlkwb{<-} \hlstd{fault1A_xts[}\hlnum{8460}\hlopt{:}\hlnum{8520}\hlstd{,} \hlopt{-}\hlnum{1}\hlstd{]}
+\hlstd{lagTest1A_xts} \hlkwb{<-} \hlkwd{lag.xts}\hlstd{(test1A_xts,} \hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
+\hlstd{lagTest1A_xts} \hlkwb{<-} \hlkwd{cbind}\hlstd{(fault1A_xts[}\hlnum{8461}\hlopt{:}\hlnum{8520}\hlstd{,}\hlnum{1}\hlstd{],}
+                       \hlstd{lagTest1A_xts[}\hlopt{-}\hlnum{1}\hlstd{,])}
+\hlkwd{head}\hlstd{(lagTest1A_xts)}
+\end{alltt}
+\begin{verbatim}
+##                     state         x         y        z       x.1
+## 2015-05-22 07:00:00     1 0.7465717 -1.582803 1.141042 0.3817970
+## 2015-05-22 07:01:00     1 0.8064225 -1.564885 1.226738 0.7465717
+## 2015-05-22 07:02:00     1 0.7621322 -1.603962 1.150504 0.8064225
+## 2015-05-22 07:03:00     1 0.7995411 -1.785750 1.149927 0.7621322
+## 2015-05-22 07:04:00     1 0.8638972 -1.822695 1.116856 0.7995411
+## 2015-05-22 07:05:00     1 0.7735952 -1.505855 1.139623 0.8638972
+##                            y.1       z.1
+## 2015-05-22 07:00:00  0.1052954 0.3582939
+## 2015-05-22 07:01:00 -1.5828027 1.1410421
+## 2015-05-22 07:02:00 -1.5648852 1.2267384
+## 2015-05-22 07:03:00 -1.6039621 1.1505043
+## 2015-05-22 07:04:00 -1.7857497 1.1499272
+## 2015-05-22 07:05:00 -1.8226952 1.1168557
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \subsubsection{Monitoring the Test Data}
 With the lagged test observations in the working environment, the \texttt{mspMonitor} function can be applied. This function (similarly to \texttt{mspTrain}) takes in the label information as a separate argument from the input data. Further, the \texttt{mspMonitor} function takes in the \texttt{TrainingSpecs} object returned in the results list from \texttt{mspTrain}. Notice that the first six rows of the monitor matrix are the exact same as the first six rows of the lagged test matrix, except that the rows of the monitor matrix have the monitoring statistic and corresponding indicator columns appended.
-% ```{r}
-% monitor1A_xts <- mspMonitor(observations = lagTest1A_xts[,-1],
-%                             labelVector = lagTest1A_xts[,1],
-%                             trainingSummary = train1A_ls$TrainingSpecs)
-% head(monitor1A_xts)
-% ```
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{monitor1A_xts} \hlkwb{<-} \hlkwd{mspMonitor}\hlstd{(}\hlkwc{observations} \hlstd{= lagTest1A_xts[,}\hlopt{-}\hlnum{1}\hlstd{],}
+                            \hlkwc{labelVector} \hlstd{= lagTest1A_xts[,}\hlnum{1}\hlstd{],}
+                            \hlkwc{trainingSummary} \hlstd{= train1A_ls}\hlopt{$}\hlstd{TrainingSpecs)}
+\hlkwd{head}\hlstd{(monitor1A_xts)}
+\end{alltt}
+\begin{verbatim}
+##                             x         y        z       x.1        y.1
+## 2015-05-22 07:00:00 0.7465717 -1.582803 1.141042 0.3817970  0.1052954
+## 2015-05-22 07:01:00 0.8064225 -1.564885 1.226738 0.7465717 -1.5828027
+## 2015-05-22 07:02:00 0.7621322 -1.603962 1.150504 0.8064225 -1.5648852
+## 2015-05-22 07:03:00 0.7995411 -1.785750 1.149927 0.7621322 -1.6039621
+## 2015-05-22 07:04:00 0.8638972 -1.822695 1.116856 0.7995411 -1.7857497
+## 2015-05-22 07:05:00 0.7735952 -1.505855 1.139623 0.8638972 -1.8226952
+##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm
+## 2015-05-22 07:00:00 0.3582939 0.3441627        0 29.445080       0    NA
+## 2015-05-22 07:01:00 1.1410421 0.3811468        0  3.329163       0    NA
+## 2015-05-22 07:02:00 1.2267384 0.2937754        0  3.222249       0    NA
+## 2015-05-22 07:03:00 1.1505043 0.1424375        0  2.810259       0    NA
+## 2015-05-22 07:04:00 1.1499272 0.2947956        0  2.630555       0    NA
+## 2015-05-22 07:05:00 1.1168557 0.8742699        0  3.708552       0    NA
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \subsection{Warn Operators During Alarms}
 Note that all `Alarm` codes in the monitor matrix above are recorded with \texttt{NA} values. This is because the \texttt{mspMonitor} function does not check the sequential flag conditions of the monitor matrix. This is the responsibility of the \texttt{mspWarning} function. Because the \texttt{mspWarning} function is designed to test one incoming observation at a time through a script or batch file, the following example is designed to mimic the behavior of the \texttt{mspWarning} function as each new observation comes online.
-% ```{r}
-% alarm1A_xts <- monitor1A_xts
-% for(i in 1:nrow(alarm1A_xts)){
-%   if(i < (5 + 1)){
-%     alarm1A_xts[1:i,] <- mspWarning(alarm1A_xts[1:i,])
-%   }else{
-%     alarm1A_xts[(i - 5):i,] <- mspWarning(alarm1A_xts[(i - 5):i,])
-%   }
-% }
-% ```
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{alarm1A_xts} \hlkwb{<-} \hlstd{monitor1A_xts}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(alarm1A_xts))\{}
+  \hlkwa{if}\hlstd{(i} \hlopt{<} \hlstd{(}\hlnum{5} \hlopt{+} \hlnum{1}\hlstd{))\{}
+    \hlstd{alarm1A_xts[}\hlnum{1}\hlopt{:}\hlstd{i,]} \hlkwb{<-} \hlkwd{mspWarning}\hlstd{(alarm1A_xts[}\hlnum{1}\hlopt{:}\hlstd{i,])}
+  \hlstd{\}}\hlkwa{else}\hlstd{\{}
+    \hlstd{alarm1A_xts[(i} \hlopt{-} \hlnum{5}\hlstd{)}\hlopt{:}\hlstd{i,]} \hlkwb{<-} \hlkwd{mspWarning}\hlstd{(alarm1A_xts[(i} \hlopt{-} \hlnum{5}\hlstd{)}\hlopt{:}\hlstd{i,])}
+  \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 The fault was introduced at index 8500, which corresponds to about 40 minutes into the test hour.
-% ```{r}
-% plot(alarm1A_xts[, ncol(alarm1A_xts)],
-%      main = "Alarm Codes for Test Data")
-% ```
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(alarm1A_xts[,} \hlkwd{ncol}\hlstd{(alarm1A_xts)],}
+     \hlkwc{main} \hlstd{=} \hlstr{"Alarm Codes for Test Data"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/r_warning_Plot-1} 
+
+\end{knitrout}
 The alarm codes are
 \begin{enumerate}
 \item ``0'': No alarm.
@@ -405,7 +524,7 @@ The alarm codes are
 \item ``2'': Squared Prediction Error alarm.
 \item ``3'': Both alarms.
 \end{enumerate}
-
+As we can see, the monitoring function detects a process anomaly after 40 minutes into the test hour, and the warning function issues the corresponding alarms.
 % Package Implementation in Practice
 % Kathryn B. Newhart will send me a brief discussion of how she has implemented this package in wastewater treatment monitoring at a facility in Golden, CO.
 
