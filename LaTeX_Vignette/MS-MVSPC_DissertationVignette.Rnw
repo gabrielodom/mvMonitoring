@@ -190,20 +190,25 @@ In future updates of this package, this function will also have an option to iss
 
 \section{Example Simulation Workflow}
 
-This section provides a fully commented code walk-through for the main \texttt{msp*} functions in the \texttt{mvMonitoring} package.
+This section provides a fully commented code walk-through for the main \texttt{msp*} functions in the \texttt{mvMonitoring} package. This package depends on a few other packages, but most of these dependencies are on commonly-used packages. The exception is \texttt{BMS}.
+<<r load_mvMonitoring>>=
+library(devtools)
+# install.packages("BMS") # If necessary
+build("C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring")
+library(mvMonitoring)
+@
 
 
 \subsection{Generating Synthetic Data}
 First begin by generating multi-state data from a fault scenario. This code will yield observations under Fault 2A, as described the Synthetic Fault Induction section. We choose the default options for the period length (7 days * 24 hours * 60 minutes = 10,080 observations), the starting index of the fault (8500 out of 10080), and the time stamp for beginning the data is 16 May of 2016 at 10:00AM (my wedding anniversary). As we can see from the \texttt{str()} function, we have an \texttt{xts} matrix with 10080 rows and four columns (the state indicator and the three features).
-% ```{r, message = FALSE}
-% library(mvMonitoring)
-% fault1A_xts <- mspProcessData(faults = "A1",
-% period = 7 * 24 * 60,
-% faultStartIndex = 8500,
-% startTime = "2015-05-16 10:00:00 CST")
 
-% str(fault1A_xts)
-% ```
+<<r generate_Data>>=
+fault1A_xts <- mspProcessData(faults = "A1",
+                              period = 7 * 24 * 60,
+                              faultStartIndex = 8500,
+                              startTime = "2015-05-16 10:00:00 CST")
+str(fault1A_xts)
+@
 
 
 \subsection{Train the Fault Detection Threshold}
@@ -224,17 +229,17 @@ Now that these observations are generated and stored in memory, the \texttt{mspT
 
 
 Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain} function will include the lags specified by the \texttt{lagsIncluded} argument. Finally, the number of sequential anomalous observations necessary to raise an alarm is set at 5 by the \texttt{faultsToTriggerAlarm} argument. These last three arguments are set to their defaults.
-% ```{r}
-% train1A_xts <- fault1A_xts[1:8461,]
-% # This function will run in 13 seconds on the author's machine.
-% train1A_ls <- mspTrain(data = train1A_xts[,-1],
-%                        labelVector = train1A_xts[,1],
-%                        trainObs = 3 * 24 * 60,
-%                        updateFreq = 1 * 24 * 60,
-%                        Dynamic = TRUE,
-%                        lagsIncluded = 0:1,
-%                        faultsToTriggerAlarm = 5)
-% ```
+<<r train>>=
+train1A_xts <- fault1A_xts[1:8461,]
+# This function will run in 13 seconds on the author's machine.
+train1A_ls <- mspTrain(data = train1A_xts[,-1],
+                       labelVector = train1A_xts[,1],
+                       trainObs = 3 * 24 * 60,
+                       updateFreq = 1 * 24 * 60,
+                       Dynamic = TRUE,
+                       lagsIncluded = 0:1,
+                       faultsToTriggerAlarm = 5)
+@
 The \texttt{mspTrain} function returns a list of four objects:
 \begin{enumerate}
 \item \texttt{FaultChecks}: An \texttt{xts} matrix of monitoring statistics and associated indicators for all observations after the burn-in of \texttt{trainObs}. It will have 10080 - \texttt{trainObs} number of rows and five columns:

@@ -240,20 +240,56 @@ In future updates of this package, this function will also have an option to iss
 
 \section{Example Simulation Workflow}
 
-This section provides a fully commented code walk-through for the main \texttt{msp*} functions in the \texttt{mvMonitoring} package.
+This section provides a fully commented code walk-through for the main \texttt{msp*} functions in the \texttt{mvMonitoring} package. This package depends on a few other packages, but most of these dependencies are on commonly-used packages. The exception is \texttt{BMS}.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(devtools)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'devtools' was built under R version 3.4.1}}\begin{alltt}
+\hlcom{# install.packages("BMS") # If necessary}
+\hlkwd{build}\hlstd{(}\hlstr{"C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# "{}C:/PROGRA\textasciitilde{}1/R/R-34\textasciitilde{}1.0/bin/x64/R"{} --no-site-file --no-environ --no-save\ \ \textbackslash{}\\\#\#\ \  --no-restore --quiet CMD build\ \ \textbackslash{}\\\#\#\ \  "{}C:\textbackslash{}Users\textbackslash{}gabriel\_odom\textbackslash{}Documents\textbackslash{}GitHub\textbackslash{}mvMonitoring\textbackslash{}mvMonitoring"{}\ \ \textbackslash{}\\\#\#\ \  --no-resave-data --no-manual}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# }}\begin{verbatim}
+## [1] "C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring_0.1.0.tar.gz"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{library}\hlstd{(mvMonitoring)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 
 \subsection{Generating Synthetic Data}
 First begin by generating multi-state data from a fault scenario. This code will yield observations under Fault 2A, as described the Synthetic Fault Induction section. We choose the default options for the period length (7 days * 24 hours * 60 minutes = 10,080 observations), the starting index of the fault (8500 out of 10080), and the time stamp for beginning the data is 16 May of 2016 at 10:00AM (my wedding anniversary). As we can see from the \texttt{str()} function, we have an \texttt{xts} matrix with 10080 rows and four columns (the state indicator and the three features).
-% ```{r, message = FALSE}
-% library(mvMonitoring)
-% fault1A_xts <- mspProcessData(faults = "A1",
-% period = 7 * 24 * 60,
-% faultStartIndex = 8500,
-% startTime = "2015-05-16 10:00:00 CST")
 
-% str(fault1A_xts)
-% ```
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fault1A_xts} \hlkwb{<-} \hlkwd{mspProcessData}\hlstd{(}\hlkwc{faults} \hlstd{=} \hlstr{"A1"}\hlstd{,}
+                              \hlkwc{period} \hlstd{=} \hlnum{7} \hlopt{*} \hlnum{24} \hlopt{*} \hlnum{60}\hlstd{,}
+                              \hlkwc{faultStartIndex} \hlstd{=} \hlnum{8500}\hlstd{,}
+                              \hlkwc{startTime} \hlstd{=} \hlstr{"2015-05-16 10:00:00 CST"}\hlstd{)}
+\hlkwd{str}\hlstd{(fault1A_xts)}
+\end{alltt}
+\begin{verbatim}
+## An 'xts' object on 2015-05-16 10:00:00/2015-05-23 09:59:00 containing:
+##   Data: num [1:10080, 1:4] 1 1 1 1 1 1 1 1 1 1 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : NULL
+##   ..$ : chr [1:4] "state" "x" "y" "z"
+##   Indexed by objects of class: [POSIXct,POSIXt] TZ: 
+##   xts Attributes:  
+##  NULL
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \subsection{Train the Fault Detection Threshold}
