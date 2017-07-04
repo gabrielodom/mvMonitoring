@@ -57,3 +57,7 @@ This function splits a process data frame by state, and rotates and
 nrml <- processNOCdata()
 dataStateSwitch(nrml)
 }
+\seealso{
+Calls: \code{\link{processNOCdata}}, \code{\link{faultSwitch}},
+  \code{\link{rotateScale3D}}. Called by: \code{\link{mspProcessData}}
+}

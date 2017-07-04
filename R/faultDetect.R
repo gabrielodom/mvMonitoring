@@ -35,7 +35,9 @@
 #'   this function via a returned threshold object. This object will be used in
 #'   higher function calls.
 #'
-#' This internal function is called by faultFilter().
+#'   This internal function is called by faultFilter().
+#'
+#' @seealso Called by \code{\link{faultFilter}} and \code{\link{mspMonitor}}.
 #'
 #' @export
 #'

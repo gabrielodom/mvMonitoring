@@ -61,8 +61,8 @@ This function is the class-specific implementation of the Adaptive-
   Dynamic PCA described in the details of the mspTrain() function. See
   the mspTrain() function's help file for further details.
 
-This internal function is called by mspTrain(). This function calls the
-faultFilter() function.
+  This internal function is called by mspTrain(). This function calls the
+  faultFilter() function.
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
@@ -70,4 +70,7 @@ data <- nrml[nrml[,1] == 1]
 
 processMonitor(data = data[,-1], trainObs = 672)
 
+}
+\seealso{
+Calls: \code{\link{faultFilter}}. Called by: \code{\link{mspTrain}}.
 }

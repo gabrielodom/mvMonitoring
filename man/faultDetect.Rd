@@ -47,7 +47,7 @@ This function takes in a threshold object returned by the
   this function via a returned threshold object. This object will be used in
   higher function calls.
 
-This internal function is called by faultFilter().
+  This internal function is called by faultFilter().
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
@@ -58,4 +58,7 @@ thresh_obj <- threshold(pca_object = pca_obj)
 faultDetect(threshold_object = thresh_obj,
             observation = scaledData[1,])
 
+}
+\seealso{
+Called by \code{\link{faultFilter}} and \code{\link{mspMonitor}}.
 }

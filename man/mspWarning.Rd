@@ -37,7 +37,7 @@ This function and the mspMonitor() function are designed to be ran
   mspTrain() function, which was designed to check multiple past
   observations.
 
-This function requires an xts matrix returned by the mspMonitor() function.
+  This function requires an xts matrix returned by the mspMonitor() function.
 }
 \examples{
 nrml <- mspProcessData(faults = "NOC")
@@ -46,7 +46,7 @@ n <- nrow(nrml)
 # Calculate the training summary, but save five observations for monitoring.
 trainResults_ls <- mspTrain(data = nrml[1:(n - 5), -1],
                             labelVector = nrml[1:(n - 5), 1],
-                            trainObs = 4032)
+                            trainObs = 4320)
 
 # While training, we included 1 lag (the default), so we will also lag the
 # observations we will test.
@@ -63,4 +63,8 @@ dataAndFlags <- mspMonitor(observations = testObs[, -1],
 # Alarm check the last row of the matrix returned by the mspMonitor function
 mspWarning(dataAndFlags)
 
+}
+\seealso{
+Pipe flow: \code{\link{mspTrain}} into \code{\link{mspMonitor}}
+  into \code{mspWarning}.
 }

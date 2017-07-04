@@ -51,6 +51,8 @@
 #'   This function is called by the mspProcessData() function. See
 #'   ?mspProcessData for more details.
 #'
+#' @seealso Called by: \code{\link{mspProcessData}}.
+#'
 #' @export
 #'
 #' @importFrom dplyr arrange

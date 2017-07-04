@@ -111,6 +111,9 @@
 #'
 #'   \url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
 #'
+#' @seealso Calls: \code{\link{processMonitor}}. Pipe flow: \code{mspTrain}
+#'   into \code{\link{mspMonitor}} into \code{\link{mspWarning}}.
+#'
 #' @export
 #'
 #' @importFrom lazyeval lazy_dots
@@ -124,7 +127,7 @@
 #'
 #' mspTrain(data = nrml[, -1],
 #'          labelVector = nrml[, 1],
-#'          trainObs = 4032)
+#'          trainObs = 4320)
 #'
 mspTrain <- function(data,
                      labelVector,

@@ -37,6 +37,9 @@
 #'   processNOCdata() or faultSwitch(). This function calls rotateScale3D() and
 #'   is called internally by mspProcessData().
 #'
+#' @seealso Calls: \code{\link{processNOCdata}}, \code{\link{faultSwitch}},
+#'   \code{\link{rotateScale3D}}. Called by: \code{\link{mspProcessData}}
+#'
 #' @export
 #'
 #' @importFrom dplyr arrange

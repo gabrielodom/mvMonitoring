@@ -31,7 +31,9 @@
 #'   similar T2 threshold, and the projection and Lambda Inverse (1 /
 #'   eigenvalues) matrices passed through from the pca() function call.
 #'
-#' This internal function is called by faultFilter().
+#'   This internal function is called by faultFilter().
+#'
+#' @seealso Called by: \code{\link{faultFilter}}.
 #'
 #' @export
 #'

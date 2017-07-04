@@ -13,35 +13,32 @@ devtools::install_github("gabrielodom/mvMonitoring", auth_token = "tokenHere")
 where you create the value of "tokenHere" by generating a personal access token (PAT) at https://github.com/settings/tokens and copying the quoted string to this argument.
 
 ## Examples
-These are the examples shown in the help files for the mspTrain(), mspMonitor(), and mspWarning() functions.
+These are the examples shown in the help files for the mspProcessData(), mspTrain(), mspMonitor(), and mspWarning() functions.
 ```{r mspExamples}
-normal_switch_xts <- mspProcessData(faults = "NOC", faultStartIndex = 8500)
+# Generate one week's worth of normal operating (NOC) data recorded at the one-
+# minute level
+noc_xts <- mspProcessData(faults = "NOC")
 # The state values are recorded in the first column.
-n <- nrow(normal_switch_xts)
-nTrainObs <- floor(0.4 * n)
+n <- nrow(noc_xts)
 
 # Calculate the training summary, but save five observations for monitoring.
-trainResults_ls <- mspTrain(data = normal_switch_xts[1:(n - 5), -1],
-                            labelVector = normal_switch_xts[1:(n - 5), 1],
-                            trainObs = nTrainObs,
-                            lagsIncluded = c(0, -1))
-
-trainResults_ls
+# This function will treat the first 3 days as in control (IC), and then update
+# the training window each day.
+trainResults_ls <- mspTrain(data = noc_xts[1:(n - 5), -1],
+                            labelVector = noc_xts[1:(n - 5), 1],
+                            trainObs = 4320)
 
 # While training, we included 1 lag (the default), so we will also lag the
 # observations we will test.
-testObs <- normal_switch_xts[(n - 6):n, -1]
+testObs <- noc_xts[(n - 6):n, -1]
 testObs <- xts:::lag.xts(testObs, 0:1)
 testObs <- testObs[-1,]
-testObs <- cbind(normal_switch_xts[(n - 5):n, 1], testObs)
-testObs
+testObs <- cbind(noc_xts[(n - 5):n, 1], testObs)
 
 # Run the monitoring function.
 dataAndFlags <- mspMonitor(observations = testObs[, -1],
                            labelVector = testObs[, 1],
                            trainingSummary = trainResults_ls$TrainingSpecs)
-
-dataAndFlags
 
 # Alarm check the last row of the matrix returned by the mspMonitor function
 mspWarning(dataAndFlags)

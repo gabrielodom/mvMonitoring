@@ -16,8 +16,10 @@
 #'   is such that the pitch action appears as a roll while the roll action
 #'   appears as a pitch.
 #'
-#' This function is used only in data generation of the package vignette. This
-#' function is called by rotateScale3D().
+#'   This function is used only in data generation of the package vignette. This
+#'   function is called by rotateScale3D().
+#'
+#' @seealso Called by: \code{\link{rotateScale3D}}.
 #'
 #' @export
 #'

@@ -10,6 +10,7 @@ library(tidyverse)
 library(reshape2)
 library(gridExtra)
 library(xts)
+library(mvMonitoring)
 
 # Start with a random draw. The faults were introduced at s = 8500
 adpcaObs_ls <- mspProcessData(faults = "All",
@@ -53,7 +54,7 @@ mspGraphsGrid <- function(data_xts){
     theme(panel.grid = element_blank(),
           axis.title.y = element_blank(),
           plot.title = element_text(hjust = 0.5),
-          legend.position = c(0.12, 0.85),
+          legend.position = c(0.12, 0.825),
           legend.background = element_blank()) + # legend.justification = c(1,0),
     guides(color = guide_legend(override.aes = list(size = 2))) +
     ggtitle("Feature X") +
@@ -91,7 +92,9 @@ mspGraphsGrid <- function(data_xts){
     theme_bw() +
     theme(panel.grid = element_blank(),
           axis.title.y = element_blank(),
-          plot.title = element_text(hjust = 0.5)) +
+          plot.title = element_text(hjust = 0.5),
+          # So that the right side of Figure Z doesn't get eaten by the PDF
+          plot.margin = unit(c(0.2,0.5,0.2,0.2), "cm")) +
     ggtitle("Feature Z") +
     geom_vline(xintercept = as.numeric(faultStart), size = 1)
 
@@ -100,13 +103,47 @@ mspGraphsGrid <- function(data_xts){
 
 
 ######  Use Graphing Function  ######
+setwd("C:/Users/gabriel_odom/Box Sync/Consulting/Dr. Hering/MV_Process_Control/MVSPC/Paper Graphs")
+
+# Getting the PDFs to look exactly the way we need them to in the LaTeX document
+# can be a giant pain in the ass.
+
+pdf("NOC_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$NOC %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault1A_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$A1 %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault1B_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$B1 %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault1C_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$C1 %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault2A_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$A2 %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault2B_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$B2 %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault2C_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$C2 %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault3A_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$A3 %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault3B_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$B3 %>% mspGraphsGrid()
+dev.off()
+
+pdf("Fault3C_20170420.pdf", width = 8.624, height = 3.744)
 adpcaObs_ls$C3 %>% mspGraphsGrid()
+dev.off()

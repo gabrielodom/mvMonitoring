@@ -83,6 +83,11 @@
 #'     as from the same state.}
 #'   }
 #'
+#' @seealso Calls: \code{\link{processNOCdata}}, \code{\link{faultSwitch}},
+#'   \code{\link{dataStateSwitch}}. Simulation pipe flow: \code{mspProcessData}
+#'   into \code{\link{mspTrain}} into \code{\link{mspMonitor}} into
+#'   \code{\link{mspWarning}}.
+#'
 #' @export
 #'
 #' @importFrom dplyr bind_rows

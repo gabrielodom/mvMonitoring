@@ -27,11 +27,16 @@ See the help file of function rotate_3D() for a brief explination of
   how these angles behave in scatterplot3d functionality (from package
   scatterplot3d).
 
-This function is used only in data generation of the package vignette. This
-function calls rotate3D().
+  This function is used only in data generation in the package vignette
+  (version 1) and the dataStateSwitch() function within the mspProcessData()
+  function. This function calls rotate3D().
 }
 \examples{
 rotateScale3D(rot_angles = list(yaw = -10, pitch = 0, roll = 15),
               scale_factors = c(0.2, 1, 5))
 
+}
+\seealso{
+Calls: \code{\link{rotate3D}}. Called by
+  \code{\link{dataStateSwitch}}.
 }

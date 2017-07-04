@@ -134,6 +134,10 @@ nrml <- mspProcessData(faults = "NOC")
 
 mspTrain(data = nrml[, -1],
          labelVector = nrml[, 1],
-         trainObs = 4032)
+         trainObs = 4320)
 
+}
+\seealso{
+Calls: \code{\link{processMonitor}}. Pipe flow: \code{mspTrain}
+  into \code{\link{mspMonitor}} into \code{\link{mspWarning}}.
 }
