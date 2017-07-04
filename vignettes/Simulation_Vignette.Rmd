@@ -70,11 +70,7 @@ plot(t_star_adj,
 pacf(t_star,
      main = "Partial ACF for the Series t")
 ```
-```{r t_vec_summary}
-mean(t_star); var(t_star)
-cor(t_star_adj[2:omega], t_star_adj[1:(omega - 1)])
-lmtest::dwtest(t_star_adj[2:omega] ~ t_star_adj[1:(omega - 1)])
-```
+As we can see, $t$ is autocorrelated and non-stationary with mean `r mean(t_star)` and variance `r var(t_star)`.
 
 ###  Features and State Features
 We will simulate three features, with each feaure operating under $k$ different states. We will use $<x(t), y(t), z(t)>$ instead of the $<x_1(t), x_2(t), x_3(t)>$ notation used in Kazor et al. This will assist us when we introduce feature states. Our state notation will be $<x_k(t), y_k(t), z_k(t)>$ for State $k$.
@@ -89,7 +85,7 @@ where $\varepsilon_i \sim N(0, 0.01)$.
 ```{r state_1_init}
 library(scatterplot3d)
 library(magrittr)
-library(dplyr)
+library(tidyverse)
 
 normal_df <- data.frame(t = t_star_adj,
                         err1 = rnorm(n = omega, sd = sqrt(0.01)),
@@ -101,12 +97,6 @@ normal_df %<>% mutate(x = t + err1,
                      y = t ^ 2 - 3 * t + err2,
                      z = -t ^ 3 + 3 * t ^ 2 + err3)
 
-# plot(normal_df$t)
-# plot(normal_df$x)
-# plot(normal_df$y)
-# plot(normal_df$z)
-# # It checks out
-
 orig_state_mat <- normal_df %>%
                     select(x,y,z) %>%
                     as.matrix
@@ -115,21 +105,21 @@ Let's take a look at our 3D scatterplot:
 ```{r state1_scatter}
 scatterplot3d(x = normal_df$x,
               y = normal_df$y,
-              z = normal_df$x)
+              z = normal_df$x,
+              angle = 15,
+              highlight.3d = TRUE)
 ```
 
 Now we can create data for our other two states. These states will be scaled rotations of the current $<x,y,z>$ set. Thus, we need the `mvMonitoring::rotateScale3D()` function from the `Rotation_Playground.R` file. The first state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2).
 ```{r state_2_init}
-# source("C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring/inst/Rotation_Playground.R")
-# source("Users\gabrielodom\Documents\GitHub\mvMonitoring\mvMonitoring\inst\Rotation_Playground.R")
-
 ###  State 2  ###
 state2_angles <- list(yaw = 0,
                       pitch = 90,
                       roll = 30)
 state2_scales <- c(1,0.5,2)
-state2_mat <- orig_state_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
-                                               scale_factors = state2_scales)
+state2_mat <- orig_state_mat %*% 
+  rotateScale3D(rot_angles = state2_angles,
+                scale_factors = state2_scales)
 ```
 We can see the effects of the rotation and scaling.
 ```{r state_2_scatter}
@@ -1235,7 +1225,7 @@ stopCluster(cl)
 ```
 
 Let's clean up these results.
-```{r msadSim_Cleaning}
+```{r adSim_Cleaning}
 ss_FA_rates <- lapply(1:length(adResults_ls), function(i){
   adResults3_ls[[i]]$falseAlarmRates
 }) %>% do.call(bind_rows, .)
