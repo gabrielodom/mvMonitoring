@@ -2,9 +2,13 @@ Package: mvMonitoring
 Type: Package
 Title: Multi-State Adaptive Dynamic Principal Component Analysis for
     Multivariate Process Monitoring
-Version: 0.1.0
-Author: Gabriel Odom, Ben Barnard, Karen Kazor, and Amanda Hering
-Maintainer: Gabriel Odom <gabriel_odom@baylor.edu>
+Version: 0.1.1
+Authors@R: c(person("Melissa", "Johnson", email = "melissa_johnson2@baylor.edu", role = c("aut")),
+  person("Gabriel", "Odom", email = "gabriel_odom@baylor.edu", role = c("aut","cre")), 
+  person("Ben", "Barnard", email = "ben_barnard@baylor.edu", role = c("aut")),
+  person("Karen", "Kazor", role = c("aut")),
+  person("Amanda", "Hering", email = "mandy_hering@baylor.edu", role = c("aut")))
+Maintainer: Melissa Johnson <melissa_johnson2@baylor.edu>
 Description: Use multi-state splitting to apply Adaptive-Dynamic PCA to data
     generated from a continuous-time multivariate industrial or natural process.
     Employ PCA-based dimension reduction to extract linear combinations of
