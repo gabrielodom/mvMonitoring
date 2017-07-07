@@ -7,10 +7,14 @@ We create this package, `mvMonitoring`, from the foundation laid by Kazor et al 
 
 ## Installation
 Make sure you have the latest version of the `devtools` package, and pull the package from GitHub. Remember, if you can read this file, you are one of the few people who have access to this package. In addition, you can also run the following:
-```{r packLoad_GitHub}
+```{r packLoad_GitHub, eval=FALSE}
 devtools::install_github("gabrielodom/mvMonitoring", auth_token = "tokenHere")
 ```
 where you create the value of "tokenHere" by generating a personal access token (PAT) at https://github.com/settings/tokens and copying the quoted string to this argument.
+Load the library after installation by
+```{r packLoad}
+library(mvMonitoring)
+```
 
 ## Examples
 These are the examples shown in the help files for the mspProcessData(), mspTrain(), mspMonitor(), and mspWarning() functions.

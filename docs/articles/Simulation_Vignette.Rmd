@@ -570,16 +570,16 @@ fault3B_xts <- xts(normal_w_fault3B_df[,-1], order.by = normal_switch_df[,1])
 
 Now we clean up the environment, and load the data we've saved.
 ```{r sweepEnv}
-# uncomment these lines to use the data from the package. Comment them out
-# when generating new data.
-rm(list = ls())
-data("normal_switch_xts")
-data("fault1A_xts")
-data("fault1B_xts")
-data("fault2A_xts")
-data("fault2B_xts")
-data("fault3A_xts")
-data("fault3B_xts")
+# # uncomment these lines to use the data from the package. Comment them out
+# # when generating new data.
+# rm(list = ls())
+# load("~/Documents/GitHub/mvMonitoring/data/normal_switch_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault1A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault1B_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault2A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault2B_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault3A_xts.rda")
+# load("~/Documents/GitHub/mvMonitoring/data/fault3B_xts.rda")
 
 faults_ls <- list(normal = normal_switch_xts,
                   fault1A = fault1A_xts,
@@ -703,9 +703,9 @@ for(i in 1:nrow(testDataandFlags)){
 }
 
 # False Alarms? 
-alarmData[,ncol(alarmData)] %>% sum(na.rm = T)
-alarmData[,(ncol(alarmData) - 4):ncol(alarmData)] %>% head
-alarmData[,(ncol(alarmData) - 4):ncol(alarmData)] %>% tail
+alarmData[,15] %>% sum(na.rm = T)
+alarmData[,11:15] %>% head
+alarmData[,11:15] %>% tail
 
 # What do the first three hours look like? What did it look like right before?
 # Before
@@ -734,12 +734,7 @@ This data was sent to use from Kate Newhart in Golden, CO.
 ### Import the Data files
 First, we import the two data sets. 
 ```{r realData_import}
-# # If you start working in the vignette here, then load these.
-# # Otherwise, they were loaded on lines 88 and 529, respectively
-# library(magrittr)
-# library(tidyverse) # Includes readr
-# library(mvMonitoring)
-# library(xts)
+library(readr)
 if(.Platform$OS.type == "windows"){
   tenDayData_v2 <- read_csv("~/GitHub/mvMonitoring/mvMonitoring/inst/tenDayData_v2.csv", 
   col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
@@ -798,7 +793,7 @@ The clean data frame has 138 fewer observations.
 ### Training the AD-PCA Model
 Now to analyse the training data, and pass the training information in order to test the testing data. Because the data do not come from a process with recorded state variables (or, more specifically, that we do not have such state information), we will give a column of 1s as the labels. Futher, we have ten days' worth of 10-minute-level observations, so we will train on $7 * 24 * 60 / 10 = 1008$ observations (seven days' worth), and update each day ($24 * 60 * 10 = 144$). Further, we will lag the features by one time step. CAVEAT: we're missing one observation: the `tenDay_clean` data matrix had 1299 rows, while our train (864) and returned faultChecks (434) account for 1298 rows. This missing row is the row we lost due to the lag.
 ```{r trainRealData}
-tenDayResults_ls <- mspTrain(data = tenDay_clean,
+tenDayResults_ls <- mvMonitoring::mspTrain(data = tenDay_clean,
                          labelVector = rep(1, nrow(tenDay_clean)),
                          trainObs = 1008,
                          updateFreq = 144,
@@ -814,9 +809,9 @@ We will test the observations from the `oneDay_clean` data set. We must first la
 laggedOneDay <- lag.xts(oneDay_clean, 0:1)
 laggedOneDay[1,36:70] <- tenDay_clean[nrow(tenDay_clean),]
 
-realDataandFlags <- mspMonitor(observations = laggedOneDay,
-                               labelVector = rep(1, nrow(laggedOneDay)),
-                               trainingSummary = tenDayResults_ls$TrainingSpecs)
+realDataandFlags <- mvMonitoring::mspMonitor(observations = laggedOneDay,
+           labelVector = rep(1, nrow(laggedOneDay)),
+           trainingSummary = tenDayResults_ls$TrainingSpecs)
 realDataandFlags[1,]
 ```
 For some reason, that I don't know right now, `mspMonitor` is flagging all of these values as faults, which will trigger alarms for most of the day.
@@ -824,7 +819,7 @@ For some reason, that I don't know right now, `mspMonitor` is flagging all of th
 # These lines will test each line as if it was just received:
 realAlarmData <- realDataandFlags
 for(i in 1:nrow(realDataandFlags)){
-  realAlarmData[1:i,] <- mspWarning(realAlarmData[1:i,])
+  realAlarmData[1:i,] <- mvMonitoring::mspWarning(realAlarmData[1:i,])
 }
 tail(realAlarmData)
 ```
@@ -834,12 +829,6 @@ EDIT: I was not supplying the training mean vector and precision matrix to the m
 # Simulation Setup
 We have also collapsed the data generation setup and implementation from this vignette into a function suite. The outward-facing function is called `mspProcessData`, and we now give an example.
 ```{r mspProcessEg}
-# If you start working in the vignette here, then load these.
-# Otherwise, they were loaded on lines 88 and 529, respectively
-library(magrittr)
-library(tidyverse) # Includes readr
-library(mvMonitoring)
-library(xts)
 simFaults_ls <- mspProcessData(faults = "All",
                                faultStartIndex = 8500,
                                startTime = "2016-11-27 00:00:00 CST")
@@ -854,17 +843,18 @@ We first assume that the observations do come from a multi-state process. This m
 # none of the observations yield alarms. Suppress this with ? "message = FALSE"
 # doesn't work.
 library(parallel) # use mclapply on Mac, parLapply on Windows
+library(tidyverse)
+library(xts)
 a <- Sys.time()
-cl <- makeCluster(getOption("cl.cores", 5))
+cl <- makeCluster(getOption("cl.cores", 8))
 clusterEvalQ(cl, library(tidyverse))
 clusterEvalQ(cl, library(xts))
 clusterEvalQ(cl, library(mvMonitoring))
-msadResults5_ls <- parLapply(cl = cl, 1:5, function(void){
+msadResults5_ls <- parLapply(cl = cl, 1:100, function(void){
 # msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
-# msadResults5_ls <- lapply(1:1, function(void){
-
+  
   ##########   Draw a Random Data Set   ##########
-  msadpcaObs_ls <- mspProcessData(faults = "All",
+  msadpcaObs_ls <- mspProcessData(faults = c("NOC", "C1", "C2", "C3"), # "All"
                               faultStartIndex = 8500,
                               startTime = "2016-11-27 00:00:00 CST",
                               multiState = TRUE,
@@ -929,7 +919,6 @@ msadResults5_ls <- parLapply(cl = cl, 1:5, function(void){
   # Subset out the normal operating data
   faultsSimRes <- lapply(msadpcaObs_ls[names(msadpcaObs_ls) != "NOC"],
                          function(mat){
-                           
     # Testing the apply statement
     # mat <- msadpcaObs_ls$C1
     
@@ -953,18 +942,17 @@ msadResults5_ls <- parLapply(cl = cl, 1:5, function(void){
     }
     
     ## Time to first alarm
-    alarmCol <- ncol(msad_MS_Alarm)
     # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
     # Use suppressWarnings() on the min() function. If the which() function
     # returns an integer(0), its minimum is Inf, but it throws a warning. These
     # warnings will fill the console under heavy repitition, so suppress them.
     # SPE
-    # All alarms: which(msad_MS_Alarm[1:2580,alarmCol] %in% c(2,3))
-    time2SPE_msad <- which(msad_MS_Alarm[1000:2580,alarmCol] %in% c(2,3))
+    # All alarms: which(msad_MS_Alarm[1:2580,15] %in% c(2,3))
+    time2SPE_msad <- which(msad_MS_Alarm[1000:2580,15] %in% c(2,3))
     time2SPE_msad <- suppressWarnings(min(time2SPE_msad))
     # T2
-    # All alarms: which(msad_MS_Alarm[1:2580,alarmCol] %in% c(1,3))
-    time2T2_msad <- which(msad_MS_Alarm[1000:2580,alarmCol] %in% c(1,3))
+    # All alarms: which(msad_MS_Alarm[1:2580,15] %in% c(1,3))
+    time2T2_msad <- which(msad_MS_Alarm[1000:2580,15] %in% c(1,3))
     time2T2_msad <- suppressWarnings(min(time2T2_msad))
     
     
@@ -984,15 +972,14 @@ msadResults5_ls <- parLapply(cl = cl, 1:5, function(void){
     }
     
     ## Time to first alarm
-    alarmCol <- ncol(ad_MS_Alarm)
     # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
     # SPE
-    # All alarms: which(ad_MS_Alarm[,alarmCol] %in% c(2,3))
-    time2SPE_ad <- which(ad_MS_Alarm[1000:2580,alarmCol] %in% c(2,3))
+    # All alarms: which(ad_MS_Alarm[,15] %in% c(2,3))
+    time2SPE_ad <- which(ad_MS_Alarm[1000:2580,15] %in% c(2,3))
     time2SPE_ad <- suppressWarnings(min(time2SPE_ad))
     # T2
-    # All alarms: which(ad_MS_Alarm[,alarmCol] %in% c(1,3))
-    time2T2_ad <- which(ad_MS_Alarm[1000:2580,alarmCol] %in% c(1,3))
+    # All alarms: which(ad_MS_Alarm[,15] %in% c(1,3))
+    time2T2_ad <- which(ad_MS_Alarm[1000:2580,15] %in% c(1,3))
     time2T2_ad <- suppressWarnings(min(time2T2_ad))
     
     ###  Return Data Frame  ###
@@ -1021,54 +1008,54 @@ Let's clean up these results.
 ms_FA_rates5 <- lapply(1:length(msadResults5_ls), function(i){
   msadResults5_ls[[i]]$falseAlarmRates
 }) %>% do.call(bind_rows, .)
-# write_csv(ms_FA_rates4, path = "false_alarm_rates_ms_1000_20170323.csv")
+write_csv(ms_FA_rates4, path = "false_alarm_rates_ms_1000_20170323.csv")
 ms_detectionTimes5 <- lapply(1:length(msadResults5_ls), function(i){
   msadResults5_ls[[i]]$time2Detect
 }) %>% do.call(bind_rows, .)
-# write_csv(ms_detectionTimes4, path = "detection_times_ms_1000_20170323.csv")
+write_csv(ms_detectionTimes4, path = "detection_times_ms_1000_20170323.csv")
 ```
 
 Now we can look at the results.
 ```{r msadSim_graphics}
 # False Alarm Rates
-ms_FA_rates5[,1] %>% hist(xlim = c(0, 0.05), main = "MSAD SPE False Alarm Rates")
-ms_FA_rates5[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
-ms_FA_rates5[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
-ms_FA_rates5[,4] %>% hist(xlim = c(0, 0.05), main = "AD T2 False Alarm Rates")
+ms_FA_rates3[,1] %>% hist(xlim = c(0, 0.05), main = "MSAD SPE False Alarm Rates")
+ms_FA_rates3[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
+ms_FA_rates3[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
+ms_FA_rates3[,4] %>% hist(xlim = c(0, 0.05), main = "AD T2 False Alarm Rates")
 
 ###  Detection Times  ###
 # Fault 1A
-ms_detectionTimes5 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A1") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 1B
-ms_detectionTimes5 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "B1") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 2A
-ms_detectionTimes5 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A2") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 2B
-ms_detectionTimes5 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "B2") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 3A
-ms_detectionTimes5 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "A3") %>%
   select(-Faults) %>% 
   sapply(summary)
 
 # Fault 3B
-ms_detectionTimes5 %>%
+ms_detectionTimes3 %>%
   filter(Faults == "B3") %>%
   select(-Faults) %>% 
   sapply(summary)
@@ -1079,15 +1066,15 @@ ms_detectionTimes5 %>%
 ## True Single-State Observations
 We first assume that the observations do not come from a multi-state process. This means that we will test MSAD-PCA by incorrectly assuming that observations come from different states: we will assign a state at random to each observation from "1", "2", or "3". We first draw a list of data matrices. Then we look at false alarm rates for multi-state data under normal operating conditions using AD-PCA and MSAD-PCA. We also measure detection time for all faults for single-state data under normal operating conditions using AD-PCA and MSAD-PCA.
 ```{r trueSingleState_sim, message = FALSE}
-# library(parallel) # use mclapply on Mac, parLapply on Windows
-# library(tidyverse)
-# library(xts)
+library(parallel) # use mclapply on Mac, parLapply on Windows
+library(tidyverse)
+library(xts)
 a <- Sys.time()
-cl <- makeCluster(getOption("cl.cores", 5))
+cl <- makeCluster(getOption("cl.cores", 8))
 clusterEvalQ(cl, library(tidyverse))
 clusterEvalQ(cl, library(xts))
 clusterEvalQ(cl, library(mvMonitoring))
-adResults3_ls <- parLapply(cl = cl, 1:5, function(void){
+adResults3_ls <- parLapply(cl = cl, 1:1000, function(void){
 # adResults_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
   ##########   Draw a Random Data Set   ##########
   adpcaObs_ls <- mspProcessData(faults = "All",
@@ -1182,16 +1169,15 @@ adResults3_ls <- parLapply(cl = cl, 1:5, function(void){
     }
     
     ## Time to first alarm
-    alarmCol <- ncol(msad_MS_Alarm)
     # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
     # Use suppressWarnings() on the min() function. If the which() function
     # returns an integer(0), its minimum is Inf, but it throws a warning. These
     # warnings will fill the console under heavy repitition, so suppress them.
     # SPE
-    time2SPE_msad <- which(msad_MS_Alarm[1000:2580,alarmCol] %in% c(2,3))
+    time2SPE_msad <- which(msad_MS_Alarm[1000:2580,15] %in% c(2,3))
     time2SPE_msad <- suppressWarnings(min(time2SPE_msad))
     # T2
-    time2T2_msad <- which(msad_MS_Alarm[1000:2580,alarmCol] %in% c(1,3))
+    time2T2_msad <- which(msad_MS_Alarm[1000:2580,15] %in% c(1,3))
     time2T2_msad <- suppressWarnings(min(time2T2_msad))
     
     
@@ -1211,13 +1197,12 @@ adResults3_ls <- parLapply(cl = cl, 1:5, function(void){
     }
     
     ## Time to first alarm
-    alarmCol <- ncol(msad_MS_Alarm)
     # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
     # SPE
-    time2SPE_ad <- which(ad_MS_Alarm[1000:2580,alarmCol] %in% c(2,3))
+    time2SPE_ad <- which(ad_MS_Alarm[1000:2580,15] %in% c(2,3))
     time2SPE_ad <- suppressWarnings(min(time2SPE_ad))
     # T2
-    time2T2_ad <- which(ad_MS_Alarm[1000:2580,alarmCol] %in% c(1,3))
+    time2T2_ad <- which(ad_MS_Alarm[1000:2580,15] %in% c(1,3))
     time2T2_ad <- suppressWarnings(min(time2T2_ad))
     
     ###  Return Data Frame  ###
@@ -1242,14 +1227,14 @@ stopCluster(cl)
 
 Let's clean up these results.
 ```{r adSim_Cleaning}
-ss_FA_rates <- lapply(1:length(adResults3_ls), function(i){
+ss_FA_rates <- lapply(1:length(adResults_ls), function(i){
   adResults3_ls[[i]]$falseAlarmRates
 }) %>% do.call(bind_rows, .)
-# write_csv(ss_FA_rates, path = "false_alarm_rates_ss_1000_20170320.csv")
-ss_detectionTimes <- lapply(1:length(adResults3_ls), function(i){
+write_csv(ss_FA_rates, path = "false_alarm_rates_ss_1000_20170320.csv")
+ss_detectionTimes <- lapply(1:length(adResults_ls), function(i){
   adResults3_ls[[i]]$time2Detect
 }) %>% do.call(bind_rows, .)
-# write_csv(ss_detectionTimes, path = "detection_times_ss_1000_20170320.csv")
+write_csv(ss_detectionTimes, path = "detection_times_ss_1000_20170320.csv")
 ```
 
 Now we can look at the results.
