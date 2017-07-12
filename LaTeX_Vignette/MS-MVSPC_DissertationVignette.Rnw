@@ -48,7 +48,7 @@ AD-PCA is \emph{adaptive-dynamic} PCA, which accounts for non-linearity, non-sta
 %%%%%%  mspProcessData  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Simulating Data with \texttt{mspProcessData}} \ref{sec:D_DataGen}
+\section{Simulating Data with \texttt{mspProcessData}} \label{sec:D_DataGen}
 This function generates three-dimensional multi-state or single-state non-linear, non-stationary, and autocorrelated process observations. We follow the seminal work of \cite{dong_batch_1996} for generation of the foundational stationary and independent features.
 
 
