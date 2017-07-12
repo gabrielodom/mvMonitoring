@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gabriel Odom" />
 
-<meta name="date" content="2017-04-26" />
+<meta name="date" content="2017-07-12" />
 
 <title>Multivariate Statistical Process Control with mvMonitoring</title>
 
@@ -70,15 +70,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Multivariate Statistical Process Control with mvMonitoring</h1>
 <h4 class="author"><em>Gabriel Odom</em></h4>
-<h4 class="date"><em>2017-04-26</em></h4>
+<h4 class="date"><em>2017-07-12</em></h4>
 
 
 
 <p>This document serves to introduce engineers to the workflow necessary to follow in order to analyze multivariate process monitoring data via the <code>mvMonitoring</code> package.</p>
 <p><br> <br></p>
 <div id="introduction" class="section level1">
-<h1>Introduction</h1>
+<h1>Introduction </h1>
 <p>This is the accompanying package to the research published by <a href="https://link.springer.com/article/10.1007/s00477-016-1246-2">Kazor et al (2016)</a> and forthcoming paper by <a href="https://www.overleaf.com/read/vbfbjsywtkvv#/26878504/">Odom et al (2017)</a> (manuscript in progress). The <code>mvMonitoring</code> package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
+</div>
+<div id="motivation" class="section level1">
+<h1>Motivation </h1>
 <div id="why-use-mvmonitoring" class="section level2">
 <h2>Why use <code>mvMonitoring</code></h2>
 <p>The <code>mvMonitoring</code> package can be used to detect outliers in a correlated multivariate process with non-linear, non-stationary, or autocorrelated feature behavior. These process outliers are often indicative of system fault. The common and naive approach to multivariate process monitoring is to use expert opinion to identify a few important features to monitor visually, and raise an alarm if these features travel outside pre-defined normal operating boundaries.</p>
@@ -277,26 +280,27 @@ train1A_ls &lt;-<span class="st"> </span><span class="kw">mspTrain</span>(<span 
 <div id="adding-lagged-features" class="section level3">
 <h3>Adding Lagged Features</h3>
 <p>First, concatenate the last given observation from the training set as “row 0” of the test data set. This will enable <code>mspMonitor</code> to include lag-1 features. Similarly, one would include the last <span class="math inline">\(k\)</span> observations of the training set should the process dictate the need for any lag-<span class="math inline">\(k\)</span> features. Because the Fault Start Index was set to 8500, this testing window will show the change point between observations generated under normal conditions and those generated under a fault state.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xts)
-test1A_xts &lt;-<span class="st"> </span>fault1A_xts[<span class="dv">8460</span>:<span class="dv">8520</span>, -<span class="dv">1</span>]
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xts)</code></pre></div>
+<pre><code>## Warning: package 'xts' was built under R version 3.4.1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test1A_xts &lt;-<span class="st"> </span>fault1A_xts[<span class="dv">8460</span>:<span class="dv">8520</span>, -<span class="dv">1</span>]
 lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">lag.xts</span>(test1A_xts, <span class="dv">0</span>:<span class="dv">1</span>)
 lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">cbind</span>(fault1A_xts[<span class="dv">8461</span>:<span class="dv">8520</span>,<span class="dv">1</span>],
                        lagTest1A_xts[-<span class="dv">1</span>,])
 <span class="kw">head</span>(lagTest1A_xts)</code></pre></div>
 <pre><code>##                     state         x         y         z       x.1
-## 2015-05-22 07:00:00     1 0.6735928 -1.624037 0.8379366 0.3390455
-## 2015-05-22 07:01:00     1 0.8185983 -1.548759 1.1687470 0.6735928
-## 2015-05-22 07:02:00     1 0.5875018 -1.511028 1.0990920 0.8185983
-## 2015-05-22 07:03:00     1 0.5444980 -1.536607 0.8905234 0.5875018
-## 2015-05-22 07:04:00     1 0.7028432 -1.478258 1.0425104 0.5444980
-## 2015-05-22 07:05:00     1 0.3570132 -1.391194 0.8041785 0.7028432
+## 2015-05-22 07:00:00     1 0.7801748 -1.599763 1.1557951 0.3999491
+## 2015-05-22 07:01:00     1 0.6683773 -1.428986 1.0812224 0.7801748
+## 2015-05-22 07:02:00     1 0.5690202 -1.654343 0.9585387 0.6683773
+## 2015-05-22 07:03:00     1 0.7020930 -1.633308 0.9362820 0.5690202
+## 2015-05-22 07:04:00     1 0.7220074 -1.502750 0.9275148 0.7020930
+## 2015-05-22 07:05:00     1 0.7879207 -1.574723 1.0596200 0.7220074
 ##                            y.1       z.1
-## 2015-05-22 07:00:00  0.1122041 0.2834586
-## 2015-05-22 07:01:00 -1.6240374 0.8379366
-## 2015-05-22 07:02:00 -1.5487591 1.1687470
-## 2015-05-22 07:03:00 -1.5110276 1.0990920
-## 2015-05-22 07:04:00 -1.5366074 0.8905234
-## 2015-05-22 07:05:00 -1.4782580 1.0425104</code></pre>
+## 2015-05-22 07:00:00  0.1091748 0.4189631
+## 2015-05-22 07:01:00 -1.5997629 1.1557951
+## 2015-05-22 07:02:00 -1.4289856 1.0812224
+## 2015-05-22 07:03:00 -1.6543431 0.9585387
+## 2015-05-22 07:04:00 -1.6333084 0.9362820
+## 2015-05-22 07:05:00 -1.5027496 0.9275148</code></pre>
 </div>
 <div id="monitoring-the-test-data" class="section level3">
 <h3>Monitoring the Test Data</h3>
@@ -306,19 +310,19 @@ lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">cbind</span>(fault1
                             <span class="dt">trainingSummary =</span> train1A_ls$TrainingSpecs)
 <span class="kw">head</span>(monitor1A_xts)</code></pre></div>
 <pre><code>##                             x         y         z       x.1        y.1
-## 2015-05-22 07:00:00 0.6735928 -1.624037 0.8379366 0.3390455  0.1122041
-## 2015-05-22 07:01:00 0.8185983 -1.548759 1.1687470 0.6735928 -1.6240374
-## 2015-05-22 07:02:00 0.5875018 -1.511028 1.0990920 0.8185983 -1.5487591
-## 2015-05-22 07:03:00 0.5444980 -1.536607 0.8905234 0.5875018 -1.5110276
-## 2015-05-22 07:04:00 0.7028432 -1.478258 1.0425104 0.5444980 -1.5366074
-## 2015-05-22 07:05:00 0.3570132 -1.391194 0.8041785 0.7028432 -1.4782580
-##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm
-## 2015-05-22 07:00:00 0.2834586 0.5342772        0 28.362370       0    NA
-## 2015-05-22 07:01:00 0.8379366 0.4156431        0  3.744337       0    NA
-## 2015-05-22 07:02:00 1.1687470 0.5499053        0  3.964011       0    NA
-## 2015-05-22 07:03:00 1.0990920 0.1443137        0  4.706530       0    NA
-## 2015-05-22 07:04:00 0.8905234 0.3556010        0  4.580234       0    NA
-## 2015-05-22 07:05:00 1.0425104 0.9879519        0  5.679399       0    NA</code></pre>
+## 2015-05-22 07:00:00 0.7801748 -1.599763 1.1557951 0.3999491  0.1091748
+## 2015-05-22 07:01:00 0.6683773 -1.428986 1.0812224 0.7801748 -1.5997629
+## 2015-05-22 07:02:00 0.5690202 -1.654343 0.9585387 0.6683773 -1.4289856
+## 2015-05-22 07:03:00 0.7020930 -1.633308 0.9362820 0.5690202 -1.6543431
+## 2015-05-22 07:04:00 0.7220074 -1.502750 0.9275148 0.7020930 -1.6333084
+## 2015-05-22 07:05:00 0.7879207 -1.574723 1.0596200 0.7220074 -1.5027496
+##                           z.1        SPE SPE_Flag        T2 T2_Flag Alarm
+## 2015-05-22 07:00:00 0.4189631 0.35910409        0 29.912871       0    NA
+## 2015-05-22 07:01:00 1.1557951 1.21988716        0  4.470163       0    NA
+## 2015-05-22 07:02:00 1.0812224 0.14184981        0  4.637327       0    NA
+## 2015-05-22 07:03:00 0.9585387 0.09548878        0  4.557399       0    NA
+## 2015-05-22 07:04:00 0.9362820 0.61510448        0  4.637891       0    NA
+## 2015-05-22 07:05:00 0.9275148 0.36461424        0  4.242438       0    NA</code></pre>
 </div>
 </div>
 <div id="warn-operators-during-alarms" class="section level2">
@@ -335,7 +339,7 @@ for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(alarm1A_xts)){
 <p>The fault was introduced at index 8500, which corresponds to about 40 minutes into the test hour.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(alarm1A_xts[, <span class="kw">ncol</span>(alarm1A_xts)],
      <span class="dt">main =</span> <span class="st">&quot;Alarm Codes for Test Data&quot;</span>)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --> The alarm codes are</p>
+<p><img src="data:image/png;base64,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" /><!-- --> The alarm codes are</p>
 <ul>
 <li>“0”: No alarm.</li>
 <li>“1”: Hotelling’s <span class="math inline">\(T^2\)</span> alarm.</li>
@@ -345,9 +349,9 @@ for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(alarm1A_xts)){
 <p><br> <br></p>
 </div>
 </div>
-<div id="package-implementation-in-practice" class="section level1">
-<h1>Package Implementation in Practice</h1>
-<p>Kathryn B. Newhart will send me a brief discussion of how she has implemented this package in wastewater treatment monitoring at a facility in Golden, CO.</p>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>We have supplied our motivation for this package, and we have discussed implementing a multivariate process monitoring scheme with this package using the example of a decentralized WWT plant in Golden, CO. We believe that this software will provide system engineers with the tools necessary to quickly and accurately detect abnormalities in multivariate, autocorrelated, non-stationary, non-linear, and multi-state water treatment systems. Further, we have given a synthetic example showing how the functions within this package would be implemented and tuned in practice.</p>
 </div>
 
 
@@ -357,7 +361,7 @@ for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(alarm1A_xts)){
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

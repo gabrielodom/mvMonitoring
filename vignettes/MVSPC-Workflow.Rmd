@@ -14,11 +14,12 @@ This document serves to introduce engineers to the workflow necessary to follow 
 <br>
 <br>
 
-# Introduction
+# Introduction \label{sec:D_intro}
 
 This is the accompanying package to the research published by
 [Kazor et al (2016)](https://link.springer.com/article/10.1007/s00477-016-1246-2) and forthcoming paper by [Odom et al (2017)](https://www.overleaf.com/read/vbfbjsywtkvv#/26878504/) (manuscript in progress). The `mvMonitoring` package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.
 
+# Motivation \label{sec:D_Motivation}
 ## Why use `mvMonitoring`
 
 The `mvMonitoring` package can be used to detect outliers in a correlated multivariate process with non-linear, non-stationary, or autocorrelated feature behavior. These process outliers are often indicative of system fault. The common  and naive approach to multivariate process monitoring is to use expert opinion to identify a few important features to monitor visually, and raise an alarm if these features travel outside pre-defined normal operating boundaries.
@@ -285,5 +286,6 @@ plot(alarm1A_xts[, ncol(alarm1A_xts)],
 <br>
 <br>
 
-# Package Implementation in Practice
-Kathryn B. Newhart will send me a brief discussion of how she has implemented this package in wastewater treatment monitoring at a facility in Golden, CO.
+
+# Conclusion
+We have supplied our motivation for this package, and we have discussed implementing a multivariate process monitoring scheme with this package using the example of a decentralized WWT plant in Golden, CO. We believe that this software will provide system engineers with the tools necessary to quickly and accurately detect abnormalities in multivariate, autocorrelated, non-stationary, non-linear, and multi-state water treatment systems. Further, we have given a synthetic example showing how the functions within this package would be implemented and tuned in practice.
