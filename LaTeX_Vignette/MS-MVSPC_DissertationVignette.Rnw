@@ -16,10 +16,10 @@ This document serves to introduce engineers to the workflow necessary to follow 
 
 \section{Introduction} \label{sec:intro}
 
-This is the accompanying package to the research published by \cite{kazor_comparison_2016} and the previous chapter. The \texttt{mvMonitoring} package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component. This package can be downloaded from GitHub by running the following:
-%   <<r packLoad_GitHub, eval = FALSE>>=
-%   devtools::install_github("gabrielodom/mvMonitoring", auth_token = "tokenHere")
-% @
+This is the accompanying package to the research published by \cite{kazor_comparison_2016} and the previous chapter. The \texttt{mvMonitoring} package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the statistical process monitoring component. This package can be downloaded from GitHub by running the following:
+<<r packLoad_GitHub, eval = FALSE>>=
+ devtools::install_github("gabrielodom/mvMonitoring", auth_token = "tokenHere")
+@
 \noindent where you create the value of ``tokenHere'' by generating a personal access token (PAT) at \url{https://github.com/settings/tokens} and copying the quoted string to this argument.
 
 

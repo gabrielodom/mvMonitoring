@@ -66,10 +66,14 @@ This document serves to introduce engineers to the workflow necessary to follow 
 
 \section{Introduction} \label{sec:intro}
 
-This is the accompanying package to the research published by \cite{kazor_comparison_2016} and the previous chapter. The \texttt{mvMonitoring} package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component. This package can be downloaded from GitHub by running the following:
-%   <<r packLoad_GitHub, eval = FALSE>>=
-%   devtools::install_github("gabrielodom/mvMonitoring", auth_token = "tokenHere")
-% @
+This is the accompanying package to the research published by \cite{kazor_comparison_2016} and the previous chapter. The \texttt{mvMonitoring} package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the statistical process monitoring component. This package can be downloaded from GitHub by running the following:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+ \hlstd{devtools}\hlopt{::}\hlkwd{install_github}\hlstd{(}\hlstr{"gabrielodom/mvMonitoring"}\hlstd{,} \hlkwc{auth_token} \hlstd{=} \hlstr{"tokenHere"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \noindent where you create the value of ``tokenHere'' by generating a personal access token (PAT) at \url{https://github.com/settings/tokens} and copying the quoted string to this argument.
 
 
@@ -330,7 +334,7 @@ Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain}
 \begin{verbatim}
 ## List of 4
 ##  $ FaultChecks    :An 'xts' object on 2015-05-19 08:59:00/2015-05-22 07:00:00 containing:
-##   Data: num [1:4142, 1:5] 0.2109 0.0632 0.4924 0.7234 0.6277 ...
+##   Data: num [1:4142, 1:5] 0.042 0.492 1.208 1.139 0.742 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : NULL
 ##   ..$ : chr [1:5] "SPE" "SPE_Flag" "T2" "T2_Flag" ...
@@ -338,54 +342,47 @@ Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain}
 ##   xts Attributes:  
 ##  NULL
 ##  $ Non_Alarmed_Obs:An 'xts' object on 2015-05-19 08:59:00/2015-05-22 07:00:00 containing:
-##   Data: num [1:4141, 1:7] 2 3 1 1 1 1 1 1 1 1 ...
+##   Data: num [1:4142, 1:7] 2 3 1 1 1 1 1 1 1 1 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : NULL
 ##   ..$ : chr [1:7] "state" "x" "y" "z" ...
 ##   Indexed by objects of class: [POSIXct,POSIXt] TZ: 
 ##   xts Attributes:  
 ##  NULL
-##  $ Alarms         :An 'xts' object on 2015-05-19 13:13:00/2015-05-19 13:13:00 containing:
-##   Data: num [1, 1:11] 1.81 -2.32 4.2 2.07 -2.11 ...
-##  - attr(*, "dimnames")=List of 2
-##   ..$ : NULL
-##   ..$ : chr [1:11] "x" "y" "z" "x.1" ...
-##   Indexed by objects of class: [POSIXct,POSIXt] TZ: 
-##   xts Attributes:  
-##  NULL
+##  $ Alarms         :An 'xts' object of zero-width
 ##  $ TrainingSpecs  :List of 3
 ##   ..$ 1:List of 6
-##   .. ..$ SPE_threshold   : Named num 4.71
+##   .. ..$ SPE_threshold   : Named num 4.39
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 60.5
+##   .. ..$ T2_threshold    : Named num 61.4
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.423 -0.382 0.437 0.431 -0.315 ...
-##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.205 0 0 1.579
-##   .. ..$ muTrain         : Named num [1:6] 1.37 -2.1 2.95 1.36 -2.06 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.424 -0.381 0.437 0.432 -0.313 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.206 0 0 1.565
+##   .. ..$ muTrain         : Named num [1:6] 1.38 -2.09 2.97 1.37 -2.05 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.6 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.58 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 ##   ..$ 2:List of 6
-##   .. ..$ SPE_threshold   : Named num 1.14
+##   .. ..$ SPE_threshold   : Named num 1.79
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 76.8
+##   .. ..$ T2_threshold    : Named num 76.6
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:3] -0.496 -0.065 0.49 -0.523 -0.183 ...
-##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.283 0 0 0 0.735 ...
-##   .. ..$ muTrain         : Named num [1:6] 2.979 -0.564 -4.508 2.952 -0.589 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:3] -0.4944 -0.0882 0.4873 -0.5234 -0.1921 ...
+##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.283 0 0 0 0.727 ...
+##   .. ..$ muTrain         : Named num [1:6] 3.019 -0.561 -4.533 2.991 -0.586 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 1.06 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 1.07 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 ##   ..$ 3:List of 6
-##   .. ..$ SPE_threshold   : Named num 7.2
+##   .. ..$ SPE_threshold   : Named num 5.58
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 82.7
+##   .. ..$ T2_threshold    : Named num 80.1
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.393 -0.451 -0.455 0.16 -0.464 ...
-##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.278 0 0 0.494
-##   .. ..$ muTrain         : Named num [1:6] 0.528 0.27 1.423 0.569 0.256 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.394 0.448 0.452 -0.167 0.464 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.277 0 0 0.498
+##   .. ..$ muTrain         : Named num [1:6] 0.528 0.273 1.441 0.57 0.259 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 16.9 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 17.2 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 \end{verbatim}
 \end{kframe}
@@ -442,19 +439,19 @@ First, concatenate the last given observation from the training set as ``row 0''
 \end{alltt}
 \begin{verbatim}
 ##                     state         x         y         z       x.1
-## 2015-05-22 07:00:00     1 0.6844440 -1.565320 1.1324768 0.3534816
-## 2015-05-22 07:01:00     1 0.5454614 -1.369986 0.9184724 0.6844440
-## 2015-05-22 07:02:00     1 0.6468377 -1.593779 0.8900444 0.5454614
-## 2015-05-22 07:03:00     1 0.3543316 -1.361402 0.7855688 0.6468377
-## 2015-05-22 07:04:00     1 0.3831960 -1.455579 0.6319864 0.3543316
-## 2015-05-22 07:05:00     1 0.5734844 -1.406738 0.9210589 0.3831960
-##                             y.1       z.1
-## 2015-05-22 07:00:00  0.08705337 0.4466149
-## 2015-05-22 07:01:00 -1.56532037 1.1324768
-## 2015-05-22 07:02:00 -1.36998580 0.9184724
-## 2015-05-22 07:03:00 -1.59377911 0.8900444
-## 2015-05-22 07:04:00 -1.36140249 0.7855688
-## 2015-05-22 07:05:00 -1.45557880 0.6319864
+## 2015-05-22 07:00:00     1 0.6516822 -1.487152 0.8868843 0.3772442
+## 2015-05-22 07:01:00     1 0.6959653 -1.524802 0.7687056 0.6516822
+## 2015-05-22 07:02:00     1 0.4693409 -1.202725 0.7970705 0.6959653
+## 2015-05-22 07:03:00     1 0.5744935 -1.239971 0.6663379 0.4693409
+## 2015-05-22 07:04:00     1 0.5872442 -1.238700 0.8654388 0.5744935
+## 2015-05-22 07:05:00     1 0.6820071 -1.452199 0.9107379 0.5872442
+##                            y.1       z.1
+## 2015-05-22 07:00:00  0.1208201 0.5190793
+## 2015-05-22 07:01:00 -1.4871516 0.8868843
+## 2015-05-22 07:02:00 -1.5248019 0.7687056
+## 2015-05-22 07:03:00 -1.2027252 0.7970705
+## 2015-05-22 07:04:00 -1.2399706 0.6663379
+## 2015-05-22 07:05:00 -1.2386996 0.8654388
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -470,20 +467,20 @@ With the lagged test observations in the working environment, the \texttt{mspMon
 \hlkwd{head}\hlstd{(monitor1A_xts)}
 \end{alltt}
 \begin{verbatim}
-##                             x         y         z       x.1         y.1
-## 2015-05-22 07:00:00 0.6844440 -1.565320 1.1324768 0.3534816  0.08705337
-## 2015-05-22 07:01:00 0.5454614 -1.369986 0.9184724 0.6844440 -1.56532037
-## 2015-05-22 07:02:00 0.6468377 -1.593779 0.8900444 0.5454614 -1.36998580
-## 2015-05-22 07:03:00 0.3543316 -1.361402 0.7855688 0.6468377 -1.59377911
-## 2015-05-22 07:04:00 0.3831960 -1.455579 0.6319864 0.3543316 -1.36140249
-## 2015-05-22 07:05:00 0.5734844 -1.406738 0.9210589 0.3831960 -1.45557880
+##                             x         y         z       x.1        y.1
+## 2015-05-22 07:00:00 0.6516822 -1.487152 0.8868843 0.3772442  0.1208201
+## 2015-05-22 07:01:00 0.6959653 -1.524802 0.7687056 0.6516822 -1.4871516
+## 2015-05-22 07:02:00 0.4693409 -1.202725 0.7970705 0.6959653 -1.5248019
+## 2015-05-22 07:03:00 0.5744935 -1.239971 0.6663379 0.4693409 -1.2027252
+## 2015-05-22 07:04:00 0.5872442 -1.238700 0.8654388 0.5744935 -1.2399706
+## 2015-05-22 07:05:00 0.6820071 -1.452199 0.9107379 0.5872442 -1.2386996
 ##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm
-## 2015-05-22 07:00:00 0.4466149 0.2948716        0 28.028452       0    NA
-## 2015-05-22 07:01:00 1.1324768 0.9816014        0  5.025385       0    NA
-## 2015-05-22 07:02:00 0.9184724 0.0316290        0  4.773963       0    NA
-## 2015-05-22 07:03:00 0.8900444 0.8505646        0  6.333569       0    NA
-## 2015-05-22 07:04:00 0.7855688 0.2234181        0  6.613971       0    NA
-## 2015-05-22 07:05:00 0.6319864 0.4523686        0  5.922610       0    NA
+## 2015-05-22 07:00:00 0.5190793 0.5746873        0 28.479963       0    NA
+## 2015-05-22 07:01:00 0.8868843 0.3065558        0  4.594196       0    NA
+## 2015-05-22 07:02:00 0.7687056 2.2496108        0  6.313058       0    NA
+## 2015-05-22 07:03:00 0.7970705 1.4836139        0  7.071992       0    NA
+## 2015-05-22 07:04:00 0.6663379 1.6703320        0  6.605812       0    NA
+## 2015-05-22 07:05:00 0.8654388 0.4398132        0  5.638591       0    NA
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
