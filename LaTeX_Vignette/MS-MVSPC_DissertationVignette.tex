@@ -240,11 +240,11 @@ Finally, the \texttt{mspTrain} function will remove any observation(s) which wou
 
 \section{Monitor and Issue Alarms with \texttt{mspMonitor} and \texttt{mspWarning}} \label{sec:D_Alarms}
 
-After training the model with \texttt{mspTrain}, the projection matrices and non-parametric monitoring statistic thresholds can be used to flag incoming observations. This function can check every observation in a test matrix (useful when analyzing past data), but was instead designed to test a single incoming observation at a time via a script or batch file. To this end, the \texttt{mspMonitor} function projects a single observation with the class projection matrices returned by \texttt{mspTrain} and checks the observation's \emph{SPE} and $T^2$ statistics against the thresholds returned by \texttt{mspTrain}. The \texttt{mspMonitor} will then append the monitoring statistic values and indicators to the end of the observation row. Indicator values will be returned as a ``1'' if the values of these statistics exceed normal thresholds. This new appended observation will be passed to the \texttt{mspWarning} function.
+After training the model with \texttt{mspTrain}, the projection matrices and non-parametric monitoring statistic thresholds can be used to flag incoming observations which are potentially out of control. The \texttt{mspMonitor} function was instead designed to test a single incoming observation at a time via a script or batch file, but \emph{can} check every observation in a test matrix, which is useful for analyzing past data. To this end, the \texttt{mspMonitor} function projects a single observation with the class projection matrices returned by \texttt{mspTrain} and checks the observation's \emph{SPE} and $T^2$ statistics against the thresholds also returned by \texttt{mspTrain}. The \texttt{mspMonitor} function will then append the monitoring statistic values and indicators to the end of the observation row. Indicator values will be returned as a ``1'' if the values of these statistics exceed their IC thresholds. This new appended observation will be passed to the \texttt{mspWarning} function.
 
-If an observation returned by the \texttt{mspMonitor} function has positive statistic indicator values for either the SPE or $T^2$ monitoring statistics, then the \texttt{mspWarning} function will query the last set $r$ observations for other flags. If all $r$ observations are positive for anomalies, then the \texttt{mspWarning} function will issue an alarm. This $r$ is the parameter \texttt{faultsToTriggerAlarm}, and it defaults to 5. However, this default value depends heavily on the scale of the data: for continuous observations aggregated and recorded every five seconds, the number of sequential faults necessary to trigger an alarm should be very high, perhaps even 20 or more. For observations aggregated to the 10-minute-scale, only three sequential faults may be necessary.
+The \texttt{mspWarning} function takes in an observation returned by the \texttt{mspMonitor} function and an integer value (denoted $r$ for this discussion) dictating the number of sequential flagged observations observed before an alarm is raised. If an observation returned by the \texttt{mspMonitor} function has positive statistic indicator values for either the SPE or $T^2$ monitoring statistics, then the \texttt{mspWarning} function will query the most recent $r$ observations for other flags. If all $r$ observations are positive for anomalies, then the \texttt{mspWarning} function will issue an alarm. The number of flags necessary to trigger an alarm defaults to 5. However, this default value depends heavily on the scale of the data: for continuous observations aggregated and recorded every five seconds, the number of sequential flags necessary to trigger an alarm could be much higher, perhaps even 20 or more. In contrast, for observations aggregated to the 10-minute-scale, only three sequential flags may be necessary.
 
-In future updates of this package, this function will also have an option to issue an alarm if a critical mass of non-sequential alarms is reached in a set period of observations. This modification may be necessary if the observation level becomes more fine than the 1-minute-level. Additionally, this function will also be equipped to take in a cell phone number and service provider and issue an alarm via SMS through email.
+In future updates of this package, this function will also have an option to issue an alarm if a critical mass of non-sequential flags is reached in a set period of observations. This modification may be necessary if the observation level becomes more fine than the 1-minute-level. Additionally, this function will also be equipped to take in a cell phone number and service provider and issue an alarm via SMS through email. Detailed descriptions of the inputs and outputs from the \texttt{mspMonitor} and \texttt{mspWarning} functions are shown in the next section.
 
 
 
@@ -334,7 +334,7 @@ Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain}
 \begin{verbatim}
 ## List of 4
 ##  $ FaultChecks    :An 'xts' object on 2015-05-19 08:59:00/2015-05-22 07:00:00 containing:
-##   Data: num [1:4142, 1:5] 0.823 0.495 0.321 0.537 0.212 ...
+##   Data: num [1:4142, 1:5] 0.28 0.201 1.208 0.919 0.418 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : NULL
 ##   ..$ : chr [1:5] "SPE" "SPE_Flag" "T2" "T2_Flag" ...
@@ -352,37 +352,37 @@ Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain}
 ##  $ Alarms         :An 'xts' object of zero-width
 ##  $ TrainingSpecs  :List of 3
 ##   ..$ 1:List of 6
-##   .. ..$ SPE_threshold   : Named num 4.8
+##   .. ..$ SPE_threshold   : Named num 4.29
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 61.3
+##   .. ..$ T2_threshold    : Named num 62.6
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.42 -0.391 0.432 0.428 -0.326 ...
-##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.201 0 0 1.713
-##   .. ..$ muTrain         : Named num [1:6] 1.33 -2.09 2.85 1.31 -2.05 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.422 -0.386 0.435 0.431 -0.318 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.204 0 0 1.606
+##   .. ..$ muTrain         : Named num [1:6] 1.37 -2.1 2.95 1.36 -2.06 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.66 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.64 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 ##   ..$ 2:List of 6
-##   .. ..$ SPE_threshold   : Named num 2.02
+##   .. ..$ SPE_threshold   : Named num 1.16
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 80
+##   .. ..$ T2_threshold    : Named num 74.2
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:3] 0.506 -0.0868 -0.4999 0.5265 0.1125 ...
-##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.285 0 0 0 0.679 ...
-##   .. ..$ muTrain         : Named num [1:6] 2.885 -0.576 -4.422 2.86 -0.601 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:3] -0.4957 -0.0668 0.4887 -0.5236 -0.1866 ...
+##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.284 0 0 0 0.712 ...
+##   .. ..$ muTrain         : Named num [1:6] 2.978 -0.566 -4.508 2.95 -0.592 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 1.06 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 1.08 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 ##   ..$ 3:List of 6
-##   .. ..$ SPE_threshold   : Named num 4.46
+##   .. ..$ SPE_threshold   : Named num 8.04
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 82.6
+##   .. ..$ T2_threshold    : Named num 80.8
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.411 -0.456 -0.458 0.131 -0.453 ...
-##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.272 0 0 0.499
-##   .. ..$ muTrain         : Named num [1:6] 0.525 0.261 1.377 0.564 0.247 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.392 -0.452 -0.454 0.163 -0.462 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.278 0 0 0.493
+##   .. ..$ muTrain         : Named num [1:6] 0.528 0.268 1.413 0.57 0.254 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 15.4 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 17.4 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 \end{verbatim}
 \end{kframe}
@@ -439,19 +439,19 @@ First, concatenate the last given observation from the training set as ``row 0''
 \end{alltt}
 \begin{verbatim}
 ##                     state         x         y         z       x.1
-## 2015-05-22 07:00:00     1 0.7579571 -1.518032 1.3443886 0.3906853
-## 2015-05-22 07:01:00     1 0.7644197 -1.489935 0.8451787 0.7579571
-## 2015-05-22 07:02:00     1 0.5797654 -1.585442 0.7934814 0.7644197
-## 2015-05-22 07:03:00     1 0.5630561 -1.502471 0.8140064 0.5797654
-## 2015-05-22 07:04:00     1 0.6274190 -1.342661 0.6885947 0.5630561
-## 2015-05-22 07:05:00     1 0.4543723 -1.331050 1.0142873 0.6274190
+## 2015-05-22 07:00:00     1 0.5454353 -1.494528 0.9296569 0.4159290
+## 2015-05-22 07:01:00     1 0.5752773 -1.638525 1.1806822 0.5454353
+## 2015-05-22 07:02:00     1 0.5381703 -1.448424 1.0029127 0.5752773
+## 2015-05-22 07:03:00     1 0.6097887 -1.320156 0.9345597 0.5381703
+## 2015-05-22 07:04:00     1 0.8534018 -1.555631 1.0922745 0.6097887
+## 2015-05-22 07:05:00     1 0.7252695 -1.792569 1.1605990 0.8534018
 ##                            y.1       z.1
-## 2015-05-22 07:00:00  0.1067118 0.4294944
-## 2015-05-22 07:01:00 -1.5180323 1.3443886
-## 2015-05-22 07:02:00 -1.4899346 0.8451787
-## 2015-05-22 07:03:00 -1.5854425 0.7934814
-## 2015-05-22 07:04:00 -1.5024712 0.8140064
-## 2015-05-22 07:05:00 -1.3426613 0.6885947
+## 2015-05-22 07:00:00  0.1063122 0.3767823
+## 2015-05-22 07:01:00 -1.4945284 0.9296569
+## 2015-05-22 07:02:00 -1.6385255 1.1806822
+## 2015-05-22 07:03:00 -1.4484243 1.0029127
+## 2015-05-22 07:04:00 -1.3201558 0.9345597
+## 2015-05-22 07:05:00 -1.5556311 1.0922745
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -468,19 +468,19 @@ With the lagged test observations in the working environment, the \texttt{mspMon
 \end{alltt}
 \begin{verbatim}
 ##                             x         y         z       x.1        y.1
-## 2015-05-22 07:00:00 0.7579571 -1.518032 1.3443886 0.3906853  0.1067118
-## 2015-05-22 07:01:00 0.7644197 -1.489935 0.8451787 0.7579571 -1.5180323
-## 2015-05-22 07:02:00 0.5797654 -1.585442 0.7934814 0.7644197 -1.4899346
-## 2015-05-22 07:03:00 0.5630561 -1.502471 0.8140064 0.5797654 -1.5854425
-## 2015-05-22 07:04:00 0.6274190 -1.342661 0.6885947 0.5630561 -1.5024712
-## 2015-05-22 07:05:00 0.4543723 -1.331050 1.0142873 0.6274190 -1.3426613
-##                           z.1        SPE SPE_Flag        T2 T2_Flag Alarm
-## 2015-05-22 07:00:00 0.4294944 0.20931587        0 29.288660       0    NA
-## 2015-05-22 07:01:00 1.3443886 0.62648522        0  3.367017       0    NA
-## 2015-05-22 07:02:00 0.8451787 0.26807516        0  3.992137       0    NA
-## 2015-05-22 07:03:00 0.7934814 0.06664741        0  4.743184       0    NA
-## 2015-05-22 07:04:00 0.8140064 0.65173294        0  5.120512       0    NA
-## 2015-05-22 07:05:00 0.6885947 0.82470301        0  5.330486       0    NA
+## 2015-05-22 07:00:00 0.5454353 -1.494528 0.9296569 0.4159290  0.1063122
+## 2015-05-22 07:01:00 0.5752773 -1.638525 1.1806822 0.5454353 -1.4945284
+## 2015-05-22 07:02:00 0.5381703 -1.448424 1.0029127 0.5752773 -1.6385255
+## 2015-05-22 07:03:00 0.6097887 -1.320156 0.9345597 0.5381703 -1.4484243
+## 2015-05-22 07:04:00 0.8534018 -1.555631 1.0922745 0.6097887 -1.3201558
+## 2015-05-22 07:05:00 0.7252695 -1.792569 1.1605990 0.8534018 -1.5556311
+##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm
+## 2015-05-22 07:00:00 0.3767823 0.8309122        0 27.233955       0    NA
+## 2015-05-22 07:01:00 0.9296569 0.0575549        0  4.361359       0    NA
+## 2015-05-22 07:02:00 1.1806822 0.4782941        0  5.062568       0    NA
+## 2015-05-22 07:03:00 1.0029127 1.0857386        0  5.471633       0    NA
+## 2015-05-22 07:04:00 0.9345597 0.2959896        0  4.626291       0    NA
+## 2015-05-22 07:05:00 1.0922745 0.3100297        0  2.913877       0    NA
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
