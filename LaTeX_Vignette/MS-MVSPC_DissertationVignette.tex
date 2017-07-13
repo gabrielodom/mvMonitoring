@@ -206,31 +206,31 @@ The \texttt{mspProcessData} function can generate weeks' worth of non-linear, no
 
 \section{Training with \texttt{mspTrain}} \label{sec:D_Train}
 
-The \texttt{mspTrain} function will generate projection matrices and test statistic thresholds from test data matrices.
+The \texttt{mspTrain} function will generate projection matrices and test statistic thresholds from training data matrices. It requires data matrices to be in the \texttt{xts} matrix format.
 
 
 \subsection{The \texttt{xts} Data Matrix}
-An \texttt{xts} data matrix is first and foremost a matrix, \emph{not} a data frame. For users very familiar with data frame manipulation (with \texttt{dplyr} for instance), the slight but profound differences between manipulating matrices and data frames become quickly apparent. Because of the class requirements for matrices, \emph{all} features must be integer or double objects. The \texttt{mspTrain} function cannot train on character information.
+An \texttt{xts} data matrix is first and foremost a matrix, \emph{not} a data frame. For users very familiar with data frame manipulation (with \texttt{dplyr} for instance), the slight but profound differences between manipulating matrices and data frames quickly become apparent. Because of the class requirements for matrices, \emph{all} features must be integer or double vectors. The \texttt{mspTrain} function cannot train on non-numeric information.
 
-The \texttt{xts} object class stands for \emph{extendible time series} and comes from the package \texttt{xts}, which is itself built on the package \texttt{zoo}. The date and time information (necessarily as \texttt{POSIX} objects) are stored as the row indices of \texttt{xts} matrices. We recommend the package \texttt{lubridate} for manipulating \texttt{POSIX} objects.
+The \texttt{xts} object class stands for \emph{extendible time series} and comes from the package \texttt{xts}, which is built on the package \texttt{zoo}. The date and time information for the multivariate stochastic process (necessarily as \texttt{POSIX} objects) are stored as the row indices of \texttt{xts} matrices. We recommend the package \texttt{lubridate} for manipulating \texttt{POSIX} objects.
 
 
-\subsection{The Class Vector}
-When implementing single-state AD-PCA, this class vector simply needs to be a numeric column of the same value -- for instance, 1. However, for MSAD-PCA, the class vector should be an integer vector of class membership. The \texttt{mspTrain} function will split the observations by the class label, apply single-state AD-PCA to each class, then return the class-specific projection matrices and thresholds. Because of this split-apply-combine strategy, users must ensure that one or more classes are not too ``rare'' -- that is, the class-specific sample size should be sufficiently large to allow for stable covariance matrix inversion. For $p$ features (including lags), covariance inversion requires a class sample size greater than $p ^ 2 / 2$. Because of this, pay close attention to model parsimony -- do not block the observations on a factor unless the factor significantly affects the observations' mean vector or covariance matrix.
+\subsection{The State Vector}
+The state membership (or \emph{class}) vector of the data matrix is the column of integer values corresponding to the generation state of the observation. When implementing single-state AD-PCA, this class vector will simply be a numeric column of the same value -- for instance, 1. However, for MSAD-PCA, the class vector indicates from which state each observation has been drawn.
+
+The \texttt{mspTrain} function will split the observations by the class vector, apply single-state AD-PCA to each class, then return the class-specific projection matrices and thresholds. Because of this split-apply-combine strategy, users must ensure that one or more classes are not too ``rare'' -- that is, the class sample sizes should be sufficiently large to allow for stable covariance matrix inversion. For $p$ features (including lags), stable covariance inversion requires a class sample size near $p ^ 2 / 2$ at minimum. Because of this, attention must be given to model parsimony -- we recommend against blocking observations on a factor unless that factor has sufficent observations and significantly affects the observations' mean vector or covariance matrix.
 
 
 \subsection{Adaptive and Dynamic Modeling}
-Because of the non-linear, non-stationary, and autocorrelated nature of some process monitoring applications, the \texttt{mspTrain} function allows users to include lags of all feature variables and also to update the training window over time. Including lags of the features in the data matrix can significantly reduce the negative effects of autocorrelation. Re-estimating the projection matrix and test statistic thresholds at pre-specified time intervals reduces the negative effects of non-linearity and non-stationarity in the observations.
-
-The idea is to divide a non-linear and non-stationary process along some boundaries (every day, for instance), and then the process becomes locally linear and stationary within the window. As time progresses, the oldest observations are ``forgotten'' and the newest observations are ``learned'', which causes the projection and NOC thresholds to update over time.
+Because of the non-linear, non-stationary, and autocorrelated nature of some process monitoring applications, the \texttt{mspTrain} function allows users to include lags of all feature variables. Including lags of the features in the data matrix (dynamic) can significantly reduce the negative effects of modeling autocorrelated observations. Further, the \texttt{mspTrain} function includes the option to update the training window over time. Re-estimating the projection matrix and test statistic thresholds at pre-specified time intervals  (adaptive) can reduce the negative effects of non-linearity and non-stationarity when modeling the observations. The idea is to divide a non-linear and non-stationary process between some equally-spaced boundaries (every day, for instance), so that the process becomes locally linear and stationary within these boundaries. As time progresses, the oldest observations are ``forgotten'' and the newest observations are ``learned''. This causes the projection and IC thresholds to ``adapt'' over time.
 
 
 \subsection{Model Training}
-After the observations have been split by class, the \texttt{mspTrain} function will call the internal function \texttt{processMonitor}, which in turn calls the internal function \texttt{faultFilter}. This function will calculate a linear projection matrix of the data by taking the PCA of the training data matrix. The observations will then be projected linearly into a reduced-feature subspace which preserves a chosen proportion of the energy of the training data, where the energy of a matrix is the relative sum of eigenvalues of that matrix. The default proportion is 90\%. This projection is calculated by the internal \texttt{pca} function.
+After the observations have been split by class, the \texttt{mspTrain} function will call the internal function \texttt{processMonitor}, which subsequently calls the internal function \texttt{faultFilter}. This function will calculate a linear projection matrix of the data by taking the PCA of the training data matrix. The observations will then be projected linearly into a reduced-feature subspace which preserves a chosen proportion of the energy of the training data, where the energy of a matrix is the relative sum of eigenvalues of that matrix. The default proportion is 90\%. This projection is calculated by the internal \texttt{pca} function.
 
-Furthermore, non-parametric threshold values are calculated for the two process monitoring statistics -- \emph{Squared Prediction Error} and \emph{Hotelling's} $T^2$. These monitoring statistics are described in the motivating paper. These threshold values are found in the internal \texttt{threshold} function, and passed through the function pipe to be returned by \texttt{mspTrain}. The $\alpha$-level of the nonparametric threshold is controlled by the user, and its default value is 0.001.
+Furthermore, non-parametric threshold values are calculated for the two process monitoring statistics -- \emph{Squared Prediction Error} (SPE) and \emph{Hotelling's} $T^2$ ($T^2$). These monitoring statistics are described in the motivating paper (Chapter \ref{chap:MS_MVSPC}). These threshold values are calculated by the internal \texttt{threshold} function, and passed up through the function pipe to be returned by \texttt{mspTrain}. The $\alpha$-level of the nonparametric threshold is controlled by the user, but defaults to 0.001.
 
-Finally, the \texttt{mspTrain} function will remove any observation which would cause an alarm from the training data set. The alarm free observations will be returned in one \texttt{xts} matrix, while the alarmed observations will be returned by another. When training your process monitor, pay attention to the observations flagged as alarms. The proportion of observations flagged as faults may be higher than the $\alpha$-level specified, so some tuning may be necessary.
+Finally, the \texttt{mspTrain} function will remove any observation(s) which would cause an alarm from the training data set. The alarm-free observations will be returned in one \texttt{xts} matrix, while the alarmed observations will be returned by another. The alarm criteria are discussed in Section \ref{sec:D_Alarms}. When training the process monitor, pay attention to any observations flagged as alarms. The proportion of observations flagged as faults may be higher than the $\alpha$-level specified, so some tuning may be necessary. As with the \texttt{mspProcessData} function, a detailed description of the inputs and outputs from the \texttt{mspTrain} function are shown in Section \ref{sec:D_Workflow}.
 
 
 
@@ -334,7 +334,7 @@ Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain}
 \begin{verbatim}
 ## List of 4
 ##  $ FaultChecks    :An 'xts' object on 2015-05-19 08:59:00/2015-05-22 07:00:00 containing:
-##   Data: num [1:4142, 1:5] 0.2407 0.0621 0.2815 0.1616 0.3386 ...
+##   Data: num [1:4142, 1:5] 0.823 0.495 0.321 0.537 0.212 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : NULL
 ##   ..$ : chr [1:5] "SPE" "SPE_Flag" "T2" "T2_Flag" ...
@@ -352,37 +352,37 @@ Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain}
 ##  $ Alarms         :An 'xts' object of zero-width
 ##  $ TrainingSpecs  :List of 3
 ##   ..$ 1:List of 6
-##   .. ..$ SPE_threshold   : Named num 3.59
+##   .. ..$ SPE_threshold   : Named num 4.8
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 61.6
+##   .. ..$ T2_threshold    : Named num 61.3
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.421 -0.389 0.433 0.43 -0.32 ...
-##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.202 0 0 1.646
-##   .. ..$ muTrain         : Named num [1:6] 1.36 -2.09 2.93 1.35 -2.05 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.42 -0.391 0.432 0.428 -0.326 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.201 0 0 1.713
+##   .. ..$ muTrain         : Named num [1:6] 1.33 -2.09 2.85 1.31 -2.05 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.58 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.66 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 ##   ..$ 2:List of 6
-##   .. ..$ SPE_threshold   : Named num 1.35
+##   .. ..$ SPE_threshold   : Named num 2.02
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 77
+##   .. ..$ T2_threshold    : Named num 80
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:3] 0.5025 -0.0192 -0.4984 0.5267 0.1392 ...
-##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.285 0 0 0 0.686 ...
-##   .. ..$ muTrain         : Named num [1:6] 2.946 -0.565 -4.465 2.92 -0.59 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:3] 0.506 -0.0868 -0.4999 0.5265 0.1125 ...
+##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.285 0 0 0 0.679 ...
+##   .. ..$ muTrain         : Named num [1:6] 2.885 -0.576 -4.422 2.86 -0.601 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 1.04 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 1.06 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 ##   ..$ 3:List of 6
-##   .. ..$ SPE_threshold   : Named num 6.42
+##   .. ..$ SPE_threshold   : Named num 4.46
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 85.4
+##   .. ..$ T2_threshold    : Named num 82.6
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.399 -0.453 -0.454 0.152 -0.462 ...
-##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.275 0 0 0.501
-##   .. ..$ muTrain         : Named num [1:6] 0.526 0.268 1.411 0.566 0.254 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.411 -0.456 -0.458 0.131 -0.453 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.272 0 0 0.499
+##   .. ..$ muTrain         : Named num [1:6] 0.525 0.261 1.377 0.564 0.247 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 16.8 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 15.4 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 \end{verbatim}
 \end{kframe}
@@ -439,19 +439,19 @@ First, concatenate the last given observation from the training set as ``row 0''
 \end{alltt}
 \begin{verbatim}
 ##                     state         x         y         z       x.1
-## 2015-05-22 07:00:00     1 0.4542266 -1.188745 0.6005185 0.3809131
-## 2015-05-22 07:01:00     1 0.4889364 -1.416970 0.5952562 0.4542266
-## 2015-05-22 07:02:00     1 0.6942253 -1.436590 0.9416095 0.4889364
-## 2015-05-22 07:03:00     1 0.5357452 -1.563710 0.9727830 0.6942253
-## 2015-05-22 07:04:00     1 0.6569141 -1.504261 0.9597280 0.5357452
-## 2015-05-22 07:05:00     1 0.5957465 -1.298968 0.6082284 0.6569141
-##                             y.1       z.1
-## 2015-05-22 07:00:00  0.09361165 0.3698668
-## 2015-05-22 07:01:00 -1.18874504 0.6005185
-## 2015-05-22 07:02:00 -1.41696998 0.5952562
-## 2015-05-22 07:03:00 -1.43659004 0.9416095
-## 2015-05-22 07:04:00 -1.56371006 0.9727830
-## 2015-05-22 07:05:00 -1.50426070 0.9597280
+## 2015-05-22 07:00:00     1 0.7579571 -1.518032 1.3443886 0.3906853
+## 2015-05-22 07:01:00     1 0.7644197 -1.489935 0.8451787 0.7579571
+## 2015-05-22 07:02:00     1 0.5797654 -1.585442 0.7934814 0.7644197
+## 2015-05-22 07:03:00     1 0.5630561 -1.502471 0.8140064 0.5797654
+## 2015-05-22 07:04:00     1 0.6274190 -1.342661 0.6885947 0.5630561
+## 2015-05-22 07:05:00     1 0.4543723 -1.331050 1.0142873 0.6274190
+##                            y.1       z.1
+## 2015-05-22 07:00:00  0.1067118 0.4294944
+## 2015-05-22 07:01:00 -1.5180323 1.3443886
+## 2015-05-22 07:02:00 -1.4899346 0.8451787
+## 2015-05-22 07:03:00 -1.5854425 0.7934814
+## 2015-05-22 07:04:00 -1.5024712 0.8140064
+## 2015-05-22 07:05:00 -1.3426613 0.6885947
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -467,20 +467,20 @@ With the lagged test observations in the working environment, the \texttt{mspMon
 \hlkwd{head}\hlstd{(monitor1A_xts)}
 \end{alltt}
 \begin{verbatim}
-##                             x         y         z       x.1         y.1
-## 2015-05-22 07:00:00 0.4542266 -1.188745 0.6005185 0.3809131  0.09361165
-## 2015-05-22 07:01:00 0.4889364 -1.416970 0.5952562 0.4542266 -1.18874504
-## 2015-05-22 07:02:00 0.6942253 -1.436590 0.9416095 0.4889364 -1.41696998
-## 2015-05-22 07:03:00 0.5357452 -1.563710 0.9727830 0.6942253 -1.43659004
-## 2015-05-22 07:04:00 0.6569141 -1.504261 0.9597280 0.5357452 -1.56371006
-## 2015-05-22 07:05:00 0.5957465 -1.298968 0.6082284 0.6569141 -1.50426070
-##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm
-## 2015-05-22 07:00:00 0.3698668 2.0491906        0 25.423541       0    NA
-## 2015-05-22 07:01:00 0.6005185 0.1819048        0  6.563964       0    NA
-## 2015-05-22 07:02:00 0.5952562 0.3945702        0  5.086740       0    NA
-## 2015-05-22 07:03:00 0.9416095 0.1778764        0  4.277330       0    NA
-## 2015-05-22 07:04:00 0.9727830 0.1784149        0  4.399492       0    NA
-## 2015-05-22 07:05:00 0.9597280 1.1749990        0  5.393532       0    NA
+##                             x         y         z       x.1        y.1
+## 2015-05-22 07:00:00 0.7579571 -1.518032 1.3443886 0.3906853  0.1067118
+## 2015-05-22 07:01:00 0.7644197 -1.489935 0.8451787 0.7579571 -1.5180323
+## 2015-05-22 07:02:00 0.5797654 -1.585442 0.7934814 0.7644197 -1.4899346
+## 2015-05-22 07:03:00 0.5630561 -1.502471 0.8140064 0.5797654 -1.5854425
+## 2015-05-22 07:04:00 0.6274190 -1.342661 0.6885947 0.5630561 -1.5024712
+## 2015-05-22 07:05:00 0.4543723 -1.331050 1.0142873 0.6274190 -1.3426613
+##                           z.1        SPE SPE_Flag        T2 T2_Flag Alarm
+## 2015-05-22 07:00:00 0.4294944 0.20931587        0 29.288660       0    NA
+## 2015-05-22 07:01:00 1.3443886 0.62648522        0  3.367017       0    NA
+## 2015-05-22 07:02:00 0.8451787 0.26807516        0  3.992137       0    NA
+## 2015-05-22 07:03:00 0.7934814 0.06664741        0  4.743184       0    NA
+## 2015-05-22 07:04:00 0.8140064 0.65173294        0  5.120512       0    NA
+## 2015-05-22 07:05:00 0.6885947 0.82470301        0  5.330486       0    NA
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
