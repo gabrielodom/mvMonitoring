@@ -118,7 +118,7 @@ is the orthogonal rotation matrix for a yaw, pitch and roll degree change of $\l
 These rotation matrices $\textbf{P}_1$ and $\textbf{P}_2$ turn the states in three-dimensional space so that the states are at right angles to each other in at least one dimension, and the scaling matrices $\boldsymbol\Lambda_1$ and $\boldsymbol\Lambda_2$ inflate or deflate the process variances along each principal component. The \texttt{mspProcessData} function calls the internal function \texttt{dataStateSwitch} which splits the observations by state and applies the state-specific rotation and scaling through the internal \texttt{rotateScale3D} function.
 
 
-\subsection{Synthetic Fault Induction}
+\subsection{Synthetic Fault Induction} \label{subsec:D_FaultDefns}
 Faults can be introduced to single- or multi-state data via the \texttt{mspProcessData} function. The default fault start index is 8500, or roughly 84\% through the cycle of 10,080 observations. These faults are added through the internal \texttt{faultSwitch} function.
 \begin{enumerate}
 \item Fault 1A is a positive shift to all three features before state rotation: $\textbf{X}^*(t_s) = \textbf{X}(t_s) + 2,\ s \ge 8500$.
@@ -200,7 +200,7 @@ In future updates of this package, this function will also have an option to iss
 
 \section{Example Simulation Workflow} \label{sec:D_Workflow}
 
-This section provides a fully commented code walk-through for the main \texttt{msp*} functions in the \texttt{mvMonitoring} package. This package depends on a few other packages, but most of these dependencies are on commonly-used packages. The exception is \texttt{BMS}.
+This section provides a fully commented code walk-through for the main \texttt{msp.*} functions in the \texttt{mvMonitoring} package. This package depends on few other packages, and most of these dependencies are on commonly-used packages. The exception is \texttt{BMS}.
 <<r load_mvMonitoring, warning=FALSE, message=FALSE>>=
 library(devtools)
 library(xts)
@@ -211,7 +211,7 @@ library(mvMonitoring)
 
 
 \subsection{Generating Synthetic Data}
-First begin by generating multi-state data from a fault scenario. This code will yield observations under Fault 2A, as described the Synthetic Fault Induction section. We choose the default options for the period length (7 days * 24 hours * 60 minutes = 10,080 observations), the starting index of the fault (8500 out of 10080), and the time stamp for beginning the data is 16 May of 2016 at 10:00AM (my wedding anniversary). As we can see from the \texttt{str()} function, we have an \texttt{xts} matrix with 10080 rows and four columns (the state indicator and the three features).
+First, begin by generating multi-state data from a fault scenario. This code will yield observations under Fault 2A, as described in Section \ref{subsec:D_FaultDefns}. We choose the default options for the period length (7 days * 24 hours * 60 minutes = 10,080 observations), the starting index of the fault (8500 out of 10080), and the time stamp for beginning the data is 16 May of 2016 at 10:00AM (my wedding anniversary). As we can see from the structure of the output, \texttt{mspProcessData} returns an \texttt{xts} matrix with 10080 rows and four columns (the state indicator and the three features).
 
 <<r generate_Data>>=
 fault1A_xts <- mspProcessData(faults = "A1",
@@ -223,7 +223,7 @@ str(fault1A_xts)
 
 
 \subsection{Train the Fault Detection Threshold}
-Now that these observations are generated and stored in memory, the \texttt{mspTrain} function can train the MSAD-PCA model. The last 1620 observations (27 hours' worth) will be saved for testing. The \texttt{mspTrain} function takes in the training data set partitioned between the observation and the label column. If this function errors, make sure the label column is not included in the data matrix -- this will cause a singularity in the data. The function will
+Now that these observations are generated and stored in memory, the \texttt{mspTrain} function can train the MSAD-PCA model. The last 1620 observations (27 hours' worth) will be saved for validation. The \texttt{mspTrain} function takes in the training data matrix and corresponding class label column. If this function errors, make sure the label column is not included in the data matrix -- the constant values will cause a rank deficiency training covariance matrix. The \texttt{mspTrain} function will
 \begin{enumerate}
 \item Train on the first three days' worth of observations, as set by \texttt{trainObs}.
 %
@@ -235,7 +235,7 @@ Now that these observations are generated and stored in memory, the \texttt{mspT
 %
 \item ``Learn'' the non-alarmed observations from the fourth day.
 %
-\item Retrain and repeat until the end of the data matrix
+\item Retrain and repeat until the end of the training matrix.
 \end{enumerate}
 
 
@@ -254,7 +254,7 @@ str(train1A_ls)
 @
 The \texttt{mspTrain} function returns a list of four objects:
 \begin{enumerate}
-\item \texttt{FaultChecks}: An \texttt{xts} matrix of monitoring statistics and associated indicators for all observations after the burn-in of \texttt{trainObs}. It will have 10080 - \texttt{trainObs} number of rows and five columns:
+\item \texttt{FaultChecks}: An \texttt{xts} matrix of monitoring statistics and associated indicators for all observations after the burn-in of \texttt{trainObs}. It will have 8461 - \texttt{trainObs} number of rows and five columns:
 	\begin{enumerate}
 	\item \texttt{SPE}: the SPE statistic for each observation.
     %
@@ -267,7 +267,7 @@ The \texttt{mspTrain} function returns a list of four objects:
     \item \texttt{Alarm}: an indicator showing if the observation is in a sequence of flagged observations; 0 is normal, 1 is alarmed.
 	\end{enumerate}
 %
-\item \texttt{Non\_Alarmed\_Obs}: An \texttt{xts} matrix will all observations with an alarm code of 0 from \texttt{FaultChecks}. Of note, this matrix contains the data, while the \texttt{FaultChecks} matrix only contains the monitoring statistics and indicators.
+\item \texttt{Non\_Alarmed\_Obs}: An \texttt{xts} matrix containing all observations with an alarm code of 0 from \texttt{FaultChecks}. Of note, this matrix contains the data, while the \texttt{FaultChecks} matrix only contains the monitoring statistics and indicators.
 %
 \item \texttt{Alarms}: An \texttt{xts} matrix of all the observations removed from the training data matrix.
 %
@@ -302,7 +302,7 @@ head(lagTest1A_xts)
 @
 
 \subsubsection{Monitoring the Test Data}
-With the lagged test observations in the working environment, the \texttt{mspMonitor} function can be applied. This function (similarly to \texttt{mspTrain}) takes in the label information as a separate argument from the input data. Further, the \texttt{mspMonitor} function takes in the \texttt{TrainingSpecs} object returned in the results list from \texttt{mspTrain}. Notice that the first six rows of the monitor matrix are the exact same as the first six rows of the lagged test matrix, except that the rows of the monitor matrix have the monitoring statistic and corresponding indicator columns appended.
+With the lagged test observations in the working environment, the \texttt{mspMonitor} function can be applied. This function (similarly to \texttt{mspTrain}) takes in the label information as a separate argument from the input data. Further, the \texttt{mspMonitor} function takes in the \texttt{TrainingSpecs} object returned in the results list from \texttt{mspTrain}. Notice that the first six rows of the matrix returned by \texttt{mspMonitor} are the exact same as the first six rows of the lagged test matrix, except that the rows of the matrix from the \texttt{mspMonitor} function have the monitoring statistics and corresponding indicator columns appended.
 <<r monitor>>=
 monitor1A_xts <- mspMonitor(observations = lagTest1A_xts[,-1],
                             labelVector = lagTest1A_xts[,1],
@@ -312,7 +312,7 @@ head(monitor1A_xts)
 
 
 \subsection{Warn Operators During Alarms}
-Note that all `Alarm` codes in the monitor matrix above are recorded with \texttt{NA} values. This is because the \texttt{mspMonitor} function does not check the sequential flag conditions of the monitor matrix. This is the responsibility of the \texttt{mspWarning} function. Because the \texttt{mspWarning} function is designed to test one incoming observation at a time through a script or batch file, the following example is designed to mimic the behavior of the \texttt{mspWarning} function as each new observation comes online.
+Note that all values in the \texttt{Alarm} column of the returned matrix above are recorded with \texttt{NA} values. This is because the \texttt{mspMonitor} function does not check the monitor output matrix for the sequential flags necessary to trigger an alarm. This is the responsibility of the \texttt{mspWarning} function. Because the \texttt{mspWarning} function is designed to test one incoming observation at a time through a script or batch file, the following example is designed to mimic the behavior of the \texttt{mspWarning} function as each new observation comes online.
 <<r warnings>>=
 alarm1A_xts <- monitor1A_xts
 for(i in 1:nrow(alarm1A_xts)){
@@ -323,19 +323,19 @@ for(i in 1:nrow(alarm1A_xts)){
   }
 }
 @
-The fault was introduced at index 8500, which corresponds to about 40 minutes into the test hour.
+\noindent The fault was introduced at index 8500, which corresponds to about 40 minutes into the test hour.
 <<r warning_Plot>>=
 plot(alarm1A_xts[, ncol(alarm1A_xts)],
      main = "Alarm Codes for Test Data")
 @
-The alarm codes are
+\noindent The alarm codes are
 \begin{enumerate}
 \item ``0'': No alarm.
 \item ``1'': Hotelling's $T^2$ alarm.
 \item ``2'': Squared Prediction Error alarm.
 \item ``3'': Both alarms.
 \end{enumerate}
-As we can see, the monitoring function detects a process anomaly after 40 minutes into the test hour, and the warning function issues the corresponding alarms.
+\noindent As we can see, the monitoring function detects a process anomaly after 40 minutes into the test hour, and the warning function issues the corresponding alarms.
 
 
 
