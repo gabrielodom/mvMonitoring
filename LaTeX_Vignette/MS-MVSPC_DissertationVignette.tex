@@ -88,7 +88,7 @@ We outline this vignette as follows. In Section \ref{sec:D_Motivation}, we discu
 \section{Motivation} \label{sec:D_Motivation}
 
 \subsection{Why use \texttt{mvMonitoring}?}
-The \texttt{mvMonitoring} package can be used to detect outliers in a correlated, non-Gaussian multivariate process with non-linear, non-stationary, or autocorrelated feature behavior. These process outliers are often indicative of system fault. The naive (and unfortunately common) approach to multivariate process monitoring is to use expert opinion to identify a few important features to monitor visually, and raise an alarm if these features travel outside pre-defined normal operating boundaries.
+The \texttt{mvMonitoring} package can be used to detect outliers in a correlated, non-Gaussian multivariate process with non-linear, non-stationary, or autocorrelated feature behavior. These process outliers are often indicative of system fault. The naive (but unfortunately common) approach to multivariate process monitoring is to use expert opinion to identify a few important features to monitor visually, and raise an alarm if these features travel outside pre-defined normal operating boundaries.
 
 However, this split univariate approach fails to account for the correlated nature of the process features, so some engineers have taken to monitoring the system as a single correlated multivariate process rather than a collection of independent univariate processes. In the literature review of the motivating papers, the authors cite how this approach has benefited the science of process monitoring as a whole. Unfortunately, this approach has its own shortcomings. One such complication is that monitoring a multivariate process in its original feature space can lead to exorbitant computational costs. Additionally, correlated multivariate process over many features may be noisy and often retain redundant information. To combat these issues, \emph{principal components analysis} (PCA) and its many modifications have been employed to assist in monitoring multivariate processes as a whole. This package is an implementation of one such PCA modification.
 
@@ -103,29 +103,29 @@ However, this split univariate approach fails to account for the correlated natu
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Simulating Data with \texttt{mspProcessData}} \label{sec:D_DataGen}
-This function generates three-dimensional multi-state or single-state non-linear, non-stationary, and autocorrelated process observations. We follow the seminal work of \cite{dong_batch_1996} for generation of the foundational stationary and independent features.
+The \texttt{mspProcessData} function generates three-dimensional multi-state or single-state non-linear, non-stationary, and autocorrelated process observations. We follow the seminal work of \cite{dong_batch_1996} for generation of the foundational stationary and independent features.
 
 
 \subsection{Latent Feature Creation}
-So that the simulated features have non-zero correlations, Dong and McAvoy created their three features all as polynomial functions of a single latent variable $t(s)$, where $s = 1, \ldots, \omega$ is the observational index of the process.
+So that the simulated features have non-zero correlations, Dong and McAvoy created their three features all as polynomial functions of a single latent variable $t_s$, where $s = 1, \ldots, \omega$ is the observational index of the process.
 
 \subsubsection{Autocorrelated and Non-Stationary Error}
 The \texttt{mspProcesData} function induces autocorrelation in $t$ through its errors, $\varepsilon_s$, where
 \[
-  \varepsilon_1 \sim \mathcal{N}\left(\frac{1}{2}(a + b)(1 - \phi), \frac{b - a}{12} (1 - \phi ^ 2)\right),
+  \varepsilon_1 \sim \mathcal{N}\left(\frac{1}{2}(a + b)(1 - \varphi), \frac{b - a}{12} (1 - \varphi ^ 2)\right),
 \]
 where $a = 0.01$ and $b = 2$. Now, we define the first-order autoregressive process on $\varepsilon_s$ by
 \[
   \varepsilon_s = \varphi\varepsilon_{s - 1} + (1 - \varphi)\varepsilon,
 \]
-where $\varepsilon$ is as defined in the previous expression and the autocorrelation component $\phi = 0.75$. The mean and variance multipliers are the mean and variance of a random variable from the $\mathcal{U}_{[a,b]}$ distribution.
+where $\varepsilon$ is a random innovation drawn from the Normal distribution defined in the previous expression, and the autocorrelation component $\varphi = 0.75$. The mean and variance multipliers are the mean and variance of a random variable from the $\text{uniform}_{[a,b]}$ distribution.
 
 \subsubsection{The Non-Linear Latent Process}
-This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ with
+This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ by taking
 \[
   t^*_s = -\cos\left( \frac{2\pi}{\omega} s \right) + \epsilon_s,
 \]
-and scale $t^*$ to
+and then scaling $t^*$ to
 \[
   t = \frac{(b - a)(t^*_s - \text{min}(t^*_s))}{\text{max}(t^*_s) - \text{min}(t^*_s)} + a.
 \]
@@ -135,16 +135,16 @@ Finally then, the $t$ vector will lie entirely in $[a,b]$.
 \subsection{Single-State and Multi-State Features}
 
 \subsubsection{Single State Features}
-First \texttt{mspProcessData} simulates three features, with each feature operating under $k$ different states. Let $\langle x_k(t), y_k(t), z_k(t) \rangle$ be the notation for State $k$. These are the three features under State 1 (normal operating conditions, or \emph{NOC}) as three functions of $t$:
+First \texttt{mspProcessData} simulates three features, with each feature operating under $k$ different states. Let $\langle x_k(t_s), y_k(t_s), z_k(t_s) \rangle$ be the process evaluated at $t_s$ within State $k$. These are the three features under State 1 (in control, or \emph{IC}) as three functions of $t$:
 \begin{align}
-\textbf{x}(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
-\textbf{y}(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
-\textbf{z}(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3,
+x(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
+y(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
+z(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3,
 \end{align}
-where $\varepsilon_i \sim N(0, 0.01)$. The \texttt{mspProcessData} function calls the internal \texttt{processNOCdata} function to generate single-state observations under NOC.
+where $\varepsilon_i \sim N(0, 0.01),\ 1 = 1, 2, 3$. The \texttt{mspProcessData} function calls the internal \texttt{processNOCdata} function to generate IC single-state observations.
 
 \subsubsection{Multi-State Features}
-The multi-state feature expression is induced by rotation and scaling of certain sets of observations. To induce a three-state, hourly switching process (the default), the \texttt{mspProcessData} function will create a label column that switches from ``1'' to ``2'' to ``3'' every hour. State ``1'' will be the features generated under the single-state assumption, while State ``2'' and State ``3'' are generated as follows. These states will be scaled rotations of the current $\langle x,y,z \rangle$ set. The second state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2). The third state is yaw, pitch, and roll rotated by (90, 0, -30) degrees, and the scales are multiplied by (0.25, 0.1, 0.75).
+The multi-state feature expression is induced by rotation and scaling of certain sets of observations. To induce a three-state, hourly switching process (the default), the \texttt{mspProcessData} function will create a label column that switches from ``1'' to ``2'' to ``3'' every hour. State ``1'' will be the features generated under the single-state assumption, while State ``2'' and State ``3'' are generated as follows. These states will be scaled rotations of the current $\langle x,y,z \rangle$ set. The second state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2). The third state is yaw, pitch, and roll rotated by (90, 0, -30) degrees, and the scales are multiplied by (0.25, 0.1, 0.75). That is,
 \begin{enumerate}
 \item $\mathcal{S}_1$: $\textbf{X}(t_s) := \langle x(t_s), y(t_s), z(t_s)\rangle$.
 
@@ -173,13 +173,13 @@ These rotation matrices $\textbf{P}_1$ and $\textbf{P}_2$ turn the states in thr
 
 
 \subsection{Synthetic Fault Induction}
-Faults can be introduced to single- or multi-state data via the \texttt{mspProcessData} function. The default fault start index is 8500, or roughly 84\% through the 10,080 observation cycle. These faults are added through the internal \texttt{faultSwitch} function.
+Faults can be introduced to single- or multi-state data via the \texttt{mspProcessData} function. The default fault start index is 8500, or roughly 84\% through the cycle of 10,080 observations. These faults are added through the internal \texttt{faultSwitch} function.
 \begin{enumerate}
 \item Fault 1A is a positive shift to all three features before state rotation: $\textbf{X}^*(t_s) = \textbf{X}(t_s) + 2,\ s \ge 8500$.
 %
 \item Fault 1B is a positive shift to the $x$ feature before state rotation: $x^*(t_s) = x(t_s) + 2,\ s \ge 8500$.
 %
-\item Fault 1C is a positive shift to the $x$ and $z$ features in State 3 only and *after* state rotation: $x^*(t_s) = x(t_s) + 2,\ z^*(t_s) = z(t_s) + 2,\ s \ge 8500$.
+\item Fault 1C is a positive shift to the $x$ and $z$ features in State 3 only and \emph{after} state rotation: $x^*(t_s) = x(t_s) + 2,\ z^*(t_s) = z(t_s) + 2,\ s \ge 8500$.
 %
 \item Fault 2A is a positive drift across all the process monitoring features before state rotation: $\textbf{X}^*(t_s) = \textbf{X}(t_s) + (s - 8500)\times 10^{-3}$, $s > 8500$.
 %
@@ -196,7 +196,7 @@ Faults can be introduced to single- or multi-state data via the \texttt{mspProce
 
 
 \subsection{Putting it all together\ldots}
-The \texttt{mspProcessData} function can generate weeks' worth of non-linear, non-stationary, autocorrelated, multi-state, multivariate process data useful to test new process monitoring techniques. Users can generate observations under NOC to measure false alarm rates, or induce one of nine pre-built faults to test detection time and consistency with repeated Monte Carlo sampling. We expect this function will generate interesting data useful enough to compare new and improved process monitoring techniques with existing methods.
+The \texttt{mspProcessData} function can generate weeks' worth of non-linear, non-stationary, autocorrelated, multi-state, multivariate process data useful to test new process monitoring techniques. Users can generate IC observations to measure false alarm rates, or induce one of nine pre-built faults to test detection time and consistency with repeated Monte Carlo sampling. We expect this function will generate interesting data useful enough to compare new and improved process monitoring techniques with existing methods. A detailed description of this function's inputs and outputs are shown in Section \ref{sec:D_Workflow}.
 
 
 
@@ -291,8 +291,8 @@ First begin by generating multi-state data from a fault scenario. This code will
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : NULL
 ##   ..$ : chr [1:4] "state" "x" "y" "z"
-##   Indexed by objects of class: [POSIXct,POSIXt] TZ:
-##   xts Attributes:
+##   Indexed by objects of class: [POSIXct,POSIXt] TZ: 
+##   xts Attributes:  
 ##  NULL
 \end{verbatim}
 \end{kframe}
@@ -334,55 +334,55 @@ Furthermore, the \texttt{Dynamic = TRUE} option means that the \texttt{mspTrain}
 \begin{verbatim}
 ## List of 4
 ##  $ FaultChecks    :An 'xts' object on 2015-05-19 08:59:00/2015-05-22 07:00:00 containing:
-##   Data: num [1:4142, 1:5] 2.084 0.268 0.582 0.694 0.956 ...
+##   Data: num [1:4142, 1:5] 0.2407 0.0621 0.2815 0.1616 0.3386 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : NULL
 ##   ..$ : chr [1:5] "SPE" "SPE_Flag" "T2" "T2_Flag" ...
-##   Indexed by objects of class: [POSIXct,POSIXt] TZ:
-##   xts Attributes:
+##   Indexed by objects of class: [POSIXct,POSIXt] TZ: 
+##   xts Attributes:  
 ##  NULL
 ##  $ Non_Alarmed_Obs:An 'xts' object on 2015-05-19 08:59:00/2015-05-22 07:00:00 containing:
 ##   Data: num [1:4142, 1:7] 2 3 1 1 1 1 1 1 1 1 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : NULL
 ##   ..$ : chr [1:7] "state" "x" "y" "z" ...
-##   Indexed by objects of class: [POSIXct,POSIXt] TZ:
-##   xts Attributes:
+##   Indexed by objects of class: [POSIXct,POSIXt] TZ: 
+##   xts Attributes:  
 ##  NULL
 ##  $ Alarms         :An 'xts' object of zero-width
 ##  $ TrainingSpecs  :List of 3
 ##   ..$ 1:List of 6
-##   .. ..$ SPE_threshold   : Named num 4.66
+##   .. ..$ SPE_threshold   : Named num 3.59
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 58.1
+##   .. ..$ T2_threshold    : Named num 61.6
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.421 -0.386 0.434 0.429 -0.325 ...
-##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.202 0 0 1.685
-##   .. ..$ muTrain         : Named num [1:6] 1.38 -2.08 2.95 1.36 -2.04 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.421 -0.389 0.433 0.43 -0.32 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.202 0 0 1.646
+##   .. ..$ muTrain         : Named num [1:6] 1.36 -2.09 2.93 1.35 -2.05 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.47 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 2.58 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 ##   ..$ 2:List of 6
-##   .. ..$ SPE_threshold   : Named num 1.06
+##   .. ..$ SPE_threshold   : Named num 1.35
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 77.4
+##   .. ..$ T2_threshold    : Named num 77
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:3] -0.50267 -0.00244 0.49616 -0.52609 -0.14826 ...
-##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.285 0 0 0 0.706 ...
-##   .. ..$ muTrain         : Named num [1:6] 2.958 -0.564 -4.481 2.931 -0.59 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:3] 0.5025 -0.0192 -0.4984 0.5267 0.1392 ...
+##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.285 0 0 0 0.686 ...
+##   .. ..$ muTrain         : Named num [1:6] 2.946 -0.565 -4.465 2.92 -0.59 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
 ##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 1.04 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 ##   ..$ 3:List of 6
-##   .. ..$ SPE_threshold   : Named num 6.33
+##   .. ..$ SPE_threshold   : Named num 6.42
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ T2_threshold    : Named num 80.1
+##   .. ..$ T2_threshold    : Named num 85.4
 ##   .. .. ..- attr(*, "names")= chr "99.9%"
-##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.403 -0.456 -0.459 0.135 -0.458 ...
-##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.273 0 0 0.505
-##   .. ..$ muTrain         : Named num [1:6] 0.523 0.269 1.409 0.565 0.255 ...
+##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.399 -0.453 -0.454 0.152 -0.462 ...
+##   .. ..$ LambdaInv       : num [1:2, 1:2] 0.275 0 0 0.501
+##   .. ..$ muTrain         : Named num [1:6] 0.526 0.268 1.411 0.566 0.254 ...
 ##   .. .. ..- attr(*, "names")= chr [1:6] "x" "y" "z" "x.1" ...
-##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 15.4 0 0 0 0 ...
+##   .. ..$ RootPrecisTrain : num [1:6, 1:6] 16.8 0 0 0 0 ...
 ##   .. ..- attr(*, "class")= chr [1:2] "threshold" "pca"
 \end{verbatim}
 \end{kframe}
@@ -439,19 +439,19 @@ First, concatenate the last given observation from the training set as ``row 0''
 \end{alltt}
 \begin{verbatim}
 ##                     state         x         y         z       x.1
-## 2015-05-22 07:00:00     1 0.6030535 -1.566528 0.8662376 0.3665282
-## 2015-05-22 07:01:00     1 0.4416746 -1.406672 0.3811997 0.6030535
-## 2015-05-22 07:02:00     1 0.5408433 -1.304789 0.4314055 0.4416746
-## 2015-05-22 07:03:00     1 0.5082937 -1.391546 0.8054482 0.5408433
-## 2015-05-22 07:04:00     1 0.4508361 -1.312723 0.8291703 0.5082937
-## 2015-05-22 07:05:00     1 0.7068563 -1.465259 0.7728310 0.4508361
+## 2015-05-22 07:00:00     1 0.4542266 -1.188745 0.6005185 0.3809131
+## 2015-05-22 07:01:00     1 0.4889364 -1.416970 0.5952562 0.4542266
+## 2015-05-22 07:02:00     1 0.6942253 -1.436590 0.9416095 0.4889364
+## 2015-05-22 07:03:00     1 0.5357452 -1.563710 0.9727830 0.6942253
+## 2015-05-22 07:04:00     1 0.6569141 -1.504261 0.9597280 0.5357452
+## 2015-05-22 07:05:00     1 0.5957465 -1.298968 0.6082284 0.6569141
 ##                             y.1       z.1
-## 2015-05-22 07:00:00  0.08751379 0.3336879
-## 2015-05-22 07:01:00 -1.56652763 0.8662376
-## 2015-05-22 07:02:00 -1.40667237 0.3811997
-## 2015-05-22 07:03:00 -1.30478897 0.4314055
-## 2015-05-22 07:04:00 -1.39154587 0.8054482
-## 2015-05-22 07:05:00 -1.31272320 0.8291703
+## 2015-05-22 07:00:00  0.09361165 0.3698668
+## 2015-05-22 07:01:00 -1.18874504 0.6005185
+## 2015-05-22 07:02:00 -1.41696998 0.5952562
+## 2015-05-22 07:03:00 -1.43659004 0.9416095
+## 2015-05-22 07:04:00 -1.56371006 0.9727830
+## 2015-05-22 07:05:00 -1.50426070 0.9597280
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -468,19 +468,19 @@ With the lagged test observations in the working environment, the \texttt{mspMon
 \end{alltt}
 \begin{verbatim}
 ##                             x         y         z       x.1         y.1
-## 2015-05-22 07:00:00 0.6030535 -1.566528 0.8662376 0.3665282  0.08751379
-## 2015-05-22 07:01:00 0.4416746 -1.406672 0.3811997 0.6030535 -1.56652763
-## 2015-05-22 07:02:00 0.5408433 -1.304789 0.4314055 0.4416746 -1.40667237
-## 2015-05-22 07:03:00 0.5082937 -1.391546 0.8054482 0.5408433 -1.30478897
-## 2015-05-22 07:04:00 0.4508361 -1.312723 0.8291703 0.5082937 -1.39154587
-## 2015-05-22 07:05:00 0.7068563 -1.465259 0.7728310 0.4508361 -1.31272320
+## 2015-05-22 07:00:00 0.4542266 -1.188745 0.6005185 0.3809131  0.09361165
+## 2015-05-22 07:01:00 0.4889364 -1.416970 0.5952562 0.4542266 -1.18874504
+## 2015-05-22 07:02:00 0.6942253 -1.436590 0.9416095 0.4889364 -1.41696998
+## 2015-05-22 07:03:00 0.5357452 -1.563710 0.9727830 0.6942253 -1.43659004
+## 2015-05-22 07:04:00 0.6569141 -1.504261 0.9597280 0.5357452 -1.56371006
+## 2015-05-22 07:05:00 0.5957465 -1.298968 0.6082284 0.6569141 -1.50426070
 ##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm
-## 2015-05-22 07:00:00 0.3336879 0.7953977        0 24.566074       0    NA
-## 2015-05-22 07:01:00 0.8662376 0.3442694        0  5.731867       0    NA
-## 2015-05-22 07:02:00 0.3811997 0.4382832        0  6.232419       0    NA
-## 2015-05-22 07:03:00 0.4314055 0.2334754        0  5.558003       0    NA
-## 2015-05-22 07:04:00 0.8054482 0.5248950        0  5.476091       0    NA
-## 2015-05-22 07:05:00 0.8291703 0.1880696        0  4.896475       0    NA
+## 2015-05-22 07:00:00 0.3698668 2.0491906        0 25.423541       0    NA
+## 2015-05-22 07:01:00 0.6005185 0.1819048        0  6.563964       0    NA
+## 2015-05-22 07:02:00 0.5952562 0.3945702        0  5.086740       0    NA
+## 2015-05-22 07:03:00 0.9416095 0.1778764        0  4.277330       0    NA
+## 2015-05-22 07:04:00 0.9727830 0.1784149        0  4.399492       0    NA
+## 2015-05-22 07:05:00 0.9597280 1.1749990        0  5.393532       0    NA
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -510,7 +510,7 @@ The fault was introduced at index 8500, which corresponds to about 40 minutes in
      \hlkwc{main} \hlstd{=} \hlstr{"Alarm Codes for Test Data"}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\includegraphics[width=\maxwidth]{figure/r_warning_Plot-1}
+\includegraphics[width=\maxwidth]{figure/r_warning_Plot-1} 
 
 \end{knitrout}
 The alarm codes are

@@ -34,7 +34,7 @@ We outline this vignette as follows. In Section \ref{sec:D_Motivation}, we discu
 \section{Motivation} \label{sec:D_Motivation}
 
 \subsection{Why use \texttt{mvMonitoring}?}
-The \texttt{mvMonitoring} package can be used to detect outliers in a correlated, non-Gaussian multivariate process with non-linear, non-stationary, or autocorrelated feature behavior. These process outliers are often indicative of system fault. The naive (and unfortunately common) approach to multivariate process monitoring is to use expert opinion to identify a few important features to monitor visually, and raise an alarm if these features travel outside pre-defined normal operating boundaries.
+The \texttt{mvMonitoring} package can be used to detect outliers in a correlated, non-Gaussian multivariate process with non-linear, non-stationary, or autocorrelated feature behavior. These process outliers are often indicative of system fault. The naive (but unfortunately common) approach to multivariate process monitoring is to use expert opinion to identify a few important features to monitor visually, and raise an alarm if these features travel outside pre-defined normal operating boundaries.
 
 However, this split univariate approach fails to account for the correlated nature of the process features, so some engineers have taken to monitoring the system as a single correlated multivariate process rather than a collection of independent univariate processes. In the literature review of the motivating papers, the authors cite how this approach has benefited the science of process monitoring as a whole. Unfortunately, this approach has its own shortcomings. One such complication is that monitoring a multivariate process in its original feature space can lead to exorbitant computational costs. Additionally, correlated multivariate process over many features may be noisy and often retain redundant information. To combat these issues, \emph{principal components analysis} (PCA) and its many modifications have been employed to assist in monitoring multivariate processes as a whole. This package is an implementation of one such PCA modification.
 
@@ -49,29 +49,29 @@ However, this split univariate approach fails to account for the correlated natu
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Simulating Data with \texttt{mspProcessData}} \label{sec:D_DataGen}
-This function generates three-dimensional multi-state or single-state non-linear, non-stationary, and autocorrelated process observations. We follow the seminal work of \cite{dong_batch_1996} for generation of the foundational stationary and independent features.
+The \texttt{mspProcessData} function generates three-dimensional multi-state or single-state non-linear, non-stationary, and autocorrelated process observations. We follow the seminal work of \cite{dong_batch_1996} for generation of the foundational stationary and independent features.
 
 
 \subsection{Latent Feature Creation}
-So that the simulated features have non-zero correlations, Dong and McAvoy created their three features all as polynomial functions of a single latent variable $t(s)$, where $s = 1, \ldots, \omega$ is the observational index of the process.
+So that the simulated features have non-zero correlations, Dong and McAvoy created their three features all as polynomial functions of a single latent variable $t_s$, where $s = 1, \ldots, \omega$ is the observational index of the process.
 
 \subsubsection{Autocorrelated and Non-Stationary Error}
 The \texttt{mspProcesData} function induces autocorrelation in $t$ through its errors, $\varepsilon_s$, where
 \[
-  \varepsilon_1 \sim \mathcal{N}\left(\frac{1}{2}(a + b)(1 - \phi), \frac{b - a}{12} (1 - \phi ^ 2)\right),
+  \varepsilon_1 \sim \mathcal{N}\left(\frac{1}{2}(a + b)(1 - \varphi), \frac{b - a}{12} (1 - \varphi ^ 2)\right),
 \]
 where $a = 0.01$ and $b = 2$. Now, we define the first-order autoregressive process on $\varepsilon_s$ by
 \[
   \varepsilon_s = \varphi\varepsilon_{s - 1} + (1 - \varphi)\varepsilon,
 \]
-where $\varepsilon$ is as defined in the previous expression and the autocorrelation component $\phi = 0.75$. The mean and variance multipliers are the mean and variance of a random variable from the $\mathcal{U}_{[a,b]}$ distribution.
+where $\varepsilon$ is a random innovation drawn from the Normal distribution defined in the previous expression, and the autocorrelation component $\varphi = 0.75$. The mean and variance multipliers are the mean and variance of a random variable from the $\text{uniform}_{[a,b]}$ distribution.
 
 \subsubsection{The Non-Linear Latent Process}
-This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ with
+This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ by taking
 \[
   t^*_s = -\cos\left( \frac{2\pi}{\omega} s \right) + \epsilon_s,
 \]
-and scale $t^*$ to
+and then scaling $t^*$ to
 \[
   t = \frac{(b - a)(t^*_s - \text{min}(t^*_s))}{\text{max}(t^*_s) - \text{min}(t^*_s)} + a.
 \]
@@ -81,16 +81,16 @@ Finally then, the $t$ vector will lie entirely in $[a,b]$.
 \subsection{Single-State and Multi-State Features}
 
 \subsubsection{Single State Features}
-First \texttt{mspProcessData} simulates three features, with each feature operating under $k$ different states. Let $\langle x_k(t), y_k(t), z_k(t) \rangle$ be the notation for State $k$. These are the three features under State 1 (normal operating conditions, or \emph{NOC}) as three functions of $t$:
+First \texttt{mspProcessData} simulates three features, with each feature operating under $k$ different states. Let $\langle x_k(t_s), y_k(t_s), z_k(t_s) \rangle$ be the process evaluated at $t_s$ within State $k$. These are the three features under State 1 (in control, or \emph{IC}) as three functions of $t$:
 \begin{align}
-\textbf{x}(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
-\textbf{y}(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
-\textbf{z}(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3,
+x(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
+y(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
+z(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3,
 \end{align}
-where $\varepsilon_i \sim N(0, 0.01)$. The \texttt{mspProcessData} function calls the internal \texttt{processNOCdata} function to generate single-state observations under NOC.
+where $\varepsilon_i \sim N(0, 0.01),\ 1 = 1, 2, 3$. The \texttt{mspProcessData} function calls the internal \texttt{processNOCdata} function to generate IC single-state observations.
 
 \subsubsection{Multi-State Features}
-The multi-state feature expression is induced by rotation and scaling of certain sets of observations. To induce a three-state, hourly switching process (the default), the \texttt{mspProcessData} function will create a label column that switches from ``1'' to ``2'' to ``3'' every hour. State ``1'' will be the features generated under the single-state assumption, while State ``2'' and State ``3'' are generated as follows. These states will be scaled rotations of the current $\langle x,y,z \rangle$ set. The second state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2). The third state is yaw, pitch, and roll rotated by (90, 0, -30) degrees, and the scales are multiplied by (0.25, 0.1, 0.75).
+The multi-state feature expression is induced by rotation and scaling of certain sets of observations. To induce a three-state, hourly switching process (the default), the \texttt{mspProcessData} function will create a label column that switches from ``1'' to ``2'' to ``3'' every hour. State ``1'' will be the features generated under the single-state assumption, while State ``2'' and State ``3'' are generated as follows. These states will be scaled rotations of the current $\langle x,y,z \rangle$ set. The second state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2). The third state is yaw, pitch, and roll rotated by (90, 0, -30) degrees, and the scales are multiplied by (0.25, 0.1, 0.75). That is,
 \begin{enumerate}
 \item $\mathcal{S}_1$: $\textbf{X}(t_s) := \langle x(t_s), y(t_s), z(t_s)\rangle$.
 
@@ -119,13 +119,13 @@ These rotation matrices $\textbf{P}_1$ and $\textbf{P}_2$ turn the states in thr
 
 
 \subsection{Synthetic Fault Induction}
-Faults can be introduced to single- or multi-state data via the \texttt{mspProcessData} function. The default fault start index is 8500, or roughly 84\% through the 10,080 observation cycle. These faults are added through the internal \texttt{faultSwitch} function.
+Faults can be introduced to single- or multi-state data via the \texttt{mspProcessData} function. The default fault start index is 8500, or roughly 84\% through the cycle of 10,080 observations. These faults are added through the internal \texttt{faultSwitch} function.
 \begin{enumerate}
 \item Fault 1A is a positive shift to all three features before state rotation: $\textbf{X}^*(t_s) = \textbf{X}(t_s) + 2,\ s \ge 8500$.
 %
 \item Fault 1B is a positive shift to the $x$ feature before state rotation: $x^*(t_s) = x(t_s) + 2,\ s \ge 8500$.
 %
-\item Fault 1C is a positive shift to the $x$ and $z$ features in State 3 only and *after* state rotation: $x^*(t_s) = x(t_s) + 2,\ z^*(t_s) = z(t_s) + 2,\ s \ge 8500$.
+\item Fault 1C is a positive shift to the $x$ and $z$ features in State 3 only and \emph{after} state rotation: $x^*(t_s) = x(t_s) + 2,\ z^*(t_s) = z(t_s) + 2,\ s \ge 8500$.
 %
 \item Fault 2A is a positive drift across all the process monitoring features before state rotation: $\textbf{X}^*(t_s) = \textbf{X}(t_s) + (s - 8500)\times 10^{-3}$, $s > 8500$.
 %
@@ -142,7 +142,7 @@ Faults can be introduced to single- or multi-state data via the \texttt{mspProce
 
 
 \subsection{Putting it all together\ldots}
-The \texttt{mspProcessData} function can generate weeks' worth of non-linear, non-stationary, autocorrelated, multi-state, multivariate process data useful to test new process monitoring techniques. Users can generate observations under NOC to measure false alarm rates, or induce one of nine pre-built faults to test detection time and consistency with repeated Monte Carlo sampling. We expect this function will generate interesting data useful enough to compare new and improved process monitoring techniques with existing methods.
+The \texttt{mspProcessData} function can generate weeks' worth of non-linear, non-stationary, autocorrelated, multi-state, multivariate process data useful to test new process monitoring techniques. Users can generate IC observations to measure false alarm rates, or induce one of nine pre-built faults to test detection time and consistency with repeated Monte Carlo sampling. We expect this function will generate interesting data useful enough to compare new and improved process monitoring techniques with existing methods. A detailed description of this function's inputs and outputs are shown in Section \ref{sec:D_Workflow}.
 
 
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.6.2)  13 JUL 2017 11:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.6.2)  13 JUL 2017 11:48
 entering extended mode
 **./MS-MVSPC_DissertationVignette.tex
 (MS-MVSPC_DissertationVignette.tex
@@ -386,20 +386,17 @@ LaTeX Warning: Citation `dong_batch_1996' on page 2 undefined on input line 106
 .
 
 [2] [3]
-Overfull \hbox (34.96819pt too wide) in paragraph at lines 143--145
-\OT1/cmr/m/n/10 where $\OML/cmm/m/it/10 "[] \OMS/cmsy/m/n/10  \OML/cmm/m/it/10
- N\OT1/cmr/m/n/10 (0\OML/cmm/m/it/10 ; \OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/
-cmr/m/n/10 01)$. The \OT1/cmtt/m/n/10 mspProcessData \OT1/cmr/m/n/10 func-tion 
-calls the in-ter-nal \OT1/cmtt/m/n/10 processNOCdata
- []
-
-
-Overfull \hbox (9.87967pt too wide) in paragraph at lines 176--178
-\OT1/cmr/m/n/10 10,080 ob-ser-va-tion cy-cle. These faults are added through th
-e in-ter-nal \OT1/cmtt/m/n/10 faultSwitch
+Overfull \hbox (0.49078pt too wide) in paragraph at lines 176--178
+\OT1/cmr/m/n/10 of 10,080 ob-ser-va-tions. These faults are added through the i
+n-ter-nal \OT1/cmtt/m/n/10 faultSwitch
  []
 
 [4]
+
+LaTeX Warning: Reference `sec:D_Workflow' on page 5 undefined on input line 199
+.
+
+
 Overfull \hbox (2.94453pt too wide) in paragraph at lines 209--210
 \OT1/cmr/m/n/10 The \OT1/cmtt/m/n/10 mspTrain \OT1/cmr/m/n/10 func-tion will ge
 n-er-ate pro-jec-tion ma-tri-ces and test statis-tic thresh-
@@ -441,51 +438,57 @@ Overfull \hbox (137.99579pt too wide) in paragraph at lines 387--387
  []
 
 
+Overfull \hbox (6.74693pt too wide) in paragraph at lines 387--387
+[]\OT1/cmtt/m/n/10 ##   Data: num [1:4142, 1:5] 0.2407 0.0621 0.2815 0.1616 0.3
+386 ...[] 
+ []
+
+
 Overfull \hbox (137.99579pt too wide) in paragraph at lines 387--387
 []\OT1/cmtt/m/n/10 ##  $ Non_Alarmed_Obs:An xts object on 2015-05-19 08:59:00
 /2015-05-22 07:00:00 containing:[] 
  []
 
 
-Overfull \hbox (74.99634pt too wide) in paragraph at lines 387--387
-[]\OT1/cmtt/m/n/10 ##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.421 -0.386 0.
-434 0.429 -0.325 ...[] 
+Overfull \hbox (64.49643pt too wide) in paragraph at lines 387--387
+[]\OT1/cmtt/m/n/10 ##   .. ..$ projectionMatrix: num [1:6, 1:2] 0.421 -0.389 0.
+433 0.43 -0.32 ...[] 
  []
 
 
 Overfull \hbox (53.99652pt too wide) in paragraph at lines 387--387
-[]\OT1/cmtt/m/n/10 ##   .. ..$ muTrain         : Named num [1:6] 1.38 -2.08 2.9
-5 1.36 -2.04 ...[] 
+[]\OT1/cmtt/m/n/10 ##   .. ..$ muTrain         : Named num [1:6] 1.36 -2.09 2.9
+3 1.35 -2.05 ...[] 
  []
 
 
-Overfull \hbox (137.99579pt too wide) in paragraph at lines 387--387
-[]\OT1/cmtt/m/n/10 ##   .. ..$ projectionMatrix: num [1:6, 1:3] -0.50267 -0.002
-44 0.49616 -0.52609 -0.14826 ...[] 
+Overfull \hbox (101.24611pt too wide) in paragraph at lines 387--387
+[]\OT1/cmtt/m/n/10 ##   .. ..$ projectionMatrix: num [1:6, 1:3] 0.5025 -0.0192 
+-0.4984 0.5267 0.1392 ...[] 
  []
 
 
 Overfull \hbox (1.49698pt too wide) in paragraph at lines 387--387
-[]\OT1/cmtt/m/n/10 ##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.285 0 0 0 0.7
-06 ...[] 
+[]\OT1/cmtt/m/n/10 ##   .. ..$ LambdaInv       : num [1:3, 1:3] 0.285 0 0 0 0.6
+86 ...[] 
  []
 
 
-Overfull \hbox (80.24629pt too wide) in paragraph at lines 387--387
-[]\OT1/cmtt/m/n/10 ##   .. ..$ muTrain         : Named num [1:6] 2.958 -0.564 -
-4.481 2.931 -0.59 ...[] 
+Overfull \hbox (74.99634pt too wide) in paragraph at lines 387--387
+[]\OT1/cmtt/m/n/10 ##   .. ..$ muTrain         : Named num [1:6] 2.946 -0.565 -
+4.465 2.92 -0.59 ...[] 
  []
 
 
 Overfull \hbox (85.49625pt too wide) in paragraph at lines 387--387
-[]\OT1/cmtt/m/n/10 ##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.403 -0.456 -
-0.459 0.135 -0.458 ...[] 
+[]\OT1/cmtt/m/n/10 ##   .. ..$ projectionMatrix: num [1:6, 1:2] -0.399 -0.453 -
+0.454 0.152 -0.462 ...[] 
  []
 
 
 Overfull \hbox (69.74638pt too wide) in paragraph at lines 387--387
-[]\OT1/cmtt/m/n/10 ##   .. ..$ muTrain         : Named num [1:6] 0.523 0.269 1.
-409 0.565 0.255 ...[] 
+[]\OT1/cmtt/m/n/10 ##   .. ..$ muTrain         : Named num [1:6] 0.526 0.268 1.
+411 0.566 0.254 ...[] 
  []
 
 [9]
@@ -506,38 +509,38 @@ Overfull \hbox (11.99689pt too wide) in paragraph at lines 455--455
 
 
 Overfull \hbox (11.99689pt too wide) in paragraph at lines 455--455
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:00:00     1 0.6030535 -1.566528 0.8662376 0
-.3665282[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:00:00     1 0.4542266 -1.188745 0.6005185 0
+.3809131[] 
  []
 
 
 Overfull \hbox (11.99689pt too wide) in paragraph at lines 455--455
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:01:00     1 0.4416746 -1.406672 0.3811997 0
-.6030535[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:01:00     1 0.4889364 -1.416970 0.5952562 0
+.4542266[] 
  []
 
 
 Overfull \hbox (11.99689pt too wide) in paragraph at lines 455--455
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:02:00     1 0.5408433 -1.304789 0.4314055 0
-.4416746[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:02:00     1 0.6942253 -1.436590 0.9416095 0
+.4889364[] 
  []
 
 
 Overfull \hbox (11.99689pt too wide) in paragraph at lines 455--455
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:03:00     1 0.5082937 -1.391546 0.8054482 0
-.5408433[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:03:00     1 0.5357452 -1.563710 0.9727830 0
+.6942253[] 
  []
 
 
 Overfull \hbox (11.99689pt too wide) in paragraph at lines 455--455
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:04:00     1 0.4508361 -1.312723 0.8291703 0
-.5082937[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:04:00     1 0.6569141 -1.504261 0.9597280 0
+.5357452[] 
  []
 
 
 Overfull \hbox (11.99689pt too wide) in paragraph at lines 455--455
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:05:00     1 0.7068563 -1.465259 0.7728310 0
-.4508361[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:05:00     1 0.5957465 -1.298968 0.6082284 0
+.6569141[] 
  []
 
 Package color Info: Redefining color shadecolor on input line 462.
@@ -555,38 +558,38 @@ Overfull \hbox (43.49661pt too wide) in paragraph at lines 484--484
 
 
 Overfull \hbox (43.49661pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:00:00 0.6030535 -1.566528 0.8662376 0.36652
-82  0.08751379[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:00:00 0.4542266 -1.188745 0.6005185 0.38091
+31  0.09361165[] 
  []
 
 
 Overfull \hbox (43.49661pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:01:00 0.4416746 -1.406672 0.3811997 0.60305
-35 -1.56652763[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:01:00 0.4889364 -1.416970 0.5952562 0.45422
+66 -1.18874504[] 
  []
 
 
 Overfull \hbox (43.49661pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:02:00 0.5408433 -1.304789 0.4314055 0.44167
-46 -1.40667237[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:02:00 0.6942253 -1.436590 0.9416095 0.48893
+64 -1.41696998[] 
  []
 
 
 Overfull \hbox (43.49661pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:03:00 0.5082937 -1.391546 0.8054482 0.54084
-33 -1.30478897[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:03:00 0.5357452 -1.563710 0.9727830 0.69422
+53 -1.43659004[] 
  []
 
 
 Overfull \hbox (43.49661pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:04:00 0.4508361 -1.312723 0.8291703 0.50829
-37 -1.39154587[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:04:00 0.6569141 -1.504261 0.9597280 0.53574
+52 -1.56371006[] 
  []
 
 
 Overfull \hbox (43.49661pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:05:00 0.7068563 -1.465259 0.7728310 0.45083
-61 -1.31272320[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:05:00 0.5957465 -1.298968 0.6082284 0.65691
+41 -1.50426070[] 
  []
 
 
@@ -597,38 +600,38 @@ Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
 
 
 Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:00:00 0.3336879 0.7953977        0 24.56607
-4       0    NA[] 
- []
-
-
-Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:01:00 0.8662376 0.3442694        0  5.73186
-7       0    NA[] 
- []
-
-
-Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:02:00 0.3811997 0.4382832        0  6.23241
-9       0    NA[] 
- []
-
-
-Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:03:00 0.4314055 0.2334754        0  5.55800
-3       0    NA[] 
- []
-
-
-Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:04:00 0.8054482 0.5248950        0  5.47609
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:00:00 0.3698668 2.0491906        0 25.42354
 1       0    NA[] 
  []
 
 
 Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
-[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:05:00 0.8291703 0.1880696        0  4.89647
-5       0    NA[] 
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:01:00 0.6005185 0.1819048        0  6.56396
+4       0    NA[] 
+ []
+
+
+Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:02:00 0.5952562 0.3945702        0  5.08674
+0       0    NA[] 
+ []
+
+
+Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:03:00 0.9416095 0.1778764        0  4.27733
+0       0    NA[] 
+ []
+
+
+Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:04:00 0.9727830 0.1784149        0  4.39949
+2       0    NA[] 
+ []
+
+
+Overfull \hbox (48.74657pt too wide) in paragraph at lines 484--484
+[]\OT1/cmtt/m/n/10 ## 2015-05-22 07:05:00 0.9597280 1.1749990        0  5.39353
+2       0    NA[] 
  []
 
 Package color Info: Redefining color shadecolor on input line 492.
@@ -705,7 +708,7 @@ les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files
 /MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/M
 iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86)/MiK
 TeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on MS-MVSPC_DissertationVignette.pdf (15 pages, 230711 bytes).
+Output written on MS-MVSPC_DissertationVignette.pdf (15 pages, 229836 bytes).
 PDF statistics:
  219 PDF objects out of 1000 (max. 8388607)
  84 named destinations out of 1000 (max. 500000)
