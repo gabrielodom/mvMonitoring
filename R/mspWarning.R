@@ -19,7 +19,7 @@
 #'   to add a flag status to the most recent incoming observation in the matrix,
 #'   and return this new xts matrix. Then, pass this updated daily observation
 #'   matrix to the mspWarning() function, which will check if the process has
-#'   recorded three or more sequential monitoring statistic flags in a row. Of
+#'   recorded five or more sequential monitoring statistic flags in a row. Of
 #'   note, because these functions are expected to be repeatedly called in real
 #'   time, this function will only check for an alarm within the last row of the
 #'   xts matrix. To check multiple rows for an alarm state, please use the

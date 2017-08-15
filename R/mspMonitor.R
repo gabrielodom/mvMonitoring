@@ -24,7 +24,7 @@
 #'       "observations"}
 #'     \item{T2_Flag -- }{a vector of T2 fault indicators, defined like
 #'       SPE_Flag}
-#'     \item{Alarm -- }{a column indicating if there have been three flags in a
+#'     \item{Alarm -- }{a column indicating if there have been five flags in a
 #'       row for either the SPE or T2 monitoring statistics or both. Alarm
 #'       states are as follows: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 =
 #'       Squared Prediction Error alarm, and 3 = both alarms.}
