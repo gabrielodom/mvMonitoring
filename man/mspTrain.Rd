@@ -46,7 +46,7 @@ A list with the following components: \itemize{
       \item{T2 -- }{the T2 statistic value for each observation in "data"}
       \item{T2_Flag -- }{a vector of T2 fault indicators, defined like
         SPE_Flag}
-      \item{Alarm -- }{a column indicating if there have been three flags in
+      \item{Alarm -- }{a column indicating if there have been five flags in
         a row for either the SPE or T2 monitoring statistics or both. Alarm
         states are as follows: 0 = no alarm, 1 = Hotelling's T2 alarm,
         2 = Squared Prediction Error alarm, and 3 = both alarms.}
@@ -84,7 +84,7 @@ This function is designed to identify and sort out sequences of
   beyond these calculated critical values. Becuase of natural variablity
   inherent in all real data, we do not remove observations simply because
   they are have been flagged as outside normal operating conditions. This
-  function records an alarm only for observations having three flags in a
+  function records an alarm only for observations having five flags in a
   row, as set by the default argument value of "faultsToTriggerAlarm". These
   alarm-positive observations are then removed from the data set and held in
   a separate xts matrix for inspection.
