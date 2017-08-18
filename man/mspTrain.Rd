@@ -91,11 +91,11 @@ This function is designed to identify and sort out sequences of
 
   Concering the lagsIncluded variable: the argument lagsIncluded = c(0,1)
   will column concatenate the current data with the same data from one
-  discrete time step back. This will necesarily remove the first row of the
+  discrete time step back. This will necessarily remove the first row of the
   data matrix, as we will have NA values under the lagged features. The
   argument lagsIncluded = 0:2 will column concatenate the current
   observations with the observations from one step previous and the
-  observations from two steps previous, which will necessarily requirethe
+  observations from two steps previous, which will necessarily require the
   removal of the first two rows of the data matrix. To include only certain
   lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ... ,
   lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...

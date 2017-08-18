@@ -2,7 +2,7 @@ Package: mvMonitoring
 Type: Package
 Title: Multi-State Adaptive Dynamic Principal Component Analysis for
     Multivariate Process Monitoring
-Version: 0.1.1
+Version: 0.1.1.900
 Authors@R: c(person("Melissa", "Johnson", email = "melissa_johnson2@baylor.edu", role = c("aut")),
   person("Gabriel", "Odom", email = "gabriel_odom@baylor.edu", role = c("aut","cre")), 
   person("Ben", "Barnard", email = "ben_barnard@baylor.edu", role = c("aut")),

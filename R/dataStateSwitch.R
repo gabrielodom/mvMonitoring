@@ -49,8 +49,11 @@
 #' @importFrom dplyr select
 #' @importFrom magrittr %>%
 #'
-#' @examples nrml <- processNOCdata()
+#' @examples
+#'
+#' nrml <- processNOCdata()
 #' dataStateSwitch(nrml)
+#'
 dataStateSwitch <- function(df,
                             angles2 = list(yaw = 0, pitch = 90, roll = 30),
                             scales2 = c(1, 0.5, 2),

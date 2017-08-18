@@ -54,8 +54,10 @@ This function splits a process data frame by state, and rotates and
   is called internally by mspProcessData().
 }
 \examples{
+
 nrml <- processNOCdata()
 dataStateSwitch(nrml)
+
 }
 \seealso{
 Calls: \code{\link{processNOCdata}}, \code{\link{faultSwitch}},
