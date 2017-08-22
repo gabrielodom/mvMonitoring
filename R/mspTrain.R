@@ -8,6 +8,9 @@
 #'   numeric (two or more states) vector or matrix column (not from data frame)
 #'   with length equal to the number of rows in "data". For data with only one
 #'   state, this will be a vector of 1s.
+#' @param subsetList A list of k logical vectors indicating which variables
+#' to monitor in each  of the k states. Defaults to monitoring all variables in
+#' all states.
 #' @param trainObs The number of observations upon which to train the algorithm.
 #'   This will be split based on class information by a priori class membership
 #'   proportion.
@@ -39,9 +42,9 @@
 #'         2 = Squared Prediction Error alarm, and 3 = both alarms.}
 #'       }
 #'   }
-#'   \item{Non_Alarmed_Obs -- }{an xts data matrix of all the non-alarmed
-#'     observations}
-#'   \item{Alarms -- }{an xts data matrix of the features and specific alarms
+#'   \item{Non_Alarmed_Obs -- }{an list of xts data matrices of all the non-alarmed
+#'     observations for each state.}
+#'   \item{Alarms -- }{a list of xts data matrices of the features for each state and specific alarms
 #'     for Alarmed observations with the alarm codes are listed above}
 #'   \item{TrainingSpecs -- }{a list of k lists, one for each class, with each
 #'     list containing the specific threshold object returned by the internal
@@ -123,14 +126,26 @@
 #' @importFrom xts is.xts
 #'
 #' @examples
+#' ## No subsetting ##
 #' nrml <- mspProcessData(faults = "NOC")
 #'
 #' mspTrain(data = nrml[, -1],
 #'          labelVector = nrml[, 1],
 #'          trainObs = 4320)
+#' #######################
+#' # Subsetting Example  #
+#' #######################
+#' nrml <- mspProcessData(faults = "NOC")
 #'
+#' sub <- list(c(T,T,T), c(T, F, F), c(F, T, T))
+#'
+#' mspTrain(data = nrml[, -1], subsetList = sub,
+#'         labelVector = nrml[, 1],
+#'         trainObs = 4320)
+
 mspTrain <- function(data,
                      labelVector,
+                     subsetList = rep(list(rep(T,ncol(data))),length(unique(labelVector))),
                      trainObs,
                      updateFreq = ceiling(0.5 * trainObs),
                      Dynamic = TRUE,
@@ -141,6 +156,11 @@ mspTrain <- function(data,
   ls <- lazy_dots(...)
 
   # browser()
+
+  # DO. NOT. DELETE.
+  # If you delete this "subsetList", the code WILL NOT RUN
+  # Don't ask me why, either.
+  subsetList
 
   if(!is.xts(data)){
     stop("Object 'data' is not an xts object. Please transform your data to an
@@ -163,9 +183,19 @@ mspTrain <- function(data,
     sum(labelVector == x) / nrow(labelVector)
   })
   classData <- cbind(labelVector[-(1:max(abs(lagsIncluded))),], data)
+
+
+
+  # This is the chunk of code that does the subsetting
+  # Again, note that an xts object is NOT a data frame
+  for(i in 1:length(classes)){
+    subsetList[[i]] <- rep(subsetList[[i]], length(lagsIncluded))
+    subsetList[[i]] <- (2:(ncol(data)+1))[subsetList[[i]]]
+  }
+
   data_ls <- lapply(1:length(classes), function(i){
     data_df <- classData[classData[,1] == classes[i],]
-    data_df[, -1]
+    data_df <- data_df[,subsetList[[i]]]
   })
   names(data_ls) <- names(classes)
 
@@ -174,8 +204,7 @@ mspTrain <- function(data,
             args = c(list(data = data_ls[[names(classes)[i]]],
                           trainObs = floor(trainObs * memberProp[i]),
                           updateFreq = floor(updateFreq * memberProp[i]),
-                          faultsToTriggerAlarm = faultsToTriggerAlarm),
-                     lazy_eval(ls)))
+                          faultsToTriggerAlarm = faultsToTriggerAlarm)))
   })
 
   names(monitorResults) <- names(classes)
@@ -186,14 +215,13 @@ mspTrain <- function(data,
   })
   FaultChecks <- do.call(rbind, FaultChecks)
 
-  # Non-alarmed observations data matrix
+  # Non-alarmed observations list
   Non_Alarmed_Obs <- lapply(1:length(classes), function(i){
     monitorResults[[names(classes)[i]]]$Non_Alarmed_Obs
   })
-  Non_Alarmed_Obs <- do.call(rbind, Non_Alarmed_Obs)
-  Non_Alarmed_Obs <- cbind(classData[index(Non_Alarmed_Obs), 1],
-                           Non_Alarmed_Obs)
-
+  for(i in 1:length(classes)){
+    Non_Alarmed_Obs[[i]] <- cbind(classData[index(Non_Alarmed_Obs[[i]]), 1], Non_Alarmed_Obs[[i]])
+  }
   # Alarmed observations and corresponding alarm codes data matrix
   Alarms <- lapply(1:length(classes), function(i){
     monitorResults[[names(classes)[i]]]$Alarms
@@ -209,9 +237,8 @@ mspTrain <- function(data,
   })
   if(sum(condition) != 0){
     # If there is at least one non-empty xts object in Alarms, then find the
-    # non-empty ones and row bind their observations together.
+    # non-empty ones
     Alarms <- Alarms[condition]
-    Alarms <- do.call(rbind, Alarms)
   }else{
     # Otherwise (all the xts objects are empty), return the first one.
     Alarms <- Alarms[[1]]
@@ -228,4 +255,4 @@ mspTrain <- function(data,
        Non_Alarmed_Obs = Non_Alarmed_Obs,
        Alarms = Alarms,
        TrainingSpecs = TrainingSpecs)
-}
+  }
