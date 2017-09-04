@@ -6,5 +6,7 @@ cache: packages
 
 notifications:
   email:
-    - melissa_johnson2@baylor.edu
-    - gabriel.odom@med.maimi.edu
+    recipients:
+      - gabriel_odom@baylor.edu
+      - melissa_johnson2@baylor.edu
+      - gabriel.odom@med.maimi.edu
