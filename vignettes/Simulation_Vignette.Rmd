@@ -741,9 +741,9 @@ First, we import the two data sets.
 # library(mvMonitoring)
 # library(xts)
 if(.Platform$OS.type == "windows"){
-  tenDayData_v2 <- read_csv("~/GitHub/mvMonitoring/mvMonitoring/inst/tenDayData_v2.csv", 
+  tenDayData_v2 <- read_csv("~/GitHub/mvMonitoring/inst/tenDayData_v2.csv", 
   col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
-currentDayData_v2 <- read_csv("~/GitHub/mvMonitoring/mvMonitoring/inst/currentDayData_v2.csv", 
+currentDayData_v2 <- read_csv("~/GitHub/mvMonitoring/inst/currentDayData_v2.csv", 
   col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
 }else{
   tenDayData_v2 <- read_csv("~/Documents/GitHub/mvMonitoring/inst/tenDayData_v2.csv", 
