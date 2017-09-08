@@ -4,10 +4,8 @@
 \alias{mspTrain}
 \title{Multi-State Adaptive-Dynamic Process Training}
 \usage{
-mspTrain(data, labelVector, subsetList = rep(list(rep(T, ncol(data))),
-  length(unique(labelVector))), trainObs, updateFreq = ceiling(0.5 *
-  trainObs), Dynamic = TRUE, lagsIncluded = c(0, 1),
-  faultsToTriggerAlarm = 5, ...)
+mspTrain(data, labelVector, trainObs, updateFreq = ceiling(0.5 * trainObs),
+  Dynamic = TRUE, lagsIncluded = c(0, 1), faultsToTriggerAlarm = 5, ...)
 }
 \arguments{
 \item{data}{An xts data matrix}
@@ -16,10 +14,6 @@ mspTrain(data, labelVector, subsetList = rep(list(rep(T, ncol(data))),
 numeric (two or more states) vector or matrix column (not from data frame)
 with length equal to the number of rows in "data". For data with only one
 state, this will be a vector of 1s.}
-
-\item{subsetList}{A list of k logical vectors indicating which variables
-to monitor in each  of the k states. Defaults to monitoring all variables in
-all states.}
 
 \item{trainObs}{The number of observations upon which to train the algorithm.
 This will be split based on class information by a priori class membership
@@ -58,9 +52,9 @@ A list with the following components: \itemize{
         2 = Squared Prediction Error alarm, and 3 = both alarms.}
       }
   }
-  \item{Non_Alarmed_Obs -- }{an list of xts data matrices of all the non-alarmed
-    observations for each state.}
-  \item{Alarms -- }{a list of xts data matrices of the features for each state and specific alarms
+  \item{Non_Alarmed_Obs -- }{an xts data matrix of all the non-alarmed
+    observations}
+  \item{Alarms -- }{an xts data matrix of the features and specific alarms
     for Alarmed observations with the alarm codes are listed above}
   \item{TrainingSpecs -- }{a list of k lists, one for each class, with each
     list containing the specific threshold object returned by the internal
@@ -136,22 +130,12 @@ This function is designed to identify and sort out sequences of
   \url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
 }
 \examples{
-## No subsetting ##
 nrml <- mspProcessData(faults = "NOC")
 
 mspTrain(data = nrml[, -1],
          labelVector = nrml[, 1],
          trainObs = 4320)
-#######################
-# Subsetting Example  #
-#######################
-nrml <- mspProcessData(faults = "NOC")
 
-sub <- list(c(T,T,T), c(T, F, F), c(F, T, T))
-
-mspTrain(data = nrml[, -1], subsetList = sub,
-        labelVector = nrml[, 1],
-        trainObs = 4320)
 }
 \seealso{
 Calls: \code{\link{processMonitor}}. Pipe flow: \code{mspTrain}
