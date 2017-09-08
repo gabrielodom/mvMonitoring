@@ -22,9 +22,9 @@
 #' @examples
 #' nrml <- mspProcessData(faults = "NOC")
 #'
-#' sub1 <- c(T,T,F)
-#' sub2 <- c(T,F,T)
-#' sub3 <- c(T,F,F)
+#' sub1 <- c(TRUE,TRUE,FALSE)
+#' sub2 <- c(TRUE,FALSE,TRUE)
+#' sub3 <- c(TRUE,FALSE,FALSE)
 #' submatrix <- t(matrix(c(sub1,sub2,sub3),nrow=3,ncol=3))
 #'
 #' subsets <- mspSubset(data = nrml[,-1],
