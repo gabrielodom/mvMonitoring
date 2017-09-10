@@ -28,6 +28,10 @@ A list with classes "threshold" and "pca" containing:
       function. See the pca() function's help file for more details.}
     \item{LambdaInv -- }{a diagonal matrix of the reciprocal eigenvalues of the
       data scatter matrix}
+    \item{T2 -- }{the vector of Hotelling's T2 test statistic values for each of the n
+    observations in "data"}
+    \item{SPE -- }{the vector of SPE test statistic values for each of the n
+    observations in "data"}
   }
 }
 \description{

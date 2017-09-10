@@ -21,6 +21,10 @@
 #'       function. See the pca() function's help file for more details.}
 #'     \item{LambdaInv -- }{a diagonal matrix of the reciprocal eigenvalues of the
 #'       data scatter matrix}
+#'     \item{T2 -- }{the vector of Hotelling's T2 test statistic values for each of the n
+#'     observations in "data"}
+#'     \item{SPE -- }{the vector of SPE test statistic values for each of the n
+#'     observations in "data"}
 #'   }
 #'
 #' @details This function takes in a pca object returned by the pca() function
@@ -76,7 +80,9 @@ threshold.pca <- function(pca_object, alpha = 0.001, ...){
   object <- list(SPE_threshold = SPE.lim.np,
                  T2_threshold = T2.lim.np,
                  projectionMatrix = pca_object$projectionMatrix,
-                 LambdaInv = pca_object$LambdaInv)
+                 LambdaInv = pca_object$LambdaInv,
+                 T2 = pca_object[[4]],
+                 SPE = pca_object[[3]])
 
   class(object) <- c("threshold", "pca")
   object
