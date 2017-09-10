@@ -19,6 +19,7 @@
 #'
 #' @details This function is designed to be used in conjunction with \code{\link{mspTrain}}
 #' and to allow the user to monitor a different subset of the variables during each state.
+#' @export
 #' @examples
 #' nrml <- mspProcessData(faults = "NOC")
 #'
