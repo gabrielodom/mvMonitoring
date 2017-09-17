@@ -1,4 +1,6 @@
-#' mvMonitoring: A package for multivariate statistical process monitoring.
+#' @name mvMonitoring
+#'
+#' @title A Package for Multivariate Statistical Process Monitoring
 #'
 #' @description The \code{mvMonitoring} package has four main functions for
 #'   external use, all of which begin with the string "msp" (for "multivariate
