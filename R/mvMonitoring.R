@@ -26,7 +26,6 @@
 #'     }
 #'   }
 #'
-#'   @docType package
-#'   @name mvMonitoring
-
+#' @docType package
+#' @name mvMonitoring
 NULL
