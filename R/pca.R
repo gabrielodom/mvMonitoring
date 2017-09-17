@@ -58,12 +58,18 @@ pca.matrix <- function(data, var.amnt = 0.90, ...){
         evalR <- eigenR$values
         evecR <- eigenR$vectors
         prop.var <- as.matrix(cumsum(evalR) / sum(evalR) * 100)
+
+        if(var.amnt != 1){
         comps <- which(prop.var - (var.amnt * 100) > 0)[1]
 
         P <- as.matrix(evecR[, 1:comps]) # Transformation matrix
 
         Lambda <- diag(evalR[1:comps], ncol = length(1:comps))
+        } else{
+         P <- as.matrix(evecR) # Transformation matrix
 
+        Lambda <- diag(evalR, ncol = length(evalR))
+}
 
         # Rotated Matrix
         PCs <- data %*% P
