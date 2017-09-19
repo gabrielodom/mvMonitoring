@@ -60,7 +60,7 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
-#' @importFrom magrittr %>%
+#' @importFrom rlang .data
 #' @importFrom stats rnorm
 #'
 #' @examples processNOCdata()
@@ -110,10 +110,10 @@ processNOCdata <- function(startTime = "2015-05-16 10:00:00 CST",
                           err2 = rnorm(n = omega, sd = sqrt(errVar)),
                           err3 = rnorm(n = omega, sd = sqrt(errVar)))
   normal_df <- mutate(normal_df,
-                      x = t + err1,
-                      y = t ^ 2 - 3 * t + err2,
-                      z = -t ^ 3 + 3 * t ^ 2 + err3)
-  orig_state_mat <- normal_df %>% select(x, y, z) %>% as.matrix
+                      x = t + .data$err1,
+                      y = t ^ 2 - 3 * t + .data$err2,
+                      z = -t ^ 3 + 3 * t ^ 2 + .data$err3)
+  orig_state_mat <- as.matrix(select(normal_df, .data$x, .data$y, .data$z))
 
   # Add a date-time column
   normal_df$dateTime <- seq.POSIXt(from = as.POSIXct(startTime),
