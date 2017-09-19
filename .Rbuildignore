@@ -3,5 +3,7 @@
 ^\.travis\.yml$
 ^README\.Rmd$
 ^README-.*\.png$
-^C:/Users/gabriel_odom/Documents/GitHub/mvMonitoring/mvMonitoring/docs$
 ^_pkgdown\.yml$
+^LaTeX_Vignettes$
+^docs$
+^README\.html$
