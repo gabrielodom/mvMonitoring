@@ -4,6 +4,6 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^_pkgdown\.yml$
-^LaTeX_Vignettes$
+^LaTeX_Vignette$
 ^docs$
 ^README\.html$
