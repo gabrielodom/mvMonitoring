@@ -91,9 +91,10 @@
 #' @export
 #'
 #' @importFrom dplyr bind_rows
+#' @importFrom dplyr select
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval lazy_eval
-#' @importFrom magrittr %>%
+#' @importFrom rlang .data
 #' @importFrom stats runif
 #' @importFrom xts xts
 #'
@@ -135,39 +136,38 @@ mspProcessData <- function(faults,
                             faultStartIndex = faultStartIndex,
                             period = period,
                             postStateSplit = FALSE)
-    # fault_xts <- xts(fault_df %>% select(x, y, z, state),
+    # fault_xts <- xts(select(fault_df, x, y, z, state),
     #                  order.by = fault_df[,8])
     # mspGraphsGrid(fault_xts)
 
     ###  Modify and Combine the Observations  ###
     normal_df <- if(multiState){
-      dataStateSwitch(normal_df,
-                      angles2 = angles2, scales2 = scales2,
-                      angles3 = angles3, scales3 = scales3) %>%
-        select(dateTime, state, x, y, z)
+      df1 <- dataStateSwitch(normal_df,
+                             angles2 = angles2, scales2 = scales2,
+                             angles3 = angles3, scales3 = scales3)
+      select(df1, .data$dateTime, .data$state, .data$x, .data$y, .data$z)
     }else{
       normal_df$state <- 1
-      normal_df %>% select(dateTime, state, x, y, z)
+      select(normal_df, .data$dateTime, .data$state, .data$x, .data$y, .data$z)
     }
 
     fault_df <- if(multiState){
-      df <- dataStateSwitch(fault_df,
+      df2 <- dataStateSwitch(fault_df,
                       angles2 = angles2, scales2 = scales2,
                       angles3 = angles3, scales3 = scales3)
-      # df_xts <- xts(df %>% select(x, y, z, state),
+      # df_xts <- xts(select(df, x, y, z, state),
       #                  order.by = df[,1])
       # mspGraphsGrid(df_xts)
-      df2 <- faultSwitch(df, fault = x,
-                  faultStartIndex = faultStartIndex,
-                  period = period, postStateSplit = TRUE) %>%
-        select(dateTime, state, x, y, z)
-      # df2_xts <- xts(df2 %>% select(x, y, z, state),
+      df3 <- faultSwitch(df2, fault = x,
+                         faultStartIndex = faultStartIndex,
+                         period = period, postStateSplit = TRUE)
+      # df2_xts <- xts(select(df2, x, y, z, state),
       #                  order.by = df2[,1])
       # mspGraphsGrid(df2_xts)
-      df2
+      select(df3, .data$dateTime, .data$state, .data$x, .data$y, .data$z)
     }else{
       fault_df$state <- 1
-      fault_df %>% select(dateTime, state, x, y, z)
+      select(fault_df, .data$dateTime, .data$state, .data$x, .data$y, .data$z)
     }
 
     ###  Bind the Normal and Fault Observations  ###
