@@ -121,7 +121,7 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
-#' @importFrom magrittr %>%
+#' @importFrom rlang .data
 #'
 #' @examples nrml <- processNOCdata()
 #' faultSwitch(nrml, fault = "NOC")
@@ -135,58 +135,74 @@ faultSwitch <- function(df, fault,
   ###  Define the Fault Functions  ###
   # Fault 1A
   fault1A <- function(df, shift){
-    df %>%
-      mutate(x = x + shift,
-             y = y + shift,
-             z = z + shift) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df,
+                  x = .data$x + shift,
+                  y = .data$y + shift,
+                  z = .data$z + shift)
+    select(df1,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   # Fault1B
   fault1B <- function(df, shift){
-    df %>%
-      mutate(x = x + shift) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df, x = .data$x + shift)
+    select(df1,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   # Fault 1C
   fault1C <- function(df, shift){
-    df %>%
-      mutate(state3Ind = state == 3) %>%
-      mutate(x = x + state3Ind * shift / 4,
-             z = z + state3Ind * shift / 4) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df, state3Ind = .data$state == 3)
+    df2 <- mutate(df1,
+                  x = .data$x + .data$state3Ind * shift / 4,
+                  z = .data$z + .data$state3Ind * shift / 4)
+    select(df2,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   # Fault 2A
   fault2A <- function(df, faultStartIndex, period){
     drift_vec <- (1:period - faultStartIndex) / 10 ^ 3
     drift_vec[drift_vec < 0] <- 0
-    df %>%
-      mutate(x = x + drift_vec,
-             y = y + drift_vec,
-             z = z + drift_vec) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df,
+                  x = .data$x + drift_vec,
+                  y = .data$y + drift_vec,
+                  z = .data$z + drift_vec)
+    select(df1,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   # Fault 2B
   fault2B <- function(df, faultStartIndex, period){
     drift_vec <- (1:period - faultStartIndex) / 10 ^ 3
     drift_vec[drift_vec < 0] <- 0
-    df %>%
-      mutate(y = y + drift_vec,
-             z = z + drift_vec) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df,
+                  y = .data$y + drift_vec,
+                  z = .data$z + drift_vec)
+    select(df1,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   # Fault 2C
   fault2C <- function(df, faultStartIndex, period){
     drift_vec <- 1.5 * (1:period - faultStartIndex) / (period - faultStartIndex)
     drift_vec[drift_vec < 0] <- 0
-    df %>%
-      mutate(state2Ind = state == 2) %>%
-      mutate(y = y - state2Ind * drift_vec) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df, state2Ind = .data$state == 2)
+    df2 <- mutate(df1, y = .data$y - .data$state2Ind * drift_vec)
+    select(df2,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   # Fault 3A
@@ -194,24 +210,30 @@ faultSwitch <- function(df, fault,
     amplify_vec <- 5 * (1:period - faultStartIndex) /
       (period - faultStartIndex) + 1
     amplify_vec[amplify_vec < 1] <- 1
-    df %>%
-      mutate(t = amplify_vec * t) %>%
-      mutate(x = t + err1,
-             y = t ^ 2 - 3 * t + err2,
-             z = -t ^ 3 + 3 * t ^ 2 + err3) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df, t = amplify_vec * t)
+    df2 <- mutate(df1,
+                  x = t + .data$err1,
+                  y = t ^ 2 - 3 * t + .data$err2,
+                  z = -t ^ 3 + 3 * t ^ 2 + .data$err3)
+    select(df2,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   # Fault 3B
   fault3B <- function(df, faultStartIndex, period){
     t_log <- df$t
     t_log[faultStartIndex:period] <- log(t_log[faultStartIndex:period])
-    df %>%
-      mutate(t_damp = t_log) %>%
-      mutate(x = t + err1,
-             y = t ^ 2 - 3 * t + err2,
-             z = -t_damp ^ 3 + 3 * t_damp ^ 2 + err3) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df, t_damp = t_log)
+    df2 <- mutate(df1,
+                  x = t + .data$err1,
+                  y = t ^ 2 - 3 * t + .data$err2,
+                  z = -.data$t_damp ^ 3 + 3 * .data$t_damp ^ 2 + .data$err3)
+    select(df2,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   # Fault 3C
@@ -219,13 +241,15 @@ faultSwitch <- function(df, fault,
     # amplify_vec <- 5 * (1:period - faultStartIndex) /
     #   (period - faultStartIndex) + 1
     # amplify_vec[amplify_vec < 1] <- 1
-    df %>%
-      mutate(state2Ind = state == 2) %>%
-      # Remember that this is 1 + whatever the coefficent is, because
-      # y already has err2 in it.
-      mutate(err2Mod = (2 * err2 - 0.25) * state2Ind) %>%
-      mutate(y = y + err2Mod) %>%
-      select(dateTime, state, t, x, y, z, err1, err2, err3)
+    df1 <- mutate(df, state2Ind = .data$state == 2)
+    # Remember that this is 1 + whatever the coefficent is, because
+    #   y already has err2 in it.
+    df2 <- mutate(df1, err2Mod = (2 * .data$err2 - 0.25) * .data$state2Ind)
+    df3 <- mutate(df2, y = .data$y + .data$err2Mod)
+    select(df3,
+           .data$dateTime, .data$state,
+           .data$t, .data$x, .data$y, .data$z,
+           .data$err1, .data$err2, .data$err3)
   }
 
   ###  Return the Faulted Data  ###
