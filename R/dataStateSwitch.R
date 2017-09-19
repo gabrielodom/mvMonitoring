@@ -47,7 +47,7 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr filter
 #' @importFrom dplyr select
-#' @importFrom magrittr %>%
+#' @importFrom rlang .data
 #'
 #' @examples nrml <- processNOCdata()
 #' dataStateSwitch(nrml)
@@ -58,7 +58,7 @@ dataStateSwitch <- function(df,
                             scales3 = c(0.25, 0.1, 0.75)){
   # browser()
 
-  mat <- df %>% select(x,y,z) %>% as.matrix
+  mat <- as.matrix(select(df, .data$x, .data$y, .data$z))
 
   # State 2
   S2_mat <- mat %*% rotateScale3D(rot_angles = angles2,
@@ -77,19 +77,31 @@ dataStateSwitch <- function(df,
   df$zState3 <- S3_mat[,3]
 
   # Hourly switching process
-  state1_df <- df %>%
-    filter(state == 1) %>%
-    select(dateTime, state, x, y, z)
-  state2_df <- df %>%
-    filter(state == 2) %>%
-    select(dateTime, state, x = xState2, y = yState2, z = zState2)
-  state3_df <- df %>%
-    filter(state == 3) %>%
-    select(dateTime, state, x = xState3, y = yState3, z = zState3)
-  switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
-    arrange(dateTime)
+  state1_df <- select(filter(df,.data$state == 1),
+                      .data$dateTime,
+                      .data$state,
+                      .data$x,
+                      .data$y,
+                      .data$z)
+
+  state2_df <- select(filter(df, .data$state == 2),
+                      .data$dateTime,
+                      .data$state,
+                      x = .data$xState2,
+                      y = .data$yState2,
+                      z = .data$zState2)
+
+  state3_df <- select(filter(df, .data$state == 3),
+                      .data$dateTime,
+                      .data$state,
+                      x = .data$xState3,
+                      y = .data$yState3,
+                      z = .data$zState3)
+
+  switch_df <- bind_rows(state1_df, state2_df, state3_df)
+  switch_df <- arrange(switch_df, .data$dateTime)
   switch_df <- bind_cols(switch_df,
-                         df %>% select(t, err1, err2, err3))
+                         select(df, t, .data$err1, .data$err2, .data$err3))
 
   switch_df
 }
