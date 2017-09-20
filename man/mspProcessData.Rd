@@ -109,7 +109,12 @@ For details on how the faults are induced, see the "details" of the
   }
 }
 \examples{
-mspProcessData(faults = "All")
+
+\dontrun{# cut down on R CMD check time
+
+   mspProcessData(faults = "All")
+
+}
 }
 \seealso{
 Calls: \code{\link{processNOCdata}}, \code{\link{faultSwitch}},

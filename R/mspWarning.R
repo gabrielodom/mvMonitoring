@@ -35,28 +35,34 @@
 #' @importFrom xts lag.xts
 #'
 #' @examples
-#' nrml <- mspProcessData(faults = "NOC")
-#' n <- nrow(nrml)
 #'
-#' # Calculate the training summary, but save five observations for monitoring.
-#' trainResults_ls <- mspTrain(data = nrml[1:(n - 5), -1],
-#'                             labelVector = nrml[1:(n - 5), 1],
-#'                             trainObs = 4320)
+#' \dontrun{# cut down on R CMD check time
 #'
-#' # While training, we included 1 lag (the default), so we will also lag the
-#' # observations we will test.
-#' testObs <- nrml[(n - 6):n, -1]
-#' testObs <- xts:::lag.xts(testObs, 0:1)
-#' testObs <- testObs[-1,]
-#' testObs <- cbind(nrml[(n - 5):n, 1], testObs)
+#'   nrml <- mspProcessData(faults = "NOC")
+#'   n <- nrow(nrml)
 #'
-#' # Run the monitoring function.
-#' dataAndFlags <- mspMonitor(observations = testObs[, -1],
-#'                            labelVector = testObs[, 1],
-#'                            trainingSummary = trainResults_ls$TrainingSpecs)
+#'   # Calculate the training summary, but save five observations for monitoring.
+#'   trainResults_ls <- mspTrain(data = nrml[1:(n - 5), -1],
+#'                               labelVector = nrml[1:(n - 5), 1],
+#'                               trainObs = 4320)
 #'
-#' # Alarm check the last row of the matrix returned by the mspMonitor function
-#' mspWarning(dataAndFlags)
+#'   # While training, we included 1 lag (the default), so we will also lag the
+#'   #   observations we will test.
+#'   testObs <- nrml[(n - 6):n, -1]
+#'   testObs <- xts:::lag.xts(testObs, 0:1)
+#'   testObs <- testObs[-1,]
+#'   testObs <- cbind(nrml[(n - 5):n, 1], testObs)
+#'
+#'   # Run the monitoring function.
+#'   dataAndFlags <- mspMonitor(observations = testObs[, -1],
+#'                              labelVector = testObs[, 1],
+#'                              trainingSummary = trainResults_ls$TrainingSpecs)
+#'
+#'   # Alarm check the last row of the matrix returned by the mspMonitor
+#'   #   function
+#'   mspWarning(dataAndFlags)
+#'
+#' }
 #'
 mspWarning <- function(mspMonitor_object,
                        faultsToTriggerAlarm = 5){

@@ -130,11 +130,16 @@ This function is designed to identify and sort out sequences of
   \url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
 }
 \examples{
-nrml <- mspProcessData(faults = "NOC")
 
-mspTrain(data = nrml[, -1],
+\dontrun{# cut down on R CMD check time
+
+  nrml <- mspProcessData(faults = "NOC")
+
+  mspTrain(data = nrml[, -1],
          labelVector = nrml[, 1],
          trainObs = 4320)
+
+}
 
 }
 \seealso{

@@ -98,7 +98,13 @@
 #' @importFrom stats runif
 #' @importFrom xts xts
 #'
-#' @examples mspProcessData(faults = "All")
+#' @examples
+#'
+#' \dontrun{# cut down on R CMD check time
+#'
+#'    mspProcessData(faults = "All")
+#'
+#' }
 mspProcessData <- function(faults,
                            period = 7 * 24 * 60,
                            faultStartIndex = round(0.8433 * period),
