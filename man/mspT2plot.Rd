@@ -37,3 +37,35 @@ dictates the number of principal components to keep}
 Plots a variaton of the Hotelling's T-squared statistic to
 visualize the contribution of each variable to a fault.
 }
+\examples{
+# Create some data
+dataA1 <- mspProcessData(faults = "B1")
+traindataA1 <- dataA1[1:8567,]
+
+# Train on the data that should be in control
+trainResults <- mspTrain(traindataA1[,-1], traindataA1[,1], trainObs = 4320)
+
+
+# Lag an out of control observation
+testdataA1 <- dataA1[8567:8568,-1]
+testdataA1 <- lag.xts(testdataA1,0:1)
+testdataA1 <- testdataA1[-1,]
+testdataA1 <- cbind(dataA1[8568,1],testdataA1)
+
+# Monitor this observation
+monitorResults <- mspMonitor(observations = testdataA1[,-1],
+                             labelVector = testdataA1[,1],
+                             trainingSummary = trainResults$TrainingSpecs)
+
+
+tD <- traindataA1[,-1]
+tL <- traindataA1[,1]
+nD <- testdataA1[,-1]
+nL <- testdataA1[,1]
+tO <- 4320
+vA <- 0.95
+nT2 <- monitorResults$T2
+tT2 <- trainResults$TrainingSpecs[[nL]]$T2
+
+mspT2plot(tD,tL,tT2,nD,nL,nT2,tO,vA)
+}
