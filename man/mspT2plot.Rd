@@ -34,7 +34,7 @@ proportions.}
 dictates the number of principal components to keep}
 }
 \description{
-Plots a variaton of the Hotelling's T-squared statistic to
+Plots a variation of the Hotelling's T-squared statistic to
 visualize the contribution of each variable to a fault.
 }
 \examples{

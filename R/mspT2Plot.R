@@ -1,5 +1,5 @@
 #' T-Squared Contribution Plots
-#' @description Plots a variaton of the Hotelling's T-squared statistic to
+#' @description Plots a variation of the Hotelling's T-squared statistic to
 #' visualize the contribution of each variable to a fault.
 #'
 #' @param trainData an xts data matrix containing the training observations
