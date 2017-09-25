@@ -92,7 +92,7 @@ mspContributionPlot <- function(trainData,
   # Create an adjusted boxplot of the training CVs
   trainCV <- trainCV[-1]
   trainCV2 <- unlist(trainCV)
-  trainGroup <- rep(1:length(trainCV[[1]]), length(trainCV))
+  trainGroup <- rep(names(trainData), length(trainCV))
 
   adjbox(trainCV2~trainGroup, xlab = "Variable", main = "Adjusted Boxplots of Contribution Values")
 
