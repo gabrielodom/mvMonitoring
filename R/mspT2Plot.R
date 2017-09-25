@@ -20,6 +20,10 @@
 #' This will be split based on class information by a priori class membership
 #' proportions.
 #' @export
+#' @importFrom graphics abline
+#' @importFrom graphics arrows
+#' @importFrom graphics hist
+#' @importFrom graphics points
 #' @examples
 #' # Create some data
 #' dataA1 <- mspProcessData(faults = "B1")
