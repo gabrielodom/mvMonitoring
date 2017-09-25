@@ -50,9 +50,9 @@
 #' nT2 <- monitorResults$T2
 #' tT2 <- trainResults$TrainingSpecs[[nL]]$T2
 #'
-#' mspT2plot(tD,tL,tT2,nD,nL,nT2,tO,vA)
+#' mspT2Plot(tD,tL,tT2,nD,nL,nT2,tO,vA)
 
-mspT2plot <- function(trainData,
+mspT2Plot <- function(trainData,
                       trainLabel,
                       trainT2,
                       newData,
