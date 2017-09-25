@@ -25,6 +25,7 @@
 #' @importFrom graphics hist
 #' @importFrom graphics points
 #' @examples
+#' \dontrun{
 #' # Create some data
 #' dataA1 <- mspProcessData(faults = "B1")
 #' traindataA1 <- dataA1[1:8567,]
@@ -55,6 +56,7 @@
 #' tT2 <- trainResults$TrainingSpecs[[nL]]$T2
 #'
 #' mspT2Plot(tD,tL,tT2,nD,nL,nT2,tO,vA)
+#' }
 
 mspT2Plot <- function(trainData,
                       trainLabel,

@@ -38,6 +38,7 @@ Plots a variation of the Hotelling's T-squared statistic to
 visualize the contribution of each variable to a fault.
 }
 \examples{
+\dontrun{
 # Create some data
 dataA1 <- mspProcessData(faults = "B1")
 traindataA1 <- dataA1[1:8567,]
@@ -68,4 +69,5 @@ nT2 <- monitorResults$T2
 tT2 <- trainResults$TrainingSpecs[[nL]]$T2
 
 mspT2Plot(tD,tL,tT2,nD,nL,nT2,tO,vA)
+}
 }
