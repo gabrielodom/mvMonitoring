@@ -272,7 +272,7 @@ for(i in 1:nrow(alarm1A_xts)){
 }
 ```
 The fault was introduced at index 8500, which corresponds to about 40 minutes into the test hour.
-```{r}
+```{r, fig.width = 5, out.width = '100%'}
 plot(alarm1A_xts[, ncol(alarm1A_xts)],
      main = "Alarm Codes for Test Data")
 ```
