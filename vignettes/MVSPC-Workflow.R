@@ -42,7 +42,7 @@ for(i in 1:nrow(alarm1A_xts)){
   }
 }
 
-## ------------------------------------------------------------------------
+## ---- fig.width = 5, out.width = '100%'----------------------------------
 plot(alarm1A_xts[, ncol(alarm1A_xts)],
      main = "Alarm Codes for Test Data")
 
