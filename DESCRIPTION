@@ -13,7 +13,7 @@ Description: Use multi-state splitting to apply Adaptive-Dynamic PCA to data
     generated from a continuous-time multivariate industrial or natural process.
     Employ PCA-based dimension reduction to extract linear combinations of
     relevant features, reducing computational burdens.
-License: file LICENSE
+License: GPL-2
 Depends:
     R (>= 2.10)
 Imports:

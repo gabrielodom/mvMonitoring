@@ -124,7 +124,7 @@ $(document).ready(function () {
 <p><a href="https://travis-ci.com/gabrielodom/mvMonitoring"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSIyMCI+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4Mj0iMCIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1vcGFjaXR5PSIuMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3Qgcng9IjMiIHdpZHRoPSI5MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzU1NSIvPjxyZWN0IHJ4PSIzIiB4PSIzNyIgd2lkdGg9IjUzIiBoZWlnaHQ9IjIwIiBmaWxsPSIjNGMxIi8+PHBhdGggZmlsbD0iIzRjMSIgZD0iTTM3IDBoNHYyMGgtNHoiLz48cmVjdCByeD0iMyIgd2lkdGg9IjkwIiBoZWlnaHQ9IjIwIiBmaWxsPSJ1cmwoI2EpIi8+PGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPjx0ZXh0IHg9IjE5LjUiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5idWlsZDwvdGV4dD48dGV4dCB4PSIxOS41IiB5PSIxNCI+YnVpbGQ8L3RleHQ+PHRleHQgeD0iNjIuNSIgeT0iMTUiIGZpbGw9IiMwMTAxMDEiIGZpbGwtb3BhY2l0eT0iLjMiPnBhc3Npbmc8L3RleHQ+PHRleHQgeD0iNjIuNSIgeT0iMTQiPnBhc3Npbmc8L3RleHQ+PC9nPjwvc3ZnPg==" alt="Travis-CI Build Status" /></a></p>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>We create this package, <code>mvMonitoring</code>, from the foundation laid by Kazor et al (2016). The <code>mvMonitor</code> package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
+<p>We create this package, <code>mvMonitoring</code>, from the foundation laid by Kazor et al (2016). This package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
 </div>
 <div id="installation-from-cran" class="section level2">
 <h2>Installation from CRAN</h2>
@@ -168,20 +168,31 @@ dataAndFlags &lt;- mspMonitor(observations = testObs[, -1],
 
 # Alarm check the last row of the matrix returned by the mspMonitor function
 mspWarning(dataAndFlags)</code></pre>
-<pre><code>##                             x          y           z       x.1        y.1
-## 2015-05-23 09:54:00 0.1774268 0.04242142  0.13642423 0.1755403 0.02170727
-## 2015-05-23 09:55:00 0.1939030 0.04485711  0.01601533 0.1774268 0.04242142
-## 2015-05-23 09:56:00 0.2047047 0.04610471 -0.04240738 0.1939030 0.04485711
-## 2015-05-23 09:57:00 0.2057330 0.05038296  0.16079111 0.2047047 0.04610471
-## 2015-05-23 09:58:00 0.2585589 0.05119356 -0.11003950 0.2057330 0.05038296
-## 2015-05-23 09:59:00 0.2982465 0.03558205  0.13931149 0.2585589 0.05119356
-##                             z.1      SPE SPE_Flag        T2 T2_Flag Alarm
-## 2015-05-23 09:54:00 -0.13391162 5.783721        1 13.303547       0    NA
-## 2015-05-23 09:55:00  0.13642423 4.425426        0 13.116714       0    NA
-## 2015-05-23 09:56:00  0.01601533 3.744745        0 12.940520       0    NA
-## 2015-05-23 09:57:00 -0.04240738 4.417147        0 11.802282       0    NA
-## 2015-05-23 09:58:00  0.16079111 1.538453        0 11.285122       0    NA
-## 2015-05-23 09:59:00 -0.11003950 0.783109        0  9.332364       0     0</code></pre>
+<pre><code>##                              x           y           z        x.1
+## 2015-05-23 09:54:00 0.12677351 0.009132204 -0.06761941 0.13442837
+## 2015-05-23 09:55:00 0.13644187 0.031271964  0.05806951 0.12677351
+## 2015-05-23 09:56:00 0.15068544 0.009725932  0.07185902 0.13644187
+## 2015-05-23 09:57:00 0.15861599 0.037203384  0.05533846 0.15068544
+## 2015-05-23 09:58:00 0.08901162 0.008518127 -0.10352538 0.15861599
+## 2015-05-23 09:59:00 0.11677168 0.022748610 -0.06757047 0.08901162
+##                             y.1         z.1       SPE SPE_Flag       T2
+## 2015-05-23 09:54:00 0.016518503  0.05802648  8.307524        1 17.72596
+## 2015-05-23 09:55:00 0.009132204 -0.06761941  8.666927        1 16.06296
+## 2015-05-23 09:56:00 0.031271964  0.05806951  7.238569        1 15.96890
+## 2015-05-23 09:57:00 0.009725932  0.07185902  7.181021        1 14.90812
+## 2015-05-23 09:58:00 0.037203384  0.05533846 11.393841        1 19.26719
+## 2015-05-23 09:59:00 0.008518127 -0.10352538  9.357164        1 18.01479
+##                     T2_Flag Alarm
+## 2015-05-23 09:54:00       0    NA
+## 2015-05-23 09:55:00       0    NA
+## 2015-05-23 09:56:00       0    NA
+## 2015-05-23 09:57:00       0    NA
+## 2015-05-23 09:58:00       0    NA
+## 2015-05-23 09:59:00       0     2</code></pre>
+</div>
+<div id="acknowledgements" class="section level2">
+<h2>Acknowledgements</h2>
+<p>This work is supported by the King Abdullah University of Science and Technology (KAUST) Office of Sponsored Research (OSR) under Award No: OSR-2015-CRG4-2582 and by the National Science Foundation PFI:BIC Award No: 1632227.</p>
 </div>
 </div>
 
