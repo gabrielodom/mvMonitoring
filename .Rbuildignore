@@ -7,3 +7,5 @@
 ^LaTeX_Vignette$
 ^docs$
 ^README\.html$
+^CRAN-comments\.md$
+^NEWS\.md$
