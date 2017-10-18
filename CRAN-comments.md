@@ -2,8 +2,7 @@
 ## Front Matter
 This is my very first package submission. I hope to make your job reviewing this package as easy as possible.
 
-Gabriel
-2017-10-18
+Gabriel, 2017-10-18
 
 ## Test environments
 * local macOS Sierra install, R 3.4.0
