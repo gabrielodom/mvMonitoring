@@ -2,17 +2,22 @@ Package: mvMonitoring
 Type: Package
 Title: Multi-State Adaptive Dynamic Principal Component Analysis for
     Multivariate Process Monitoring
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(person("Melissa", "Johnson", email = "melissa_johnson2@baylor.edu", role = c("aut")),
   person("Gabriel", "Odom", email = "gabriel.odom@med.miami.edu", role = c("aut","cre")), 
   person("Ben", "Barnard", email = "ben_barnard@baylor.edu", role = c("aut")),
   person("Karen", "Kazor", role = c("aut")),
   person("Amanda", "Hering", email = "mandy_hering@baylor.edu", role = c("aut")))
 Maintainer: Gabriel Odom <gabriel.odom@med.miami.edu>
-Description: Use multi-state splitting to apply Adaptive-Dynamic PCA to data
-    generated from a continuous-time multivariate industrial or natural process.
-    Employ PCA-based dimension reduction to extract linear combinations of
-    relevant features, reducing computational burdens.
+Description: Use multi-state splitting to apply Adaptive-Dynamic PCA (ADPCA) to
+    data generated from a continuous-time multivariate industrial or natural
+    process. Employ PCA-based dimension reduction to extract linear combinations
+    of relevant features, reducing computational burdens. For a description of 
+    ADPCA, see https://link.springer.com/article/10.1007/s00477-016-1246-2, the
+    2016 paper from Kazor et al. The multi-state application of ADPCA is from a
+    manuscript under current revision entitled "Multi-State Multivariate
+    Statistical Process Control" by Odom, Newhart, Cath, and Hering, and is 
+    expected to be published in Q1 of 2018.
 License: GPL-2
 Depends:
     R (>= 2.10)

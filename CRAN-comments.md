@@ -12,5 +12,8 @@ Gabriel, 2017-10-18
 ## R CMD check results
 There were 0 ERRORs, 0 WARNINGs, and 0 NOTEs.
 
+Request from Uwe Ligges (2017-10-18 3:54PM Eastern):
+After preliminary checks, we changed the version number to 0.1.0 (something less ridiculous) and included linked papers and authorship information for the package. 
+
 ## Downstream dependencies
 There are currently no downstream dependencies for this package.
