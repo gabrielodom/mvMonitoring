@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Three-Dimensional Rotation Matrix — rotate3D • mvMonitoring</title>
+<title>Multi-State Subsetting — mspSubset • mvMonitoring</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,59 +95,67 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Three-Dimensional Rotation Matrix</h1>
+    <h1>Multi-State Subsetting</h1>
     </div>
 
     
-    <p>Render a 3-Dimensional projection matrix given positive or
-  negative degree changes in yaw, pitch, and / or roll.</p>
+    <p>This function separates the data into k subsets, one for each
+of the k states, containing the subset of the original variables that are of interest
+for a given state.</p>
     
 
-    <pre class="usage"><span class='fu'>rotate3D</span>(<span class='no'>yaw</span>, <span class='no'>pitch</span>, <span class='no'>roll</span>)</pre>
+    <pre class="usage"><span class='fu'>mspSubset</span>(<span class='no'>data</span>, <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>, <span class='fu'>nrow</span>(<span class='no'>data</span>)),
+  <span class='kw'>subsetMatrix</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fl'>TRUE</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fu'>length</span>(<span class='fu'>unique</span>(<span class='no'>labelVector</span>)), <span class='kw'>ncol</span> <span class='kw'>=</span>
+  <span class='fu'>ncol</span>(<span class='no'>data</span>)))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>yaw</th>
-      <td><p>z-axis change in degrees; look left (+) or right (-). Consider
-this a rotation on the x-y plane.</p></td>
+      <th>data</th>
+      <td><p>An xts data matrix</p></td>
     </tr>
     <tr>
-      <th>pitch</th>
-      <td><p>y-axis change in degrees; look up (-) or down (+). Consider this
-a rotation on the x-z plane.</p></td>
+      <th>labelVector</th>
+      <td><p>Class labels as a logical (two states only) or
+finite numeric (two or more states) vector or matrix column (not
+from a data frame) with length equal to the number of rows in "data."
+For data with only one state, this will be a vector of 1s.</p></td>
     </tr>
     <tr>
-      <th>roll</th>
-      <td><p>x-axis change in degrees; this change appears as if you touch
-head to shoulders: right roll (+) and left roll (-).</p></td>
+      <th>subsetMatrix</th>
+      <td><p>A matrix of logicals with number of rows equal to the number of
+states and number of columns equal to the number of columns in data. The i,j entry in
+the matrix indicates whether or not to monitor the jth variable in the
+ith state.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A 3 x 3 projection matrix corresponding to the degree changes entered.</p>
+    <p>A list with the following components:</p>
+<dt>Class1Data -- </dt><dd><p>an xts data matrix containing the subset of the state 1 data.</p></dd>
+<dt>Class2Data -- </dt><dd><p>an xts data matrix containing the subset of the state 2 data.</p></dd>
+<dt>Class3Data -- </dt><dd><p>an xts data matrix containing the subset of the state 3 data.</p></dd>
+
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>When plotting with the package scatterplot3d, the default perpective
-  is such that the pitch action appears as a roll while the roll action
-  appears as a pitch.</p>
-<p>This function is used only in data generation of the package vignette. This
-  function is called by rotateScale3D().</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <p>Called by: <code><a href='rotateScale3D.html'>rotateScale3D</a></code>.</p>
+    <p>This function is designed to be used in conjunction with <code><a href='mspTrain.html'>mspTrain</a></code>
+and to allow the user to monitor a different subset of the variables during each state.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>rotate3D</span>(<span class='kw'>yaw</span> <span class='kw'>=</span> -<span class='fl'>10</span>, <span class='kw'>pitch</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>roll</span> <span class='kw'>=</span> <span class='fl'>15</span>)</div><div class='output co'>#&gt;           [,1]       [,2]        [,3]
-#&gt; [1,] 0.9848078 -0.1677313 -0.04494346
-#&gt; [2,] 0.1736482  0.9512512  0.25488700
-#&gt; [3,] 0.0000000 -0.2588190  0.96592583</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>nrml</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspProcessData.html'>mspProcessData</a></span>(<span class='kw'>faults</span> <span class='kw'>=</span> <span class='st'>"NOC"</span>)
+
+<span class='no'>sub1</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>TRUE</span>,<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>)
+<span class='no'>sub2</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>TRUE</span>)
+<span class='no'>sub3</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>TRUE</span>,<span class='fl'>FALSE</span>,<span class='fl'>FALSE</span>)
+<span class='no'>submatrix</span> <span class='kw'>&lt;-</span> <span class='fu'>t</span>(<span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='no'>sub1</span>,<span class='no'>sub2</span>,<span class='no'>sub3</span>),<span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>3</span>,<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>3</span>))
+
+<span class='no'>subsets</span> <span class='kw'>&lt;-</span> <span class='fu'>mspSubset</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>nrml</span>[,-<span class='fl'>1</span>],
+<span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>nrml</span>[,<span class='fl'>1</span>],
+<span class='kw'>subsetMatrix</span> <span class='kw'>=</span> <span class='no'>submatrix</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -157,8 +165,6 @@ head to shoulders: right roll (+) and left roll (-).</p></td>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

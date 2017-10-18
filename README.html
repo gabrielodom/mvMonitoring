@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <div id="multi-state-adaptive-dynamic-process-monitoring" class="section level1">
 <h1>Multi-State Adaptive-Dynamic Process Monitoring</h1>
-<p><a href="https://travis-ci.com/gabrielodom/mvMonitoring"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSIyMCI+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4Mj0iMCIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1vcGFjaXR5PSIuMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3Qgcng9IjMiIHdpZHRoPSI5MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzU1NSIvPjxyZWN0IHJ4PSIzIiB4PSIzNyIgd2lkdGg9IjUzIiBoZWlnaHQ9IjIwIiBmaWxsPSIjNGMxIi8+PHBhdGggZmlsbD0iIzRjMSIgZD0iTTM3IDBoNHYyMGgtNHoiLz48cmVjdCByeD0iMyIgd2lkdGg9IjkwIiBoZWlnaHQ9IjIwIiBmaWxsPSJ1cmwoI2EpIi8+PGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPjx0ZXh0IHg9IjE5LjUiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5idWlsZDwvdGV4dD48dGV4dCB4PSIxOS41IiB5PSIxNCI+YnVpbGQ8L3RleHQ+PHRleHQgeD0iNjIuNSIgeT0iMTUiIGZpbGw9IiMwMTAxMDEiIGZpbGwtb3BhY2l0eT0iLjMiPnBhc3Npbmc8L3RleHQ+PHRleHQgeD0iNjIuNSIgeT0iMTQiPnBhc3Npbmc8L3RleHQ+PC9nPjwvc3ZnPg==" alt="Travis-CI Build Status" /></a></p>
+<p><a href="https://travis-ci.com/gabrielodom/mvMonitoring"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NiIgaGVpZ2h0PSIyMCI+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4Mj0iMCIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1vcGFjaXR5PSIuMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3Qgcng9IjMiIHdpZHRoPSI3NiIgaGVpZ2h0PSIyMCIgZmlsbD0iIzU1NSIvPjxyZWN0IHJ4PSIzIiB4PSIzNyIgd2lkdGg9IjM5IiBoZWlnaHQ9IjIwIiBmaWxsPSIjOWY5ZjlmIi8+PHBhdGggZmlsbD0iIzlmOWY5ZiIgZD0iTTM3IDBoNHYyMGgtNHoiLz48cmVjdCByeD0iMyIgd2lkdGg9Ijc2IiBoZWlnaHQ9IjIwIiBmaWxsPSJ1cmwoI2EpIi8+PGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPjx0ZXh0IHg9IjE5LjUiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5idWlsZDwvdGV4dD48dGV4dCB4PSIxOS41IiB5PSIxNCI+YnVpbGQ8L3RleHQ+PHRleHQgeD0iNTUuNSIgeT0iMTUiIGZpbGw9IiMwMTAxMDEiIGZpbGwtb3BhY2l0eT0iLjMiPmVycm9yPC90ZXh0Pjx0ZXh0IHg9IjU1LjUiIHk9IjE0Ij5lcnJvcjwvdGV4dD48L2c+PC9zdmc+" alt="Travis-CI Build Status" /></a></p>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
 <p>We create this package, <code>mvMonitoring</code>, from the foundation laid by Kazor et al (2016). This package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
@@ -168,27 +168,27 @@ dataAndFlags &lt;- mspMonitor(observations = testObs[, -1],
 
 # Alarm check the last row of the matrix returned by the mspMonitor function
 mspWarning(dataAndFlags)</code></pre>
-<pre><code>##                              x           y           z        x.1
-## 2015-05-23 09:54:00 0.12677351 0.009132204 -0.06761941 0.13442837
-## 2015-05-23 09:55:00 0.13644187 0.031271964  0.05806951 0.12677351
-## 2015-05-23 09:56:00 0.15068544 0.009725932  0.07185902 0.13644187
-## 2015-05-23 09:57:00 0.15861599 0.037203384  0.05533846 0.15068544
-## 2015-05-23 09:58:00 0.08901162 0.008518127 -0.10352538 0.15861599
-## 2015-05-23 09:59:00 0.11677168 0.022748610 -0.06757047 0.08901162
-##                             y.1         z.1       SPE SPE_Flag       T2
-## 2015-05-23 09:54:00 0.016518503  0.05802648  8.307524        1 17.72596
-## 2015-05-23 09:55:00 0.009132204 -0.06761941  8.666927        1 16.06296
-## 2015-05-23 09:56:00 0.031271964  0.05806951  7.238569        1 15.96890
-## 2015-05-23 09:57:00 0.009725932  0.07185902  7.181021        1 14.90812
-## 2015-05-23 09:58:00 0.037203384  0.05533846 11.393841        1 19.26719
-## 2015-05-23 09:59:00 0.008518127 -0.10352538  9.357164        1 18.01479
+<pre><code>##                              x            y           z        x.1
+## 2015-05-23 09:54:00 0.06906328 -0.008228873 -0.13514279 0.01397872
+## 2015-05-23 09:55:00 0.02131295  0.008191195 -0.02058715 0.06906328
+## 2015-05-23 09:56:00 0.11836099  0.001006131 -0.02605510 0.02131295
+## 2015-05-23 09:57:00 0.11185839  0.029780925 -0.04031176 0.11836099
+## 2015-05-23 09:58:00 0.17075889  0.033857786 -0.04627393 0.11185839
+## 2015-05-23 09:59:00 0.12220720  0.038239927  0.02854151 0.17075889
+##                              y.1         z.1       SPE SPE_Flag       T2
+## 2015-05-23 09:54:00  0.008378120  0.05300963  8.281618        1 18.40531
+## 2015-05-23 09:55:00 -0.008228873 -0.13514279 13.071207        1 18.70558
+## 2015-05-23 09:56:00  0.008191195 -0.02058715  5.913843        0 15.77003
+## 2015-05-23 09:57:00  0.001006131 -0.02605510  6.924341        0 14.64738
+## 2015-05-23 09:58:00  0.029780925 -0.04031176  3.802022        0 12.66912
+## 2015-05-23 09:59:00  0.033857786 -0.04627393  6.849798        0 13.37689
 ##                     T2_Flag Alarm
 ## 2015-05-23 09:54:00       0    NA
 ## 2015-05-23 09:55:00       0    NA
 ## 2015-05-23 09:56:00       0    NA
 ## 2015-05-23 09:57:00       0    NA
 ## 2015-05-23 09:58:00       0    NA
-## 2015-05-23 09:59:00       0     2</code></pre>
+## 2015-05-23 09:59:00       0     0</code></pre>
 </div>
 <div id="acknowledgements" class="section level2">
 <h2>Acknowledgements</h2>

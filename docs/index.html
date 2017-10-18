@@ -48,13 +48,20 @@
 <li>
       <a href="articles/MVSPC-Workflow.html">Multivariate Statistical Process Control with mvMonitoring</a>
     </li>
-    <li>
-      <a href="articles/Simulation_Vignette.html">MSAD-PCA Walkthrough</a>
-    </li>
   </ul>
 </li>
+<li>
+  <a href="news/index.html">News</a>
+</li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/gabrielodom/mvMonitoring">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -77,11 +84,17 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>We create this package, <code>mvMonitoring</code>, from the foundation laid by Kazor et al (2016). The <code>mvMonitor</code> package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
+<p>We create this package, <code>mvMonitoring</code>, from the foundation laid by Kazor et al (2016). This package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
 </div>
-<div id="installation" class="section level2">
+<div id="installation-from-cran" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<a href="#installation-from-cran" class="anchor"></a>Installation from CRAN</h2>
+<p>As of 18 October, 2017, we have submitted this package to CRAN. Shortly thereafter, you will be able to install the stable version of the package via</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"mvMonitoring"</span>)</code></pre></div>
+</div>
+<div id="installation-of-development-version" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation-of-development-version" class="anchor"></a>Installation of Development Version</h2>
 <p>Make sure you have the latest version of the <code>devtools</code> package, and pull the package from GitHub. Remember, if you can read this file, you are one of the few people who have access to this package. In addition, you can also run the following:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">"gabrielodom/mvMonitoring"</span>, <span class="dt">auth_token =</span> <span class="st">"tokenHere"</span>)</code></pre></div>
 <p>where you create the value of “tokenHere” by generating a personal access token (PAT) at <a href="https://github.com/settings/tokens" class="uri">https://github.com/settings/tokens</a> and copying the quoted string to this argument. Load the library after installation by</p>
@@ -93,23 +106,23 @@
 <p>These are the examples shown in the help files for the mspProcessData(), mspTrain(), mspMonitor(), and mspWarning() functions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate one week's worth of normal operating (NOC) data recorded at the one-</span>
 <span class="co"># minute level</span>
-noc_xts &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspProcessData.html">mspProcessData</a></span>(<span class="dt">faults =</span> <span class="st">"NOC"</span>)
+nrml &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspProcessData.html">mspProcessData</a></span>(<span class="dt">faults =</span> <span class="st">"NOC"</span>)
 <span class="co"># The state values are recorded in the first column.</span>
-n &lt;-<span class="st"> </span><span class="kw">nrow</span>(noc_xts)
+n &lt;-<span class="st"> </span><span class="kw">nrow</span>(nrml)
 
 <span class="co"># Calculate the training summary, but save five observations for monitoring.</span>
 <span class="co"># This function will treat the first 3 days as in control (IC), and then update</span>
 <span class="co"># the training window each day.</span>
-trainResults_ls &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspTrain.html">mspTrain</a></span>(<span class="dt">data =</span> noc_xts[<span class="dv">1</span>:(n -<span class="st"> </span><span class="dv">5</span>), -<span class="dv">1</span>],
-                            <span class="dt">labelVector =</span> noc_xts[<span class="dv">1</span>:(n -<span class="st"> </span><span class="dv">5</span>), <span class="dv">1</span>],
+trainResults_ls &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspTrain.html">mspTrain</a></span>(<span class="dt">data =</span> nrml[<span class="dv">1</span>:(n -<span class="st"> </span><span class="dv">5</span>), -<span class="dv">1</span>],
+                            <span class="dt">labelVector =</span> nrml[<span class="dv">1</span>:(n -<span class="st"> </span><span class="dv">5</span>), <span class="dv">1</span>],
                             <span class="dt">trainObs =</span> <span class="dv">4320</span>)
 
 <span class="co"># While training, we included 1 lag (the default), so we will also lag the</span>
 <span class="co"># observations we will test.</span>
-testObs &lt;-<span class="st"> </span>noc_xts[(n -<span class="st"> </span><span class="dv">6</span>):n, -<span class="dv">1</span>]
+testObs &lt;-<span class="st"> </span>nrml[(n -<span class="st"> </span><span class="dv">6</span>):n, -<span class="dv">1</span>]
 testObs &lt;-<span class="st"> </span>xts:::<span class="kw">lag.xts</span>(testObs, <span class="dv">0</span>:<span class="dv">1</span>)
 testObs &lt;-<span class="st"> </span>testObs[-<span class="dv">1</span>,]
-testObs &lt;-<span class="st"> </span><span class="kw">cbind</span>(noc_xts[(n -<span class="st"> </span><span class="dv">5</span>):n, <span class="dv">1</span>], testObs)
+testObs &lt;-<span class="st"> </span><span class="kw">cbind</span>(nrml[(n -<span class="st"> </span><span class="dv">5</span>):n, <span class="dv">1</span>], testObs)
 
 <span class="co"># Run the monitoring function.</span>
 dataAndFlags &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspMonitor.html">mspMonitor</a></span>(<span class="dt">observations =</span> testObs[, -<span class="dv">1</span>],
@@ -118,20 +131,32 @@ dataAndFlags &lt;-<span class="st"> </span><span class="kw"><a href="reference/m
 
 <span class="co"># Alarm check the last row of the matrix returned by the mspMonitor function</span>
 <span class="kw"><a href="reference/mspWarning.html">mspWarning</a></span>(dataAndFlags)</code></pre></div>
-<pre><code>##                             x          y            z       x.1        y.1
-## 2015-05-23 09:54:00 0.2149250 0.04019732 -0.030566252 0.1881572 0.03458824
-## 2015-05-23 09:55:00 0.2320438 0.04349085  0.120405776 0.2149250 0.04019732
-## 2015-05-23 09:56:00 0.2231462 0.03702551 -0.023685659 0.2320438 0.04349085
-## 2015-05-23 09:57:00 0.1643190 0.02873198 -0.033502834 0.2231462 0.03702551
-## 2015-05-23 09:58:00 0.1709127 0.03983559  0.027495556 0.1643190 0.02873198
-## 2015-05-23 09:59:00 0.1906366 0.01493106 -0.009001672 0.1709127 0.03983559
-##                             z.1      SPE SPE_Flag       T2 T2_Flag Alarm
-## 2015-05-23 09:54:00 -0.13489510 2.861387        0 12.05362       0    NA
-## 2015-05-23 09:55:00 -0.03056625 2.609206        0 10.62595       0    NA
-## 2015-05-23 09:56:00  0.12040578 2.519146        0 11.54732       0    NA
-## 2015-05-23 09:57:00 -0.02368566 5.206592        0 13.80806       0    NA
-## 2015-05-23 09:58:00 -0.03350283 5.180211        0 13.31044       0    NA
-## 2015-05-23 09:59:00  0.02749556 3.595853        0 13.47155       0     0</code></pre>
+<pre><code>##                              x            y           z        x.1
+## 2015-05-23 09:54:00 0.07031200 -0.007417696  0.10586510 0.03320595
+## 2015-05-23 09:55:00 0.06993113  0.017578734 -0.06685802 0.07031200
+## 2015-05-23 09:56:00 0.05045313 -0.016935535 -0.08882570 0.06993113
+## 2015-05-23 09:57:00 0.17615845  0.031030227  0.11090096 0.05045313
+## 2015-05-23 09:58:00 0.17668532  0.024289786 -0.21817456 0.17615845
+## 2015-05-23 09:59:00 0.09217019  0.016477006 -0.07129595 0.17668532
+##                              y.1         z.1       SPE SPE_Flag       T2
+## 2015-05-23 09:54:00 -0.003090325 -0.02270170 12.939875        1 19.93701
+## 2015-05-23 09:55:00 -0.007417696  0.10586510 12.657984        1 19.82905
+## 2015-05-23 09:56:00  0.017578734 -0.06685802 13.340446        1 22.00754
+## 2015-05-23 09:57:00 -0.016935535 -0.08882570  5.830247        1 14.48938
+## 2015-05-23 09:58:00  0.031030227  0.11090096  4.488482        0 15.47028
+## 2015-05-23 09:59:00  0.024289786 -0.21817456 10.817710        1 18.27698
+##                     T2_Flag Alarm
+## 2015-05-23 09:54:00       0    NA
+## 2015-05-23 09:55:00       0    NA
+## 2015-05-23 09:56:00       0    NA
+## 2015-05-23 09:57:00       0    NA
+## 2015-05-23 09:58:00       0    NA
+## 2015-05-23 09:59:00       0     0</code></pre>
+</div>
+<div id="acknowledgements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#acknowledgements" class="anchor"></a>Acknowledgements</h2>
+<p>This work is supported by the King Abdullah University of Science and Technology (KAUST) Office of Sponsored Research (OSR) under Award No: OSR-2015-CRG4-2582 and by the National Science Foundation PFI:BIC Award No: 1632227.</p>
 </div>
 </div>
 </div>
@@ -139,8 +164,13 @@ dataAndFlags &lt;-<span class="st"> </span><span class="kw"><a href="reference/m
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2 class="hasAnchor">
-<a href="#sidebar" class="anchor"></a>License</h2>
-<p>file <a href="LICENSE.html">LICENSE</a></p>
+<a href="#sidebar" class="anchor"></a>Links</h2>
+<ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/gabrielodom/mvMonitoring">https://​github.com/​gabrielodom/​mvMonitoring</a>
+</li>
+</ul>
+<h2>License</h2>
+<p><a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a></p>
 <h2>Developers</h2>
 <ul class="list-unstyled">
 <li>

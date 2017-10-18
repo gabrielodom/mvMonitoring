@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Process Alarms � mspWarning • mvMonitoring</title>
+<title>Process Alarms — mspWarning • mvMonitoring</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -70,15 +70,20 @@
     <li>
       <a href="../articles/MVSPC-Workflow.html">Multivariate Statistical Process Control with mvMonitoring</a>
     </li>
-    <li>
-      <a href="../articles/Simulation_Vignette.html">MSAD-PCA Walkthrough</a>
-    </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/gabrielodom/mvMonitoring">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -130,7 +135,7 @@ an alarm to trigger. Defaults to 5.</p></td>
   to add a flag status to the most recent incoming observation in the matrix,
   and return this new xts matrix. Then, pass this updated daily observation
   matrix to the mspWarning() function, which will check if the process has
-  recorded three or more sequential monitoring statistic flags in a row. Of
+  recorded five or more sequential monitoring statistic flags in a row. Of
   note, because these functions are expected to be repeatedly called in real
   time, this function will only check for an alarm within the last row of the
   xts matrix. To check multiple rows for an alarm state, please use the
@@ -145,41 +150,35 @@ an alarm to trigger. Defaults to 5.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>nrml</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspProcessData.html'>mspProcessData</a></span>(<span class='kw'>faults</span> <span class='kw'>=</span> <span class='st'>"NOC"</span>)
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fu'>nrow</span>(<span class='no'>nrml</span>)
+    <pre class="examples"><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='co'># cut down on R CMD check time</span>
 
-<span class='co'># Calculate the training summary, but save five observations for monitoring.</span>
-<span class='no'>trainResults_ls</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspTrain.html'>mspTrain</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>nrml</span>[<span class='fl'>1</span>:(<span class='no'>n</span> - <span class='fl'>5</span>), -<span class='fl'>1</span>],
-                            <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>nrml</span>[<span class='fl'>1</span>:(<span class='no'>n</span> - <span class='fl'>5</span>), <span class='fl'>1</span>],
-                            <span class='kw'>trainObs</span> <span class='kw'>=</span> <span class='fl'>4320</span>)
+  <span class='no'>nrml</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspProcessData.html'>mspProcessData</a></span>(<span class='kw'>faults</span> <span class='kw'>=</span> <span class='st'>"NOC"</span>)
+  <span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fu'>nrow</span>(<span class='no'>nrml</span>)
 
-<span class='co'># While training, we included 1 lag (the default), so we will also lag the</span>
-<span class='co'># observations we will test.</span>
-<span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='no'>nrml</span>[(<span class='no'>n</span> - <span class='fl'>6</span>):<span class='no'>n</span>, -<span class='fl'>1</span>]
-<span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>xts</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/xts/topics/diff'>lag.xts</a></span>(<span class='no'>testObs</span>, <span class='fl'>0</span>:<span class='fl'>1</span>)
-<span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='no'>testObs</span>[-<span class='fl'>1</span>,]
-<span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='fu'>cbind</span>(<span class='no'>nrml</span>[(<span class='no'>n</span> - <span class='fl'>5</span>):<span class='no'>n</span>, <span class='fl'>1</span>], <span class='no'>testObs</span>)
+  <span class='co'># Calculate the training summary, but save five observations for monitoring.</span>
+  <span class='no'>trainResults_ls</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspTrain.html'>mspTrain</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>nrml</span>[<span class='fl'>1</span>:(<span class='no'>n</span> - <span class='fl'>5</span>), -<span class='fl'>1</span>],
+                              <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>nrml</span>[<span class='fl'>1</span>:(<span class='no'>n</span> - <span class='fl'>5</span>), <span class='fl'>1</span>],
+                              <span class='kw'>trainObs</span> <span class='kw'>=</span> <span class='fl'>4320</span>)
 
-<span class='co'># Run the monitoring function.</span>
-<span class='no'>dataAndFlags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspMonitor.html'>mspMonitor</a></span>(<span class='kw'>observations</span> <span class='kw'>=</span> <span class='no'>testObs</span>[, -<span class='fl'>1</span>],
-                           <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>testObs</span>[, <span class='fl'>1</span>],
-                           <span class='kw'>trainingSummary</span> <span class='kw'>=</span> <span class='no'>trainResults_ls</span>$<span class='no'>TrainingSpecs</span>)
+  <span class='co'># While training, we included 1 lag (the default), so we will also lag the</span>
+  <span class='co'>#   observations we will test.</span>
+  <span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='no'>nrml</span>[(<span class='no'>n</span> - <span class='fl'>6</span>):<span class='no'>n</span>, -<span class='fl'>1</span>]
+  <span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>xts</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/xts/topics/diff'>lag.xts</a></span>(<span class='no'>testObs</span>, <span class='fl'>0</span>:<span class='fl'>1</span>)
+  <span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='no'>testObs</span>[-<span class='fl'>1</span>,]
+  <span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='fu'>cbind</span>(<span class='no'>nrml</span>[(<span class='no'>n</span> - <span class='fl'>5</span>):<span class='no'>n</span>, <span class='fl'>1</span>], <span class='no'>testObs</span>)
 
-<span class='co'># Alarm check the last row of the matrix returned by the mspMonitor function</span>
-<span class='fu'>mspWarning</span>(<span class='no'>dataAndFlags</span>)</div><div class='output co'>#&gt;                             x          y            z       x.1        y.1
-#&gt; 2015-05-23 09:54:00 0.1199682 0.00247014  0.041183509 0.1321447 0.03136360
-#&gt; 2015-05-23 09:55:00 0.1138535 0.01537853  0.015611471 0.1199682 0.00247014
-#&gt; 2015-05-23 09:56:00 0.1702870 0.02349061  0.079247525 0.1138535 0.01537853
-#&gt; 2015-05-23 09:57:00 0.1982922 0.04833615  0.081870953 0.1702870 0.02349061
-#&gt; 2015-05-23 09:58:00 0.2006981 0.04154680 -0.005721085 0.1982922 0.04833615
-#&gt; 2015-05-23 09:59:00 0.2079140 0.02794911 -0.057844524 0.2006981 0.04154680
-#&gt;                              z.1      SPE SPE_Flag       T2 T2_Flag Alarm
-#&gt; 2015-05-23 09:54:00 -0.020886126 9.263416        1 18.09932       0    NA
-#&gt; 2015-05-23 09:55:00  0.041183509 9.878314        1 18.21206       0    NA
-#&gt; 2015-05-23 09:56:00  0.015611471 6.173057        1 15.37955       0    NA
-#&gt; 2015-05-23 09:57:00  0.079247525 4.984703        0 13.25881       0    NA
-#&gt; 2015-05-23 09:58:00  0.081870953 4.458017        0 13.57401       0    NA
-#&gt; 2015-05-23 09:59:00 -0.005721085 3.654876        0 14.00404       0     0</div><div class='input'>
+  <span class='co'># Run the monitoring function.</span>
+  <span class='no'>dataAndFlags</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspMonitor.html'>mspMonitor</a></span>(<span class='kw'>observations</span> <span class='kw'>=</span> <span class='no'>testObs</span>[, -<span class='fl'>1</span>],
+                             <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>testObs</span>[, <span class='fl'>1</span>],
+                             <span class='kw'>trainingSummary</span> <span class='kw'>=</span> <span class='no'>trainResults_ls</span>$<span class='no'>TrainingSpecs</span>)
+
+  <span class='co'># Alarm check the last row of the matrix returned by the mspMonitor</span>
+  <span class='co'>#   function</span>
+  <span class='fu'>mspWarning</span>(<span class='no'>dataAndFlags</span>)
+
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

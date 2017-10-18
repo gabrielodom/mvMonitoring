@@ -47,13 +47,20 @@
 <li>
       <a href="../articles/MVSPC-Workflow.html">Multivariate Statistical Process Control with mvMonitoring</a>
     </li>
-    <li>
-      <a href="../articles/Simulation_Vignette.html">MSAD-PCA Walkthrough</a>
-    </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">News</a>
+</li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/gabrielodom/mvMonitoring">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -68,7 +75,7 @@
       <h1>Multivariate Statistical Process Control with mvMonitoring</h1>
                         <h4 class="author">Gabriel Odom</h4>
             
-            <h4 class="date">2017-07-07</h4>
+            <h4 class="date">2017-10-18</h4>
           </div>
 
     
@@ -78,8 +85,12 @@
 <p><br><br></p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
+<a href="#introduction" class="anchor"></a>Introduction </h1>
 <p>This is the accompanying package to the research published by <a href="https://link.springer.com/article/10.1007/s00477-016-1246-2">Kazor et al (2016)</a> and forthcoming paper by <a href="https://www.overleaf.com/read/vbfbjsywtkvv#/26878504/">Odom et al (2017)</a> (manuscript in progress). The <code>mvMonitoring</code> package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
+</div>
+<div id="motivation" class="section level1">
+<h1 class="hasAnchor">
+<a href="#motivation" class="anchor"></a>Motivation </h1>
 <div id="why-use-mvmonitoring" class="section level2">
 <h2 class="hasAnchor">
 <a href="#why-use-mvmonitoring" class="anchor"></a>Why use <code>mvMonitoring</code>
@@ -332,19 +343,19 @@ lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">cbind</span>(fault1
                        lagTest1A_xts[-<span class="dv">1</span>,])
 <span class="kw">head</span>(lagTest1A_xts)</code></pre></div>
 <pre><code>##                     state         x         y         z       x.1
-## 2015-05-22 07:00:00     1 0.4675812 -1.500274 0.9485532 0.3893342
-## 2015-05-22 07:01:00     1 0.7073894 -1.466041 1.0423709 0.4675812
-## 2015-05-22 07:02:00     1 0.9247653 -1.523665 1.0070941 0.7073894
-## 2015-05-22 07:03:00     1 0.5774330 -1.495192 0.7767762 0.9247653
-## 2015-05-22 07:04:00     1 0.6356919 -1.531845 0.8811015 0.5774330
-## 2015-05-22 07:05:00     1 0.6131737 -1.459138 0.9724125 0.6356919
+## 2015-05-22 07:00:00     1 0.5698732 -1.239954 0.6490469 0.3836185
+## 2015-05-22 07:01:00     1 0.5665031 -1.342424 0.9688437 0.5698732
+## 2015-05-22 07:02:00     1 0.5542677 -1.494687 0.9239378 0.5665031
+## 2015-05-22 07:03:00     1 0.6739608 -1.720810 0.8854540 0.5542677
+## 2015-05-22 07:04:00     1 0.6376903 -1.788339 1.0352382 0.6739608
+## 2015-05-22 07:05:00     1 0.6552435 -1.546860 0.9305761 0.6376903
 ##                             y.1       z.1
-## 2015-05-22 07:00:00  0.09332075 0.2873093
-## 2015-05-22 07:01:00 -1.50027405 0.9485532
-## 2015-05-22 07:02:00 -1.46604109 1.0423709
-## 2015-05-22 07:03:00 -1.52366516 1.0070941
-## 2015-05-22 07:04:00 -1.49519196 0.7767762
-## 2015-05-22 07:05:00 -1.53184485 0.8811015</code></pre>
+## 2015-05-22 07:00:00  0.09216435 0.3248307
+## 2015-05-22 07:01:00 -1.23995354 0.6490469
+## 2015-05-22 07:02:00 -1.34242372 0.9688437
+## 2015-05-22 07:03:00 -1.49468656 0.9239378
+## 2015-05-22 07:04:00 -1.72080988 0.8854540
+## 2015-05-22 07:05:00 -1.78833883 1.0352382</code></pre>
 </div>
 <div id="monitoring-the-test-data" class="section level3">
 <h3 class="hasAnchor">
@@ -355,19 +366,19 @@ lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">cbind</span>(fault1
                             <span class="dt">trainingSummary =</span> train1A_ls$TrainingSpecs)
 <span class="kw">head</span>(monitor1A_xts)</code></pre></div>
 <pre><code>##                             x         y         z       x.1         y.1
-## 2015-05-22 07:00:00 0.4675812 -1.500274 0.9485532 0.3893342  0.09332075
-## 2015-05-22 07:01:00 0.7073894 -1.466041 1.0423709 0.4675812 -1.50027405
-## 2015-05-22 07:02:00 0.9247653 -1.523665 1.0070941 0.7073894 -1.46604109
-## 2015-05-22 07:03:00 0.5774330 -1.495192 0.7767762 0.9247653 -1.52366516
-## 2015-05-22 07:04:00 0.6356919 -1.531845 0.8811015 0.5774330 -1.49519196
-## 2015-05-22 07:05:00 0.6131737 -1.459138 0.9724125 0.6356919 -1.53184485
-##                           z.1        SPE SPE_Flag        T2 T2_Flag Alarm
-## 2015-05-22 07:00:00 0.2873093 0.86194020        0 25.827196       0    NA
-## 2015-05-22 07:01:00 0.9485532 0.37339864        0  4.536438       0    NA
-## 2015-05-22 07:02:00 1.0423709 0.65866603        0  3.554551       0    NA
-## 2015-05-22 07:03:00 1.0070941 0.96306160        0  4.127708       0    NA
-## 2015-05-22 07:04:00 0.7767762 0.08457859        0  4.605382       0    NA
-## 2015-05-22 07:05:00 0.8811015 0.29668930        0  4.568097       0    NA</code></pre>
+## 2015-05-22 07:00:00 0.5698732 -1.239954 0.6490469 0.3836185  0.09216435
+## 2015-05-22 07:01:00 0.5665031 -1.342424 0.9688437 0.5698732 -1.23995354
+## 2015-05-22 07:02:00 0.5542677 -1.494687 0.9239378 0.5665031 -1.34242372
+## 2015-05-22 07:03:00 0.6739608 -1.720810 0.8854540 0.5542677 -1.49468656
+## 2015-05-22 07:04:00 0.6376903 -1.788339 1.0352382 0.6739608 -1.72080988
+## 2015-05-22 07:05:00 0.6552435 -1.546860 0.9305761 0.6376903 -1.78833883
+##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm
+## 2015-05-22 07:00:00 0.3248307 1.7662000        0 27.710387       0    NA
+## 2015-05-22 07:01:00 0.6490469 1.0545932        0  6.554359       0    NA
+## 2015-05-22 07:02:00 0.9688437 0.3124641        0  5.451298       0    NA
+## 2015-05-22 07:03:00 0.9239378 0.1130409        0  4.315437       0    NA
+## 2015-05-22 07:04:00 0.8854540 0.2300205        0  3.918578       0    NA
+## 2015-05-22 07:05:00 1.0352382 0.2384099        0  4.894332       0    NA</code></pre>
 </div>
 </div>
 <div id="warn-operators-during-alarms" class="section level2">
@@ -385,7 +396,7 @@ for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(alarm1A_xts)){
 <p>The fault was introduced at index 8500, which corresponds to about 40 minutes into the test hour.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(alarm1A_xts[, <span class="kw">ncol</span>(alarm1A_xts)],
      <span class="dt">main =</span> <span class="st">"Alarm Codes for Test Data"</span>)</code></pre></div>
-<p><img src="MVSPC-Workflow_files/figure-html/unnamed-chunk-6-1.png" width="672"> The alarm codes are</p>
+<p><img src="MVSPC-Workflow_files/figure-html/unnamed-chunk-6-1.png" width="100%"> The alarm codes are</p>
 <ul>
 <li>“0”: No alarm.</li>
 <li>“1”: Hotelling’s <span class="math inline">\(T^2\)</span> alarm.</li>
@@ -395,10 +406,10 @@ for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(alarm1A_xts)){
 <p><br><br></p>
 </div>
 </div>
-<div id="package-implementation-in-practice" class="section level1">
+<div id="conclusion" class="section level1">
 <h1 class="hasAnchor">
-<a href="#package-implementation-in-practice" class="anchor"></a>Package Implementation in Practice</h1>
-<p>Kathryn B. Newhart will send me a brief discussion of how she has implemented this package in wastewater treatment monitoring at a facility in Golden, CO.</p>
+<a href="#conclusion" class="anchor"></a>Conclusion</h1>
+<p>We have supplied our motivation for this package, and we have discussed implementing a multivariate process monitoring scheme with this package using the example of a decentralized WWT plant in Golden, CO. We believe that this software will provide system engineers with the tools necessary to quickly and accurately detect abnormalities in multivariate, autocorrelated, non-stationary, non-linear, and multi-state water treatment systems. Further, we have given a synthetic example showing how the functions within this package would be implemented and tuned in practice.</p>
 </div>
 </div>
   </div>
@@ -408,8 +419,9 @@ for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(alarm1A_xts)){
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li>
-<a href="#introduction">Introduction</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#introduction">Introduction </a></li>
+      <li>
+<a href="#motivation">Motivation </a><ul class="nav nav-pills nav-stacked">
 <li><a href="#why-use-mvmonitoring">Why use <code>mvMonitoring</code></a></li>
       <li><a href="#multi--or-single-state-ad-pca">Multi- or Single-State AD-PCA</a></li>
       </ul>
@@ -430,7 +442,7 @@ for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(alarm1A_xts)){
       <li><a href="#warn-operators-during-alarms">Warn Operators during Alarms</a></li>
       </ul>
 </li>
-      <li><a href="#package-implementation-in-practice">Package Implementation in Practice</a></li>
+      <li><a href="#conclusion">Conclusion</a></li>
       </ul>
 </div>
       </div>

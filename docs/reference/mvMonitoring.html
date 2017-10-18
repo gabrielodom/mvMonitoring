@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • mvMonitoring</title>
+<title>A Package for Multivariate Statistical Process Monitoring — mvMonitoring • mvMonitoring</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -20,9 +20,9 @@
 
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script>
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
+<script src="../pkgdown.js"></script>
   
   
 <!-- mathjax -->
@@ -37,7 +37,7 @@
   </head>
 
   <body>
-    <div class="container template-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -47,18 +47,18 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">mvMonitoring</a>
+      <a class="navbar-brand" href="../index.html">mvMonitoring</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="/index.html">
+  <a href="..//index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -68,12 +68,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/MVSPC-Workflow.html">Multivariate Statistical Process Control with mvMonitoring</a>
+      <a href="../articles/MVSPC-Workflow.html">Multivariate Statistical Process Control with mvMonitoring</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="news/index.html">News</a>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
@@ -93,38 +93,51 @@
       </header>
 
       <div class="row">
-  <div class="contents col-md-12">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+    <h1>A Package for Multivariate Statistical Process Monitoring</h1>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong><a href='https://github.com/melissanjohnson'>Melissa Johnson</a></strong>. Author.
-        </p>
-      </li>
-      <li>
-        <p><strong><a href='https://github.com/gabrielodom'>Gabriel Odom</a></strong>. Author, maintainer.
-        </p>
-      </li>
-      <li>
-        <p><strong><a href='http://benbarnard.bearstatistics.com'>Ben Barnard</a></strong>. Author.
-        </p>
-      </li>
-      <li>
-        <p><strong>Karen Kazor</strong>. Author.
-        </p>
-      </li>
-      <li>
-        <p><strong>Amanda Hering</strong>. Author.
-        </p>
-      </li>
-    </ul>
+    
+    <p>The <code>mvMonitoring</code> package has four main functions for
+  external use, all of which begin with the string "msp" (for "multivariate
+  statistical process") followed by the function use. Functions without this
+  "msp" key are primarily internal functions. They are available to see and
+  use, but will largely be uneccesary to call in common workflows.</p>
+    
+
+        
+    <h2 class="hasAnchor" id="-code-mvmonitoring-code-external-functions"><a class="anchor" href="#-code-mvmonitoring-code-external-functions"></a>&lt;code&gt;mvMonitoring&lt;/code&gt; external functions</h2>
+
+    
+    <p></p><ul>
+<li><p><code><a href='mspProcessData.html'>mspProcessData</a></code> - A function for synthetic process
+      data generation. Use this data to test new process monitoring methods.</p></li>
+<li><p><code><a href='mspTrain.html'>mspTrain</a></code> - A function to take in observations for
+      training under normal conditions, and to return the training summary
+      fromt these observations.</p></li>
+<li><p><code><a href='mspMonitor.html'>mspMonitor</a></code> - A function to take in real-time
+      process observations and detect system anomalies based on the training
+      summary returned by <code><a href='mspTrain.html'>mspTrain</a></code>.</p></li>
+<li><p><code><a href='mspWarning.html'>mspWarning</a></code> - A function to take in observations
+      returned by <code><a href='mspMonitor.html'>mspMonitor</a></code> and check for alarms by
+      measuring sequential anomalies. This function will also be equipped to
+      send SMS notifications to process technicians in future versions.</p></li>
+</ul>
+    <p>@docType package
+  @name mvMonitoring</p>
+    
 
   </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      
+      <li><a href="#-code-mvmonitoring-code-external-functions">&lt;code&gt;mvMonitoring&lt;/code&gt; external functions</a></li>
+          </ul>
 
+  </div>
 </div>
-
 
       <footer>
       <div class="copyright">

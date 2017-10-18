@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Real-Time Process Monitoring Function � mspMonitor • mvMonitoring</title>
+<title>Real-Time Process Monitoring Function — mspMonitor • mvMonitoring</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -70,15 +70,20 @@
     <li>
       <a href="../articles/MVSPC-Workflow.html">Multivariate Statistical Process Control with mvMonitoring</a>
     </li>
-    <li>
-      <a href="../articles/Simulation_Vignette.html">MSAD-PCA Walkthrough</a>
-    </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/gabrielodom/mvMonitoring">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -138,7 +143,7 @@ as well the projection matrix.</p></td>
       "observations"</p></li>
 <li><p>T2_Flag -- a vector of T2 fault indicators, defined like
       SPE_Flag</p></li>
-<li><p>Alarm -- a column indicating if there have been three flags in a
+<li><p>Alarm -- a column indicating if there have been five flags in a
       row for either the SPE or T2 monitoring statistics or both. Alarm
       states are as follows: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 =
       Squared Prediction Error alarm, and 3 = both alarms.</p></li>
@@ -171,37 +176,30 @@ the xts matrix necessary for the mspWarning() function.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>nrml</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspProcessData.html'>mspProcessData</a></span>(<span class='kw'>faults</span> <span class='kw'>=</span> <span class='st'>"NOC"</span>)
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fu'>nrow</span>(<span class='no'>nrml</span>)
+    <pre class="examples"><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='co'># cut down on R CMD check time</span>
 
-<span class='co'># Calculate the training summary, but save five observations for monitoring.</span>
-<span class='no'>trainResults_ls</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspTrain.html'>mspTrain</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>nrml</span>[<span class='fl'>1</span>:(<span class='no'>n</span> - <span class='fl'>5</span>), -<span class='fl'>1</span>],
-                            <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>nrml</span>[<span class='fl'>1</span>:(<span class='no'>n</span> - <span class='fl'>5</span>), <span class='fl'>1</span>],
-                            <span class='kw'>trainObs</span> <span class='kw'>=</span> <span class='fl'>4320</span>)
+  <span class='no'>nrml</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspProcessData.html'>mspProcessData</a></span>(<span class='kw'>faults</span> <span class='kw'>=</span> <span class='st'>"NOC"</span>)
+  <span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fu'>nrow</span>(<span class='no'>nrml</span>)
 
-<span class='co'># While training, we included 1 lag (the default), so we will also lag the</span>
-<span class='co'># observations we will test.</span>
-<span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='no'>nrml</span>[(<span class='no'>n</span> - <span class='fl'>6</span>):<span class='no'>n</span>, -<span class='fl'>1</span>]
-<span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>xts</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/xts/topics/diff'>lag.xts</a></span>(<span class='no'>testObs</span>, <span class='fl'>0</span>:<span class='fl'>1</span>)
-<span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='no'>testObs</span>[-<span class='fl'>1</span>,]
-<span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='fu'>cbind</span>(<span class='no'>nrml</span>[(<span class='no'>n</span> - <span class='fl'>5</span>):<span class='no'>n</span>, <span class='fl'>1</span>], <span class='no'>testObs</span>)
+  <span class='co'># Calculate the training summary, but save five observations for monitoring.</span>
+  <span class='no'>trainResults_ls</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mspTrain.html'>mspTrain</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>nrml</span>[<span class='fl'>1</span>:(<span class='no'>n</span> - <span class='fl'>5</span>), -<span class='fl'>1</span>],
+                              <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>nrml</span>[<span class='fl'>1</span>:(<span class='no'>n</span> - <span class='fl'>5</span>), <span class='fl'>1</span>],
+                              <span class='kw'>trainObs</span> <span class='kw'>=</span> <span class='fl'>4320</span>)
 
-<span class='fu'>mspMonitor</span>(<span class='kw'>observations</span> <span class='kw'>=</span> <span class='no'>testObs</span>[, -<span class='fl'>1</span>],
-           <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>testObs</span>[, <span class='fl'>1</span>],
-           <span class='kw'>trainingSummary</span> <span class='kw'>=</span> <span class='no'>trainResults_ls</span>$<span class='no'>TrainingSpecs</span>)</div><div class='output co'>#&gt;                             x           y          z       x.1         y.1
-#&gt; 2015-05-23 09:54:00 0.1764313 0.002505337 0.04669791 0.2314921 0.029390745
-#&gt; 2015-05-23 09:55:00 0.2171308 0.034776156 0.10174248 0.1764313 0.002505337
-#&gt; 2015-05-23 09:56:00 0.2310036 0.052411939 0.04394506 0.2171308 0.034776156
-#&gt; 2015-05-23 09:57:00 0.2158249 0.034996809 0.04549180 0.2310036 0.052411939
-#&gt; 2015-05-23 09:58:00 0.2256942 0.061892007 0.10046995 0.2158249 0.034996809
-#&gt; 2015-05-23 09:59:00 0.2495755 0.049390161 0.02304906 0.2256942 0.061892007
-#&gt;                             z.1      SPE SPE_Flag       T2 T2_Flag Alarm
-#&gt; 2015-05-23 09:54:00 -0.08096178 4.529587        0 14.08045       0    NA
-#&gt; 2015-05-23 09:55:00  0.04669791 3.139423        0 11.91071       0    NA
-#&gt; 2015-05-23 09:56:00  0.10174248 2.634757        0 10.96726       0    NA
-#&gt; 2015-05-23 09:57:00  0.04394506 3.056371        0 11.77885       0    NA
-#&gt; 2015-05-23 09:58:00  0.04549180 3.167394        0 10.66463       0    NA
-#&gt; 2015-05-23 09:59:00  0.10046995 1.869880        0 10.45847       0    NA</div><div class='input'>
+  <span class='co'># While training, we included 1 lag (the default), so we will also lag the</span>
+  <span class='co'>#   observations we will test.</span>
+  <span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='no'>nrml</span>[(<span class='no'>n</span> - <span class='fl'>6</span>):<span class='no'>n</span>, -<span class='fl'>1</span>]
+  <span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>xts</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/xts/topics/diff'>lag.xts</a></span>(<span class='no'>testObs</span>, <span class='fl'>0</span>:<span class='fl'>1</span>)
+  <span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='no'>testObs</span>[-<span class='fl'>1</span>,]
+  <span class='no'>testObs</span> <span class='kw'>&lt;-</span> <span class='fu'>cbind</span>(<span class='no'>nrml</span>[(<span class='no'>n</span> - <span class='fl'>5</span>):<span class='no'>n</span>, <span class='fl'>1</span>], <span class='no'>testObs</span>)
+
+  <span class='fu'>mspMonitor</span>(<span class='kw'>observations</span> <span class='kw'>=</span> <span class='no'>testObs</span>[, -<span class='fl'>1</span>],
+             <span class='kw'>labelVector</span> <span class='kw'>=</span> <span class='no'>testObs</span>[, <span class='fl'>1</span>],
+             <span class='kw'>trainingSummary</span> <span class='kw'>=</span> <span class='no'>trainResults_ls</span>$<span class='no'>TrainingSpecs</span>)
+
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -1,0 +1,1255 @@
+---
+title: "MSAD-PCA Walkthrough"
+author: "Gabriel Odom"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MSAD-PCA Walkthrough}
+  %\VignetteEngine{rmarkdown::render}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# # To build the documentation PDF, use
+# if(.Platform$OS.type == "windows"){
+#   # PC - still hella buggy
+# system("R CMD Rd2pdf C:\Users\gabriel_odom\Documents\GitHub\mvMonitoring\mvMonitoring")
+# }else{
+#   # Mac
+# system("R CMD Rd2pdf /Users/gabrielodom/Documents/GitHub/mvMonitoring")
+# }
+```
+
+## Multi-State Adaptive-Dynamic PCA Simulation
+
+We create this package, `mvMonitoring`, from the foundation laid by Kazor et al (2016). The `mvMonitoring` package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.
+
+### The Interval Vector
+We begin by simulating an autocorrelated interval-step vector $t$. This vector $t$ has induced autocorrelation in its errors, $\varepsilon$, where these autocorrelated errors have initial values and independent components given by \[ \varepsilon \sim \mathcal{N}\left(\frac{1}{2}(a + b)(1 - \phi), \frac{b - a}{12} (1 - \phi ^ 2)\right), \] where $\epsilon_1$ is a random draw from this distribution, $a = 0.01$, $b = 2$, and the autocorrelation component $\phi = 0.75$. The mean and variance multipliers are the mean and variance of a random variable from the $\mathcal{U}_{[a,b]}$ distribution. The full autocorrelated error structure is then \[ \epsilon_s = \phi\epsilon_{s - 1} + (1 - \phi)\varepsilon.
+\]
+This $t$ vector will be sinusoidal with period $\omega = 7 * 24 * 60$ (signifying a weekly period in  minute-level observations). We then synthesize a $t$ with $t^*_1 = -\cos\left(\frac{2\pi}{\omega}\right) + \epsilon_1$, and \[ t^*_s = -\cos\left(\frac{2\pi}{\omega}\right) + \epsilon_s.
+\]
+The final $t$ vector is the $t^*$ vector scaled to lie entirely in $[a,b]$.
+```{r t_vec_initialized}
+omega <- 60 * 24 * 7
+phi <- 0.75
+a <- 0.01; b <- 2
+mean_t_err <- 0.5 * (a + b) # mean of Uniform(0.01,2)
+var_t_err <- (b - a) / 12 # variance of Uniform(0.01,2)
+
+# Create an autocorrelated vector of errors for the random variable t
+t_err <- vector(length = omega)
+# Initialise the errors so that the overall mean and variance match the sim of
+# Kazor et al.
+t_err[1] <- rnorm(n = 1,
+                  mean = mean_t_err * (1 - phi),
+                  sd = sqrt(var_t_err * (1 - phi ^ 2)))
+for(s in 2:omega){
+  t_err[s] <- phi * t_err[(s - 1)] +
+    (1 - phi) * rnorm(n = 1,
+                      mean = mean_t_err * (1 - phi),
+                      sd = sqrt(var_t_err * (1 - phi ^ 2)))
+}
+
+# Now for the vector itself
+s <- 1:omega
+t_star <- -cos(2 * pi * s / omega) + t_err
+
+# Now we scale the ts to match the ts from the Unif(0.01,2)
+t_star_adj <- ((b - a) * (t_star - min(t_star))) /
+  (max(t_star) - min(t_star)) + a
+```
+Now that we have created the underlying autocorrelated and non-stationary process vector $t$, we perform some simple confirmatory graphing techniques.
+
+```{r t_vec_graphs, echo = FALSE}
+plot(t_star_adj,
+     type = "l",
+     main = "Plot of t Scaled to [0.1,2]",
+     xlab = "t")
+pacf(t_star,
+     main = "Partial ACF for the Series t")
+```
+As we can see, $t$ is autocorrelated and non-stationary with mean `r mean(t_star)` and variance `r var(t_star)`.
+
+###  Features and State Features
+We will simulate three features, with each feaure operating under $k$ different states. We will use $<x(t), y(t), z(t)>$ instead of the $<x_1(t), x_2(t), x_3(t)>$ notation used in Kazor et al. This will assist us when we introduce feature states. Our state notation will be $<x_k(t), y_k(t), z_k(t)>$ for State $k$.
+
+We create the three features under State 1 (normal operating conditions, or \emph{NOC}) as three functions of $t$:
+\begin{align}
+\textbf{x}(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
+\textbf{y}(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
+\textbf{z}(\textbf{t}) &\equiv -\textbf{t} ^ 3 + 3 * \textbf{t} ^ 2 + \boldsymbol\varepsilon_3, \end{align}
+where $\varepsilon_i \sim N(0, 0.01)$.
+
+```{r state_1_init}
+library(scatterplot3d)
+library(magrittr)
+library(tidyverse)
+library(mvMonitoring)
+
+normal_df <- data.frame(t = t_star_adj,
+                        err1 = rnorm(n = omega, sd = sqrt(0.01)),
+                        err2 = rnorm(n = omega, sd = sqrt(0.01)),
+                        err3 = rnorm(n = omega, sd = sqrt(0.01)))
+
+###  State 1  ###
+normal_df %<>% mutate(x = t + err1,
+                     y = t ^ 2 - 3 * t + err2,
+                     z = -t ^ 3 + 3 * t ^ 2 + err3)
+
+orig_state_mat <- normal_df %>%
+                    select(x,y,z) %>%
+                    as.matrix
+```
+Let's take a look at our 3D scatterplot:
+```{r state1_scatter}
+scatterplot3d(x = normal_df$x,
+              y = normal_df$y,
+              z = normal_df$x,
+              angle = 15,
+              highlight.3d = TRUE)
+```
+
+Now we can create data for our other two states. These states will be scaled rotations of the current $<x,y,z>$ set. Thus, we need the `mvMonitoring::rotateScale3D()` function from the `Rotation_Playground.R` file. The first state is yaw, pitch, and roll rotated by (0, 90, 30) degrees, and the scales are multiplied by (1, 0.5, 2).
+```{r state_2_init}
+###  State 2  ###
+state2_angles <- list(yaw = 0,
+                      pitch = 90,
+                      roll = 30)
+state2_scales <- c(1,0.5,2)
+state2_mat <- orig_state_mat %*% 
+  rotateScale3D(rot_angles = state2_angles,
+                scale_factors = state2_scales)
+```
+We can see the effects of the rotation and scaling.
+```{r state_2_scatter}
+scatterplot3d(state2_mat)
+```
+The second state is yaw, pitch, and roll rotated by (90, 0, -30) degrees, and the scales are multiplied by (0.25, 0.1, 0.75).
+```{r state_3_init}
+###  State 3  ###
+state3_angles <- list(yaw = 90,
+                      pitch = 0,
+                      roll = -30)
+state3_scales <- c(0.25,0.1,0.75)
+state3_mat <- orig_state_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
+                                               scale_factors = state3_scales)
+```
+We can see the difference that State 3 creates.
+```{r state_3_scatter}
+scatterplot3d(state3_mat)
+```
+
+Now, let's combine all these state observations into one data frame, which we will then subset based on the state indicator.
+```{r combine_state_data}
+###  Combination and Cleaning  ###
+# Now concatenate these vectors
+normal_df$xState2 <- state2_mat[,1]
+normal_df$yState2 <- state2_mat[,2]
+normal_df$zState2 <- state2_mat[,3]
+normal_df$xState3 <- state3_mat[,1]
+normal_df$yState3 <- state3_mat[,2]
+normal_df$zState3 <- state3_mat[,3]
+
+# Add a State label column
+normal_df %<>%
+  mutate(state = rep(rep(c(1, 2, 3), each = 60), (24 / 3) * 7))
+
+# Add a date-time column
+normal_df %<>%
+  mutate(dateTime = seq.POSIXt(from = as.POSIXct("2016-11-27 00:00:00 CST"),
+                               by = "min", length.out = 10080))
+
+###  Hourly Switching Process  ###
+state1_df <- normal_df %>%
+  filter(state == 1) %>%
+  select(dateTime, state, x, y, z)
+state2_df <- normal_df %>%
+  filter(state == 2) %>%
+  select(dateTime, state, x = xState2, y = yState2, z = zState2)
+state3_df <- normal_df %>%
+  filter(state == 3) %>%
+  select(dateTime, state, x = xState3, y = yState3, z = zState3)
+normal_switch_df <- bind_rows(state1_df, state2_df, state3_df) %>%
+  arrange(dateTime)
+```
+
+Let's take a look at the individual states, and their combined product.
+```{r state_scatterplots}
+
+normal_switch_df %>%
+  filter(state == 1) %>%
+  select(x, y, z) %>%
+  scatterplot3d(xlim = c(-2, 3),
+                ylim = c(-3, 1),
+                zlim = c(-1, 5))
+
+normal_switch_df %>%
+  filter(state == 2) %>%
+  select(x, y, z) %>%
+  scatterplot3d(xlim = c(-2, 3),
+                ylim = c(-3, 1),
+                zlim = c(-1, 5))
+
+normal_switch_df %>%
+  filter(state == 3) %>%
+  select(x, y, z) %>%
+  scatterplot3d(xlim = c(-2, 3),
+                ylim = c(-3, 1),
+                zlim = c(-1, 5))
+
+normal_switch_df %>%
+  select(x, y, z) %>%
+  scatterplot3d(xlim = c(-2, 3),
+                ylim = c(-3, 1),
+                zlim = c(-1, 5))
+```
+
+
+
+###  Fault Introduction
+We now create the faults for individual states and all states. We will introduce these faults 1000 time units after the end of training (to evauluate false positive rates). The first fault is to add 2 to each $<\textbf{x}(\textbf{t}), \textbf{y}(\textbf{t}), \textbf{z}(\textbf{t})>$.
+```{r fault1A_intro}
+faultStart <- 8500
+
+###  Fault 1A  ###
+# Shift each <x, y, z> by 2
+shift <- 2
+fault1A_df <- normal_df %>%
+  select(dateTime, state, t, x, y, z) %>%
+  mutate(x = x + shift,
+         y = y + shift,
+         z = z + shift)
+fault1A_mat <- fault1A_df %>% select(x,y,z) %>% as.matrix
+
+# State 2
+fault1A_S2_mat <- fault1A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
+                                                  scale_factors = state2_scales)
+scatterplot3d(fault1A_S2_mat)
+
+# State 3
+fault1A_S3_mat <- fault1A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
+                                                  scale_factors = state3_scales)
+scatterplot3d(fault1A_S3_mat)
+
+# Now concatenate these vectors
+fault1A_df$xState2 <- fault1A_S2_mat[,1]
+fault1A_df$yState2 <- fault1A_S2_mat[,2]
+fault1A_df$zState2 <- fault1A_S2_mat[,3]
+fault1A_df$xState3 <- fault1A_S3_mat[,1]
+fault1A_df$yState3 <- fault1A_S3_mat[,2]
+fault1A_df$zState3 <- fault1A_S3_mat[,3]
+
+# Hourly switching process
+fault1A_state1_df <- fault1A_df %>%
+  filter(state == 1) %>%
+  select(dateTime, state, x, y, z)
+fault1A_state2_df <- fault1A_df %>%
+  filter(state == 2) %>%
+  select(dateTime, state, x = xState2, y = yState2, z = zState2)
+fault1A_state3_df <- fault1A_df %>%
+  filter(state == 3) %>%
+  select(dateTime, state, x = xState3, y = yState3, z = zState3)
+fault1A_switch_df <- bind_rows(fault1A_state1_df,
+                               fault1A_state2_df,
+                               fault1A_state3_df) %>%
+  arrange(dateTime)
+```
+Now, let's take a look at our process after introducing fault 1A.
+```{r fault1A_scatter}
+fault1A_switch_df %>%
+  select(x, y, z) %>%
+  scatterplot3d()
+```
+The second fault (Fault 1B) is to add 2 to feature $<\textbf{x}(\textbf{t})>$ only.
+```{r fault1B_intro}
+###  Fault 1B  ###
+# Shift each x by 2
+fault1B_df <- normal_df %>%
+  select(dateTime, state, t, x, y, z) %>%
+  mutate(x = x + shift)
+fault1B_mat <- fault1B_df %>% select(x,y,z) %>% as.matrix
+
+# State 2
+fault1B_S2_mat <- fault1B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
+                                                  scale_factors = state2_scales)
+scatterplot3d(fault1B_S2_mat)
+
+# State 3
+fault1B_S3_mat <- fault1B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
+                                                  scale_factors = state3_scales)
+scatterplot3d(fault1B_S3_mat)
+
+# Now concatenate these vectors
+fault1B_df$xState2 <- fault1B_S2_mat[,1]
+fault1B_df$yState2 <- fault1B_S2_mat[,2]
+fault1B_df$zState2 <- fault1B_S2_mat[,3]
+fault1B_df$xState3 <- fault1B_S3_mat[,1]
+fault1B_df$yState3 <- fault1B_S3_mat[,2]
+fault1B_df$zState3 <- fault1B_S3_mat[,3]
+
+# Hourly switching process
+fault1B_state1_df <- fault1B_df %>%
+  filter(state == 1) %>%
+  select(dateTime, state, x, y, z)
+fault1B_state2_df <- fault1B_df %>%
+  filter(state == 2) %>%
+  select(dateTime, state, x = xState2, y = yState2, z = zState2)
+fault1B_state3_df <- fault1B_df %>%
+  filter(state == 3) %>%
+  select(dateTime, state, x = xState3, y = yState3, z = zState3)
+fault1B_switch_df <- bind_rows(fault1B_state1_df,
+                               fault1B_state2_df,
+                               fault1B_state3_df) %>%
+  arrange(dateTime)
+```
+We now look at the effect of Fault 1B on the scatterplot of the process.
+```{r fault1B_scatter}
+fault1B_switch_df %>%
+  select(x, y, z) %>%
+  scatterplot3d()
+```
+
+The third fault we introduce (Fault 2A) is a drift in each feature by $10 ^ {-3} * (\text{step} - 8500)$.
+```{r fault2A_intro}
+###  Fault 2A  ###
+# Drift each <x, y, z> by (step - faultStart) / 10 ^ 3
+drift_vec <- (1:omega - faultStart) / 10 ^ 3
+drift_vec[drift_vec < 0] <- 0
+fault2A_df <- normal_df %>%
+  select(dateTime, state, t, x, y, z) %>%
+  mutate(x = x + drift_vec,
+         y = y + drift_vec,
+         z = z + drift_vec)
+fault2A_mat <- fault2A_df %>% select(x,y,z) %>% as.matrix
+
+# State 2
+fault2A_S2_mat <- fault2A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
+                                                  scale_factors = state2_scales)
+# scatterplot3d(fault2A_S2_mat)
+
+# State 3
+fault2A_S3_mat <- fault2A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
+                                                  scale_factors = state3_scales)
+# scatterplot3d(fault2A_S3_mat)
+
+# Now concatenate these vectors
+fault2A_df$xState2 <- fault2A_S2_mat[,1]
+fault2A_df$yState2 <- fault2A_S2_mat[,2]
+fault2A_df$zState2 <- fault2A_S2_mat[,3]
+fault2A_df$xState3 <- fault2A_S3_mat[,1]
+fault2A_df$yState3 <- fault2A_S3_mat[,2]
+fault2A_df$zState3 <- fault2A_S3_mat[,3]
+
+# Hourly switching process
+fault2A_state1_df <- fault2A_df %>%
+  filter(state == 1) %>%
+  select(dateTime, state, x, y, z)
+fault2A_state2_df <- fault2A_df %>%
+  filter(state == 2) %>%
+  select(dateTime, state, x = xState2, y = yState2, z = zState2)
+fault2A_state3_df <- fault2A_df %>%
+  filter(state == 3) %>%
+  select(dateTime, state, x = xState3, y = yState3, z = zState3)
+fault2A_switch_df <- bind_rows(fault2A_state1_df,
+                               fault2A_state2_df,
+                               fault2A_state3_df) %>%
+  arrange(dateTime)
+```
+Now we look at the scatterplot under this drift fault.
+```{r fault2A_scatter}
+fault2A_switch_df %>%
+  select(x, y, z) %>%
+  scatterplot3d()
+```
+
+The fourth fault we introduce (Fault 2B) is a drift in features $\textbf{y}$ and $\textbf{z}$ by $10 ^ {-3} * (\text{step} - 8500)$.
+```{r fault2B_intro}
+###  Fault 2B  ###
+# Drift each <y, z> by (step - faultStart) / 10 ^ 3
+fault2B_df <- normal_df %>%
+  select(dateTime, state, t, x, y, z) %>%
+  mutate(y = y + drift_vec,
+         z = z + drift_vec)
+fault2B_mat <- fault2B_df %>% select(x,y,z) %>% as.matrix
+
+# State 2
+fault2B_S2_mat <- fault2B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
+                                                  scale_factors = state2_scales)
+scatterplot3d(fault2B_S2_mat)
+
+# State 3
+fault2B_S3_mat <- fault2B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
+                                                  scale_factors = state3_scales)
+scatterplot3d(fault2B_S3_mat)
+
+# Now concatenate these vectors
+fault2B_df$xState2 <- fault2B_S2_mat[,1]
+fault2B_df$yState2 <- fault2B_S2_mat[,2]
+fault2B_df$zState2 <- fault2B_S2_mat[,3]
+fault2B_df$xState3 <- fault2B_S3_mat[,1]
+fault2B_df$yState3 <- fault2B_S3_mat[,2]
+fault2B_df$zState3 <- fault2B_S3_mat[,3]
+
+# Hourly switching process
+fault2B_state1_df <- fault2B_df %>%
+  filter(state == 1) %>%
+  select(dateTime, state, x, y, z)
+fault2B_state2_df <- fault2B_df %>%
+  filter(state == 2) %>%
+  select(dateTime, state, x = xState2, y = yState2, z = zState2)
+fault2B_state3_df <- fault2B_df %>%
+  filter(state == 3) %>%
+  select(dateTime, state, x = xState3, y = yState3, z = zState3)
+fault2B_switch_df <- bind_rows(fault2B_state1_df,
+                               fault2B_state2_df,
+                               fault2B_state3_df) %>%
+  arrange(dateTime)
+```
+We now inspect the effect of Fault 2B.
+```{r fault2B_scatter}
+fault2B_switch_df %>%
+  select(x, y, z) %>%
+  scatterplot3d()
+```
+
+Our fifth fault (Fault 3A) is to amplify the underlying $\textbf{t}$ signal vector as $\frac{3}{2 * 10080} * (10080 - \text{step}) * \textbf{t}$.
+```{r fault3A_intro}
+###  Fault 3A  ###
+# Amplify t for each <x, y, z> by 3 * (omega - step) * t / (2 * omega)
+amplify_vec <- 2 * (1:omega - faultStart) / (omega - faultStart) + 1
+amplify_vec[amplify_vec < 1] <- 1
+fault3A_df <- normal_df %>%
+  select(dateTime, state, t, err1, err2, err3) %>%
+  mutate(t = amplify_vec * t) %>%
+  mutate(x = t + err1,
+         y = t ^ 2 - 3 * t + err2,
+         z = -t ^ 3 + 3 * t ^ 2 + err3)
+fault3A_mat <- fault3A_df %>% select(x,y,z) %>% as.matrix
+
+# State 2
+fault3A_S2_mat <- fault3A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
+                                                  scale_factors = state2_scales)
+scatterplot3d(fault3A_S2_mat)
+
+# State 3
+fault3A_S3_mat <- fault3A_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
+                                                  scale_factors = state3_scales)
+scatterplot3d(fault3A_S3_mat)
+
+# Now concatenate these vectors
+fault3A_df$xState2 <- fault3A_S2_mat[,1]
+fault3A_df$yState2 <- fault3A_S2_mat[,2]
+fault3A_df$zState2 <- fault3A_S2_mat[,3]
+fault3A_df$xState3 <- fault3A_S3_mat[,1]
+fault3A_df$yState3 <- fault3A_S3_mat[,2]
+fault3A_df$zState3 <- fault3A_S3_mat[,3]
+
+# Hourly switching process
+fault3A_state1_df <- fault3A_df %>%
+  filter(state == 1) %>%
+  select(dateTime, state, x, y, z)
+fault3A_state2_df <- fault3A_df %>%
+  filter(state == 2) %>%
+  select(dateTime, state, x = xState2, y = yState2, z = zState2)
+fault3A_state3_df <- fault3A_df %>%
+  filter(state == 3) %>%
+  select(dateTime, state, x = xState3, y = yState3, z = zState3)
+fault3A_switch_df <- bind_rows(fault3A_state1_df,
+                               fault3A_state2_df,
+                               fault3A_state3_df) %>%
+  arrange(dateTime)
+```
+Now inspect the effect of this fault
+```{r fault3A_scatter}
+fault3A_switch_df %>%
+  select(x, y, z) %>%
+  scatterplot3d()
+```
+Our last fault under consideration, Fault 3B, is a dampening fault to $\textbf{t}$ as $\log \textbf{t}$. As $\textbf{t}$ is bdd within $[0.01, 2]$, $\log\textbf{t}\in[-4.61, 0.7]$.
+```{r fault3B_intro}
+###  Fault 3B  ###
+# Dampen t for z by log|t|
+t_log <- normal_df$t
+t_log[faultStart:omega] <- log(t_log[faultStart:omega])
+fault3B_df <- normal_df %>%
+  select(dateTime, state, t, err1, err2, err3) %>%
+  mutate(t_damp = t_log) %>%
+  mutate(x = t + err1,
+         y = t ^ 2 - 3 * t + err2,
+         z = -t_damp ^ 3 + 3 * t_damp ^ 2 + err3)
+fault3B_mat <- fault3B_df %>% select(x,y,z) %>% as.matrix
+
+# State 2
+fault3B_S2_mat <- fault3B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state2_angles,
+                                                  scale_factors = state2_scales)
+# scatterplot3d(fault3B_S2_mat)
+
+# State 3
+fault3B_S3_mat <- fault3B_mat %*% mvMonitoring::rotateScale3D(rot_angles = state3_angles,
+                                                  scale_factors = state3_scales)
+# scatterplot3d(fault3B_S3_mat)
+
+# Now concatenate these vectors
+fault3B_df$xState2 <- fault3B_S2_mat[,1]
+fault3B_df$yState2 <- fault3B_S2_mat[,2]
+fault3B_df$zState2 <- fault3B_S2_mat[,3]
+fault3B_df$xState3 <- fault3B_S3_mat[,1]
+fault3B_df$yState3 <- fault3B_S3_mat[,2]
+fault3B_df$zState3 <- fault3B_S3_mat[,3]
+
+# Hourly switching process
+fault3B_state1_df <- fault3B_df %>%
+  filter(state == 1) %>%
+  select(dateTime, state, x, y, z)
+fault3B_state2_df <- fault3B_df %>%
+  filter(state == 2) %>%
+  select(dateTime, state, x = xState2, y = yState2, z = zState2)
+fault3B_state3_df <- fault3B_df %>%
+  filter(state == 3) %>%
+  select(dateTime, state, x = xState3, y = yState3, z = zState3)
+fault3B_switch_df <- bind_rows(fault3B_state1_df,
+                               fault3B_state2_df,
+                               fault3B_state3_df) %>%
+  arrange(dateTime)
+```
+We inspect the effect of the last fault on our scatterplot.
+```{r fault3B_scatter}
+fault3B_switch_df %>%
+  select(x, y, z) %>%
+  scatterplot3d()
+```
+
+###  The Seven Data Frames
+The normal_df data frame is without fault. We will remove rows 8500 to 10080, and replace these rows with the same rows from each each of the fault data frames. We then store each of these seven `xts` matrices in a list.
+
+Implementation notes: turn all the data frames into `xts` objects for Kazor's function to work, which we believe follows a depreciated version of `zoo`, so we need the `dateTime` column as the rownames of the data frame, not as an index. EDITED NOTE - B. Barnard and I rebuilt Kazor's code as a functional package called `mvMonitoring`. The functions in these packages use `xts` matrices as inputs.
+```{r fault_dataframes}
+library(xts)
+normal_switch_xts <- xts(normal_switch_df[,-1],
+                         order.by = normal_switch_df[,1])
+# devtools::use_data(normal_switch_xts)
+
+# Fault 1A
+normal_w_fault1A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
+                              fault1A_switch_df[faultStart:omega,])
+fault1A_xts <- xts(normal_w_fault1A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault1A_xts)
+
+# Fault 1B
+normal_w_fault1B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
+                                 fault1B_switch_df[faultStart:omega,])
+fault1B_xts <- xts(normal_w_fault1B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault1B_xts)
+
+# Fault 2A
+normal_w_fault2A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
+                                 fault2A_switch_df[faultStart:omega,])
+fault2A_xts <- xts(normal_w_fault2A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault2A_xts)
+
+# Fault 2B
+normal_w_fault2B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
+                                 fault2B_switch_df[faultStart:omega,])
+fault2B_xts <- xts(normal_w_fault2B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault2B_xts)
+
+# Fault 3A
+normal_w_fault3A_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
+                                 fault3A_switch_df[faultStart:omega,])
+fault3A_xts <- xts(normal_w_fault3A_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault3A_xts)
+
+# Fault 3B
+normal_w_fault3B_df <- bind_rows(normal_switch_df[1:(faultStart - 1),],
+                                 fault3B_switch_df[faultStart:omega,])
+fault3B_xts <- xts(normal_w_fault3B_df[,-1], order.by = normal_switch_df[,1])
+# devtools::use_data(fault3B_xts)
+```
+
+Now we clean up the environment, and load the data we've saved.
+```{r sweepEnv}
+# uncomment these lines to use the data from the package. Comment them out
+# when generating new data.
+rm(list = ls())
+data("normal_switch_xts")
+data("fault1A_xts")
+data("fault1B_xts")
+data("fault2A_xts")
+data("fault2B_xts")
+data("fault3A_xts")
+data("fault3B_xts")
+
+faults_ls <- list(normal = normal_switch_xts,
+                  fault1A = fault1A_xts,
+                  fault1B = fault1B_xts,
+                  fault2A = fault2A_xts,
+                  fault2B = fault2B_xts,
+                  fault3A = fault3A_xts,
+                  fault3B = fault3B_xts)
+```
+
+### Feature Time-series Plots
+Now that we've created and stored these feature, we can use time-series plots to confirm our multi-state vision as well as quickly ascertain the fault behavior.
+```{r feature_ts_plots}
+# Double check that faults are visible and according to plan:
+# faults_ls$fault1A %>% select(x) %>% plot.ts()
+# faults_ls$fault1A %>% select(y) %>% plot.ts()
+# faults_ls$fault1A %>% select(z) %>% plot.ts()
+# faults_ls$fault1B %>% select(x) %>% plot.ts()
+# faults_ls$fault1B %>% select(y) %>% plot.ts()
+# faults_ls$fault1B %>% select(z) %>% plot.ts()
+# faults_ls$fault2A %>% select(x) %>% plot.ts()
+# faults_ls$fault2A %>% select(y) %>% plot.ts()
+# faults_ls$fault2A %>% select(z) %>% plot.ts()
+# faults_ls$fault2B %>% select(x) %>% plot.ts()
+# faults_ls$fault2B %>% select(y) %>% plot.ts()
+# faults_ls$fault2B %>% select(z) %>% plot.ts()
+# faults_ls$fault3A %>% select(x) %>% plot.ts()
+# faults_ls$fault3A %>% select(y) %>% plot.ts()
+# faults_ls$fault3A %>% select(z) %>% plot.ts()
+# faults_ls$fault3B %>% select(x) %>% plot.ts()
+# faults_ls$fault3B %>% select(y) %>% plot.ts()
+# faults_ls$fault3B %>% select(z) %>% plot.ts()
+faults_ls$normal$x %>% plot.xts()
+faults_ls$normal$y %>% plot.xts()
+faults_ls$normal$z %>% plot.xts()
+faults_ls$fault1A$x %>% plot.xts()
+faults_ls$fault1A$y %>% plot.xts()
+faults_ls$fault1A$z %>% plot.xts()
+faults_ls$fault1B$x %>% plot.xts() 
+faults_ls$fault1B$y %>% plot.xts()
+faults_ls$fault1B$z %>% plot.xts()
+faults_ls$fault2A$x %>% plot.xts()
+faults_ls$fault2A$y %>% plot.xts()
+faults_ls$fault2A$z %>% plot.xts()
+faults_ls$fault2B$x %>% plot.xts()
+faults_ls$fault2B$y %>% plot.xts()
+faults_ls$fault2B$z %>% plot.xts()
+faults_ls$fault3A$x %>% plot.xts()
+faults_ls$fault3A$y %>% plot.xts()
+faults_ls$fault3A$z %>% plot.xts()
+faults_ls$fault3B$x %>% plot.xts()
+faults_ls$fault3B$y %>% plot.xts()
+faults_ls$fault3B$z %>% plot.xts()
+```
+
+
+## Multi-State AD-PCA Implementation
+We now throw all this data we've just generated into our package.
+```{r msad-pca}
+Sys.time()
+results_ls <- mvMonitoring::mspTrain(data = faults_ls$normal[1:8640, 2:4],
+                         labelVector = faults_ls$normal[1:8640, 1],
+                         trainObs = 5 * 24 * 60,
+                         updateFreq = 24 * 60,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:2,
+                         var.amnt = 0.95)
+Sys.time() # 14 seconds for 720 train, 360 update; 5 seconds for 1440, 720;
+# 1 second for 2880 train (two days), and 1440 update (one day).
+
+# Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+(falseAlarmRate_SPE <- sum(results_ls$FaultChecks[,5] %in% c(2,3)) /
+  nrow(results_ls$FaultChecks))
+# The SPE false alarm rate hits 0 at alpha = 0.07.
+(falseAlarmRate_T2 <- sum(results_ls$FaultChecks[,5] %in% c(1,3)) /
+  nrow(results_ls$FaultChecks))
+# The T2 false alarm rate hits 0 at alpha = 0.00015, and is at 16% at 0.07. The
+# T2 statistic throws too many false alarms for my taste.
+# These values were before we split the update observations by a third. These
+# false alarm rates increased dramatically (0.19, 0.41), so we increased the
+# number of training observations to 4320 (three days worth, up from 2880). The
+# false alarm rates dropped back, but not nearly as low (0.0031, 0.0884).
+
+results_ls$TrainingSpecs[[2]]$SPE_threshold
+# Apparently, the SPE function is VERY sensitive to the change in the var.amnt
+# parameter (defaults to 95%). At 0.95, the threshold is around 1.2-1.4. The
+# closer this parameter is to 1, the lower the SPE threshold (overfitting?).
+# This causes the abnormally high false alarm rate for state 2. However, when I
+# drop var.amnt even to 94%, the threshold increases drastically (to between 18
+# and 20); and if I increase var.amnt to 99%, the threshold drops to about
+# 0.6-0.7. I need to speak with Dr. Hering about this.
+
+# I think that right around 94% is the cutoff to include or not include one of
+# the features, so we have almost a 0-1 loss cutoff there. Features aren't
+# continuous, so I'm not sure the best course of action here.
+```
+
+## Test the Multi-State Monitoring function
+```{r test_msad-pca}
+# Create six observations with lags 0:2 included
+laggedTestObs <- faults_ls$normal[8639:10080, -1]
+laggedTestObs <- lag.xts(laggedTestObs, 0:2)
+laggedTestObs <- laggedTestObs[-(1:2),]
+laggedTestObs <- cbind(faults_ls$normal[8641:10080, 1], laggedTestObs)
+testDataandFlags <- mvMonitoring::mspMonitor(observations = laggedTestObs[,-1],
+           labelVector = laggedTestObs[,1],
+           trainingSummary = results_ls$TrainingSpecs)
+testDataandFlags[1:5,]
+```
+
+## Test the Warning function
+```{r test-warning}
+# This line will test if the function can check the last line at all.
+mvMonitoring::mspWarning(testDataandFlags[1,])
+
+# These lines will test each line as if it was just received:
+alarmData <- testDataandFlags
+for(i in 1:nrow(testDataandFlags)){
+  alarmData[1:i,] <- mvMonitoring::mspWarning(alarmData[1:i,])
+}
+
+# False Alarms? 
+alarmData[,ncol(alarmData)] %>% sum(na.rm = T)
+alarmData[,(ncol(alarmData) - 4):ncol(alarmData)] %>% head
+alarmData[,(ncol(alarmData) - 4):ncol(alarmData)] %>% tail
+
+# What do the first three hours look like? What did it look like right before?
+# Before
+faults_ls$normal[8461:8640, 2:4] %>% scatterplot3d()
+# After
+alarmData[1:180,2:4] %>% scatterplot3d()
+# I'm not seeing much difference - even the scales are the same. Let's look
+# specifically at state 2:
+# Before
+faults_ls$normal[8521:8580, 2:4] %>% scatterplot3d()
+# After
+alarmData[61:120,2:4] %>% scatterplot3d()
+
+# We are seeing a lot of false alarms in state 2 under NOC, but few to no false
+# alarms in states 1 an 3
+# faults_ls$normal[faults_ls$normal[,1] == 2, 2] %>% plot.xts()
+# faults_ls$normal[faults_ls$normal[,1] == 2, 3] %>% plot.xts()
+# faults_ls$normal[faults_ls$normal[,1] == 2, 4] %>% plot.xts()
+# faults_ls$normal[faults_ls$normal[,1] == 2, 2:4] %>% scatterplot3d()
+```
+
+
+# Real Data
+This data was sent to use from Kate Newhart in Golden, CO.
+
+### Import the Data files
+First, we import the two data sets. 
+```{r realData_import}
+# # If you start working in the vignette here, then load these.
+# # Otherwise, they were loaded on lines 88 and 529, respectively
+# library(magrittr)
+# library(tidyverse) # Includes readr
+# library(mvMonitoring)
+# library(xts)
+if(.Platform$OS.type == "windows"){
+  tenDayData_v2 <- read_csv("~/GitHub/mvMonitoring/inst/tenDayData_v2.csv", 
+  col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
+currentDayData_v2 <- read_csv("~/GitHub/mvMonitoring/inst/currentDayData_v2.csv", 
+  col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
+}else{
+  tenDayData_v2 <- read_csv("~/Documents/GitHub/mvMonitoring/inst/tenDayData_v2.csv", 
+                col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
+currentDayData_v2 <- read_csv("~/Documents/GitHub/mvMonitoring/inst/currentDayData_v2.csv",
+                col_types = cols(X1 = col_datetime(format = "%Y-%m-%d %H:%M:%S")))
+}
+
+```
+The first data set is of a 10-day period, and the second data set is from a single day. The first columns of each data set are DateTime columns. Now we can do some basic data exploration, and save the data sets as `xts` matrices. Because `readr` imports the data frame as a tibble, we use list subsetting to get at the index column.
+```{r readData_EDA}
+str(tenDayData_v2, give.attr = FALSE)
+tenDay <- xts(tenDayData_v2[, -1], order.by = tenDayData_v2[[1]])
+tenDay[nrow(tenDay),]
+
+str(currentDayData_v2, give.attr = FALSE)
+oneDay <- xts(currentDayData_v2[, -1], order.by = currentDayData_v2[[1]])
+oneDay[1,]
+```
+
+### Clean and Save the Data
+We see that the `oneDay` data matrix is adjacent to the last observation from the `tenDay` data matrix. Now we check the data matrices for NA values.
+```{r newRealTestData}
+anyNA(tenDay)
+anyNA(oneDay)
+```
+The ten day data set contains NA values, so we need to deal with these. We also must check for constant or near-constant data vectors. These vectors will cause the eigendecomposition to fail.
+```{r rmNA}
+# Any constant columns? Columns with the same values can cause singularity issues.
+sapply(1:ncol(tenDay), function(i){
+  length(unique(tenDay[,i])) < 20
+})
+# From this, we see that columns 3, 6, 29, and 30 put us at risk of singularity
+# issues.
+plot.xts(tenDay[,3])
+plot.xts(tenDay[,6])
+plot.xts(tenDay[,29])
+plot.xts(tenDay[,30])
+# We necessarily remove column 29, as it is constant for multiple entire updates
+tenDay_clean <- tenDay[,-29]
+oneDay_clean <- oneDay[,-29]
+
+# Now we remove the rows with NA observations
+tenDay_clean <- na.omit(tenDay_clean)
+nrow(tenDay) - nrow(tenDay_clean)
+
+# devtools::use_data(oneDay_clean)
+# devtools::use_data(tenDay_clean)
+```
+The clean data frame has 138 fewer observations.
+
+### Training the AD-PCA Model
+Now to analyse the training data, and pass the training information in order to test the testing data. Because the data do not come from a process with recorded state variables (or, more specifically, that we do not have such state information), we will give a column of 1s as the labels. Futher, we have ten days' worth of 10-minute-level observations, so we will train on $7 * 24 * 60 / 10 = 1008$ observations (seven days' worth), and update each day ($24 * 60 * 10 = 144$). Further, we will lag the features by one time step. CAVEAT: we're missing one observation: the `tenDay_clean` data matrix had 1299 rows, while our train (864) and returned faultChecks (434) account for 1298 rows. This missing row is the row we lost due to the lag.
+```{r trainRealData}
+tenDayResults_ls <- mspTrain(data = tenDay_clean,
+                         labelVector = rep(1, nrow(tenDay_clean)),
+                         trainObs = 1008,
+                         updateFreq = 144,
+                         alpha = 0.001,
+                         faultsToTriggerAlarm = 3,
+                         lagsIncluded = 0:1,
+                         var.amnt = 0.95)
+```
+
+### Testing the New Observations
+We will test the observations from the `oneDay_clean` data set. We must first lag the test observations. We'll borrow the lags we don't have from the previous day (in `nineDay_clean`).
+```{r testRealData}
+laggedOneDay <- lag.xts(oneDay_clean, 0:1)
+laggedOneDay[1,36:70] <- tenDay_clean[nrow(tenDay_clean),]
+
+realDataandFlags <- mspMonitor(observations = laggedOneDay,
+                               labelVector = rep(1, nrow(laggedOneDay)),
+                               trainingSummary = tenDayResults_ls$TrainingSpecs)
+realDataandFlags[1,]
+```
+For some reason, that I don't know right now, `mspMonitor` is flagging all of these values as faults, which will trigger alarms for most of the day.
+```{r realWarnings}
+# These lines will test each line as if it was just received:
+realAlarmData <- realDataandFlags
+for(i in 1:nrow(realDataandFlags)){
+  realAlarmData[1:i,] <- mspWarning(realAlarmData[1:i,])
+}
+tail(realAlarmData)
+```
+I'm not sure why this is happening. I'll have to dig in to it later. I do notice that both the SPE and T2 statistics are off the charts. The only component affecting them equally is the projection matrix P. We are estimating a 70 ^ 2 matrix using only 432 observations at a time, so this matrix could very well be unstable (we'd need around 2500 observations to stably estimate the scatter matrix).
+EDIT: I was not supplying the training mean vector and precision matrix to the monitoring function, which means that the the test observations were not being centred and scaled. This did not make much impact in the simulated data, as the centered and scaled data would not be far off from the original values, except in state 2. This issue is fixed.
+
+# Simulation Setup
+We have also collapsed the data generation setup and implementation from this vignette into a function suite. The outward-facing function is called `mspProcessData`, and we now give an example.
+```{r mspProcessEg}
+# If you start working in the vignette here, then load these.
+# Otherwise, they were loaded on lines 88 and 529, respectively
+library(magrittr)
+library(tidyverse) # Includes readr
+library(mvMonitoring)
+library(xts)
+simFaults_ls <- mspProcessData(faults = "All",
+                               faultStartIndex = 8500,
+                               startTime = "2016-11-27 00:00:00 CST")
+
+```
+This process data was generated from a true three-state model. Therefore, our comparison for this data is the false alarm rate and time to alarm for the MSAD-PCA method to the AD-PCA method. We perform this comparison by overwriting the `state` column of the data frames with a single value (labelling the observations as if they came from a true single-state model).
+
+## True Multi-State Observations
+We first assume that the observations do come from a multi-state process. This means that we will test AD-PCA by incorrectly assuming that all observations come from the same state. We first draw a list of data matrices. Then we look at false alarm rates for multi-state data under normal operating conditions using AD-PCA and MSAD-PCA. We also measure detection time for all faults for multi-state data under normal operating conditions using AD-PCA and MSAD-PCA.
+```{r trueMultiState_sim, message = FALSE}
+# We get warnings of "no non-missing arguments to min; returning Inf" when
+# none of the observations yield alarms. Suppress this with ? "message = FALSE"
+# doesn't work.
+library(parallel) # use mclapply on Mac, parLapply on Windows
+a <- Sys.time()
+cl <- makeCluster(getOption("cl.cores", 5))
+clusterEvalQ(cl, library(tidyverse))
+clusterEvalQ(cl, library(xts))
+clusterEvalQ(cl, library(mvMonitoring))
+msadResults5_ls <- parLapply(cl = cl, 1:5, function(void){
+# msadResults2_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
+# msadResults5_ls <- lapply(1:1, function(void){
+
+  ##########   Draw a Random Data Set   ##########
+  msadpcaObs_ls <- mspProcessData(faults = "All",
+                              faultStartIndex = 8500,
+                              startTime = "2016-11-27 00:00:00 CST",
+                              multiState = TRUE,
+                              adpcaTest = TRUE)
+  
+  ##########   False Alarm Rates   ##########
+  ###  MSAD-PCA: Assume the Correct State  ###
+  # False Alarm Rates (NOC Data)
+  msadpcaNOC_ls <- mspTrain(data = msadpcaObs_ls$NOC[, 2:4],
+                                    labelVector = msadpcaObs_ls$NOC[, 1],
+                                    trainObs = 3 * 24 * 60,
+                                    updateFreq = 24 * 60,
+                                    alpha = 0.001,
+                                    lagsIncluded = 0:2)
+  
+  # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+  # SPE
+  falseAlarmSPE_msad <- sum(msadpcaNOC_ls$FaultChecks[,5] %in% c(2,3)) /
+    nrow(msadpcaNOC_ls$FaultChecks)
+  # T2
+  falseAlarmT2_msad <- sum(msadpcaNOC_ls$FaultChecks[,5] %in% c(1,3)) /
+    nrow(msadpcaNOC_ls$FaultChecks)
+  
+  ###  AD-PCA: Incorrectly Assume Equal States  ###
+  adpcaNOC_ls <- mspTrain(data = msadpcaObs_ls$NOC[, 2:4],
+                                  labelVector = msadpcaObs_ls$NOC[, 5],
+                                  trainObs = 3 * 24 * 60,
+                                  updateFreq = 24 * 60,
+                                  alpha = 0.001,
+                                  lagsIncluded = 0:2)
+  
+  # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+  # SPE
+  falseAlarmSPE_ad <- sum(adpcaNOC_ls$FaultChecks[,5] %in% c(2,3)) /
+    nrow(adpcaNOC_ls$FaultChecks)
+  # T2
+  falseAlarmT2_ad <- sum(adpcaNOC_ls$FaultChecks[,5] %in% c(1,3)) /
+    nrow(adpcaNOC_ls$FaultChecks)
+  
+  ###  Return Data Frame  ###
+  FA_rates <- data.frame(MSAD_SPE = falseAlarmSPE_msad,
+                         MSAD_T2 = falseAlarmT2_msad,
+                         AD_SPE = falseAlarmSPE_ad,
+                         AD_T2 = falseAlarmT2_ad)
+  
+  ##########   Time to Fault Detection   ##########
+  
+  # Train the two models
+  msadpca_MS_Results_ls <- mspTrain(data = msadpcaObs_ls$NOC[1:7500, 2:4],
+                            labelVector = msadpcaObs_ls$NOC[1:7500, 1],
+                            trainObs = 3 * 24 * 60,
+                            updateFreq = 24 * 60,
+                            alpha = 0.001,
+                            lagsIncluded = 0:2)
+  adpca_MS_Results_ls <- mspTrain(data = msadpcaObs_ls$NOC[1:7500, 2:4],
+                          labelVector = msadpcaObs_ls$NOC[1:7500, 5],
+                          trainObs = 3 * 24 * 60,
+                          updateFreq = 24 * 60,
+                          alpha = 0.001,
+                          lagsIncluded = 0:2)
+  
+  # Subset out the normal operating data
+  faultsSimRes <- lapply(msadpcaObs_ls[names(msadpcaObs_ls) != "NOC"],
+                         function(mat){
+                           
+    # Testing the apply statement
+    # mat <- msadpcaObs_ls$C1
+    
+    ###  MSAD-PCA: Assume the Correct State  ###
+    # Take our testing data
+    testObs <- mat[7499:10080, 2:4]
+    # lag the test data and cut the NA observations
+    testObs <- lag.xts(testObs, 0:2)
+    testObs <- testObs[-(1:2),]
+    # re-attach the *CORRECT* state label
+    msad_MS_TestObs <- cbind(mat[7501:10080, 1], testObs)
+    # Run the test data through the Monitor function
+    msad_MS_DataandFlags <- mspMonitor(observations = msad_MS_TestObs[,-1],
+                                       labelVector = msad_MS_TestObs[,1],
+                                       trainingSummary =
+                                         msadpca_MS_Results_ls$TrainingSpecs)
+    # Check for alarms
+    msad_MS_Alarm <- msad_MS_DataandFlags
+    for(i in 1:nrow(msad_MS_DataandFlags)){
+      msad_MS_Alarm[1:i,] <- mspWarning(msad_MS_Alarm[1:i,])
+    }
+    
+    ## Time to first alarm
+    alarmCol <- ncol(msad_MS_Alarm)
+    # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+    # Use suppressWarnings() on the min() function. If the which() function
+    # returns an integer(0), its minimum is Inf, but it throws a warning. These
+    # warnings will fill the console under heavy repitition, so suppress them.
+    # SPE
+    # All alarms: which(msad_MS_Alarm[1:2580,alarmCol] %in% c(2,3))
+    time2SPE_msad <- which(msad_MS_Alarm[1000:2580,alarmCol] %in% c(2,3))
+    time2SPE_msad <- suppressWarnings(min(time2SPE_msad))
+    # T2
+    # All alarms: which(msad_MS_Alarm[1:2580,alarmCol] %in% c(1,3))
+    time2T2_msad <- which(msad_MS_Alarm[1000:2580,alarmCol] %in% c(1,3))
+    time2T2_msad <- suppressWarnings(min(time2T2_msad))
+    
+    
+    
+    ###  AD-PCA: Assume Equal States  ###
+    # Attach the *incorrect* state label instead of the correct label
+    ad_MS_TestObs <- cbind(mat[7501:10080, 5], testObs)
+    # Run the test data through the Monitor function
+    ad_MS_DataandFlags <- mspMonitor(observations = ad_MS_TestObs[,-1],
+                                     labelVector = ad_MS_TestObs[,1],
+                                     trainingSummary =
+                                       adpca_MS_Results_ls$TrainingSpecs)
+    # Check for alarms
+    ad_MS_Alarm <- ad_MS_DataandFlags
+    for(i in 1:nrow(msad_MS_DataandFlags)){
+      ad_MS_Alarm[1:i,] <- mspWarning(ad_MS_Alarm[1:i,])
+    }
+    
+    ## Time to first alarm
+    alarmCol <- ncol(ad_MS_Alarm)
+    # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+    # SPE
+    # All alarms: which(ad_MS_Alarm[,alarmCol] %in% c(2,3))
+    time2SPE_ad <- which(ad_MS_Alarm[1000:2580,alarmCol] %in% c(2,3))
+    time2SPE_ad <- suppressWarnings(min(time2SPE_ad))
+    # T2
+    # All alarms: which(ad_MS_Alarm[,alarmCol] %in% c(1,3))
+    time2T2_ad <- which(ad_MS_Alarm[1000:2580,alarmCol] %in% c(1,3))
+    time2T2_ad <- suppressWarnings(min(time2T2_ad))
+    
+    ###  Return Data Frame  ###
+    data.frame(MSAD_SPE = time2SPE_msad,
+               MSAD_T2 = time2T2_msad,
+               AD_SPE = time2SPE_ad,
+               AD_T2 = time2T2_ad)
+  }) %>%
+    do.call(bind_rows, .) %>% 
+    mutate(Faults = names(msadpcaObs_ls[names(msadpcaObs_ls) != "NOC"]))
+  
+  ##########   Return a List   ##########
+  list(falseAlarmRates = FA_rates,
+       time2Detect = faultsSimRes)
+})
+b <- Sys.time() 
+b - a # 91 seconds for each iteration. 15.3 minutes for 10 iterations, 12.1 
+# hours for 500 iterations. On parallel Mac, 5.3 minutes for 10 iterations over
+# 8 cores, 41.4 minutes for 100 iterations over 8 cores, and 6.7 hours for 1000
+# iterations over 8 cores. On parallel Windows, 4.3 minutes for 10 iterations
+# over 8 cores, and 5.4 hours for 1000 iterations over 8 cores.
+stopCluster(cl)
+```
+Let's clean up these results.
+```{r msadSim_Cleaning}
+ms_FA_rates5 <- lapply(1:length(msadResults5_ls), function(i){
+  msadResults5_ls[[i]]$falseAlarmRates
+}) %>% do.call(bind_rows, .)
+# write_csv(ms_FA_rates4, path = "false_alarm_rates_ms_1000_20170323.csv")
+ms_detectionTimes5 <- lapply(1:length(msadResults5_ls), function(i){
+  msadResults5_ls[[i]]$time2Detect
+}) %>% do.call(bind_rows, .)
+# write_csv(ms_detectionTimes4, path = "detection_times_ms_1000_20170323.csv")
+```
+
+Now we can look at the results.
+```{r msadSim_graphics}
+# False Alarm Rates
+ms_FA_rates5[,1] %>% hist(xlim = c(0, 0.05), main = "MSAD SPE False Alarm Rates")
+ms_FA_rates5[,2] %>% hist(xlim = c(0, 0.05), main = "MSAD T2 False Alarm Rates")
+ms_FA_rates5[,3] %>% hist(xlim = c(0, 0.05), main = "AD SPE False Alarm Rates")
+ms_FA_rates5[,4] %>% hist(xlim = c(0, 0.05), main = "AD T2 False Alarm Rates")
+
+###  Detection Times  ###
+# Fault 1A
+ms_detectionTimes5 %>%
+  filter(Faults == "A1") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 1B
+ms_detectionTimes5 %>%
+  filter(Faults == "B1") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 2A
+ms_detectionTimes5 %>%
+  filter(Faults == "A2") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 2B
+ms_detectionTimes5 %>%
+  filter(Faults == "B2") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 3A
+ms_detectionTimes5 %>%
+  filter(Faults == "A3") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+# Fault 3B
+ms_detectionTimes5 %>%
+  filter(Faults == "B3") %>%
+  select(-Faults) %>% 
+  sapply(summary)
+
+```
+
+
+## True Single-State Observations
+We first assume that the observations do not come from a multi-state process. This means that we will test MSAD-PCA by incorrectly assuming that observations come from different states: we will assign a state at random to each observation from "1", "2", or "3". We first draw a list of data matrices. Then we look at false alarm rates for multi-state data under normal operating conditions using AD-PCA and MSAD-PCA. We also measure detection time for all faults for single-state data under normal operating conditions using AD-PCA and MSAD-PCA.
+```{r trueSingleState_sim, message = FALSE}
+# library(parallel) # use mclapply on Mac, parLapply on Windows
+# library(tidyverse)
+# library(xts)
+a <- Sys.time()
+cl <- makeCluster(getOption("cl.cores", 5))
+clusterEvalQ(cl, library(tidyverse))
+clusterEvalQ(cl, library(xts))
+clusterEvalQ(cl, library(mvMonitoring))
+adResults3_ls <- parLapply(cl = cl, 1:5, function(void){
+# adResults_ls <- mclapply(1:1000, mc.cores = 8L, function(void){
+  ##########   Draw a Random Data Set   ##########
+  adpcaObs_ls <- mspProcessData(faults = "All",
+                              faultStartIndex = 8500,
+                              startTime = "2016-11-27 00:00:00 CST",
+                              multiState = FALSE,
+                              msadpcaTest = TRUE)
+  
+  ##########   False Alarm Rates   ##########
+  ###  MSAD-PCA: Assume the Incorrect State  ###
+  # False Alarm Rates (NOC Data)
+  msadpcaNOC_ls <- mspTrain(data = adpcaObs_ls$NOC[, 2:4],
+                                    labelVector = adpcaObs_ls$NOC[, 5],
+                                    trainObs = 3 * 24 * 60,
+                                    updateFreq = 24 * 60,
+                                    alpha = 0.001,
+                                    lagsIncluded = 0:2)
+  
+  # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+  # SPE
+  falseAlarmSPE_msad <- sum(msadpcaNOC_ls$FaultChecks[,5] %in% c(2,3)) /
+    nrow(msadpcaNOC_ls$FaultChecks)
+  # T2
+  falseAlarmT2_msad <- sum(msadpcaNOC_ls$FaultChecks[,5] %in% c(1,3)) /
+    nrow(msadpcaNOC_ls$FaultChecks)
+  
+  ###  AD-PCA: Correctly Assume Equal States  ###
+  adpcaNOC_ls <- mspTrain(data = adpcaObs_ls$NOC[, 2:4],
+                                  labelVector = adpcaObs_ls$NOC[, 1],
+                                  trainObs = 3 * 24 * 60,
+                                  updateFreq = 24 * 60,
+                                  alpha = 0.001,
+                                  lagsIncluded = 0:2)
+  
+  # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+  # SPE
+  falseAlarmSPE_ad <- sum(adpcaNOC_ls$FaultChecks[,5] %in% c(2,3)) /
+    nrow(adpcaNOC_ls$FaultChecks)
+  # T2
+  falseAlarmT2_ad <- sum(adpcaNOC_ls$FaultChecks[,5] %in% c(1,3)) /
+    nrow(adpcaNOC_ls$FaultChecks)
+  
+  ###  Return Data Frame  ###
+  FA_rates <- data.frame(MSAD_SPE = falseAlarmSPE_msad,
+                         MSAD_T2 = falseAlarmT2_msad,
+                         AD_SPE = falseAlarmSPE_ad,
+                         AD_T2 = falseAlarmT2_ad)
+  
+  ##########   Time to Fault Detection   ##########
+  
+  # Train the two models
+  msadpca_MS_Results_ls <- mspTrain(data = adpcaObs_ls$NOC[1:7500, 2:4],
+  # Data is truly single-state, so we point the label vector at the wrong
+  # column for the multi-state implementation. The states in column 5 are
+  # generated at random
+                            labelVector = adpcaObs_ls$NOC[1:7500, 5],
+                            trainObs = 3 * 24 * 60,
+                            updateFreq = 24 * 60,
+                            alpha = 0.001,
+                            lagsIncluded = 0:2)
+  adpca_MS_Results_ls <- mspTrain(data = adpcaObs_ls$NOC[1:7500, 2:4],
+  # Data is truly single-state, so we point the label vector at the correct
+  # column for the single-state implementation. The state in column 1 is all
+  # the same value
+                          labelVector = adpcaObs_ls$NOC[1:7500, 1],
+                          trainObs = 3 * 24 * 60,
+                          updateFreq = 24 * 60,
+                          alpha = 0.001,
+                          lagsIncluded = 0:2)
+  
+  # Subset out the normal operating data
+  faultsSimRes <- lapply(adpcaObs_ls[names(adpcaObs_ls) != "NOC"],
+                         function(mat){
+    
+    ###  MSAD-PCA: Assume the Incorrect State  ###
+    # Take our testing data
+    testObs <- mat[7499:10080, 2:4]
+    # lag the test data and cut the NA observations
+    testObs <- lag.xts(testObs, 0:2)
+    testObs <- testObs[-(1:2),]
+    # Attach the *incorrect* state label instead of the correct label
+    msad_MS_TestObs <- cbind(mat[7501:10080, 5], testObs)
+    # Run the test data through the Monitor function
+    msad_MS_DataandFlags <- mspMonitor(observations = msad_MS_TestObs[,-1],
+                                       labelVector = msad_MS_TestObs[,1],
+                                       trainingSummary =
+                                         msadpca_MS_Results_ls$TrainingSpecs)
+    # Check for alarms
+    msad_MS_Alarm <- msad_MS_DataandFlags
+    for(i in 1:nrow(msad_MS_DataandFlags)){
+      msad_MS_Alarm[1:i,] <- mspWarning(msad_MS_Alarm[1:i,])
+    }
+    
+    ## Time to first alarm
+    alarmCol <- ncol(msad_MS_Alarm)
+    # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+    # Use suppressWarnings() on the min() function. If the which() function
+    # returns an integer(0), its minimum is Inf, but it throws a warning. These
+    # warnings will fill the console under heavy repitition, so suppress them.
+    # SPE
+    time2SPE_msad <- which(msad_MS_Alarm[1000:2580,alarmCol] %in% c(2,3))
+    time2SPE_msad <- suppressWarnings(min(time2SPE_msad))
+    # T2
+    time2T2_msad <- which(msad_MS_Alarm[1000:2580,alarmCol] %in% c(1,3))
+    time2T2_msad <- suppressWarnings(min(time2T2_msad))
+    
+    
+    
+    ###  AD-PCA: Assume Equal States  ###
+    # re-attach the *CORRECT* state label
+    ad_MS_TestObs <- cbind(mat[7501:10080, 1], testObs)
+    # Run the test data through the Monitor function
+    ad_MS_DataandFlags <- mspMonitor(observations = ad_MS_TestObs[,-1],
+                                     labelVector = ad_MS_TestObs[,1],
+                                     trainingSummary =
+                                       adpca_MS_Results_ls$TrainingSpecs)
+    # Check for alarms
+    ad_MS_Alarm <- ad_MS_DataandFlags
+    for(i in 1:nrow(ad_MS_DataandFlags)){
+      ad_MS_Alarm[1:i,] <- mspWarning(ad_MS_Alarm[1:i,])
+    }
+    
+    ## Time to first alarm
+    alarmCol <- ncol(msad_MS_Alarm)
+    # Alarm code: 1 = T2 alarm; 2 = SPE alarm; 3 = both
+    # SPE
+    time2SPE_ad <- which(ad_MS_Alarm[1000:2580,alarmCol] %in% c(2,3))
+    time2SPE_ad <- suppressWarnings(min(time2SPE_ad))
+    # T2
+    time2T2_ad <- which(ad_MS_Alarm[1000:2580,alarmCol] %in% c(1,3))
+    time2T2_ad <- suppressWarnings(min(time2T2_ad))
+    
+    ###  Return Data Frame  ###
+    data.frame(MSAD_SPE = time2SPE_msad,
+               MSAD_T2 = time2T2_msad,
+               AD_SPE = time2SPE_ad,
+               AD_T2 = time2T2_ad)
+  }) %>%
+    do.call(bind_rows, .) %>% 
+    mutate(Faults = names(adpcaObs_ls[names(adpcaObs_ls) != "NOC"]))
+  
+  ##########   Return a List   ##########
+  list(falseAlarmRates = FA_rates,
+       time2Detect = faultsSimRes)
+})
+b <- Sys.time() 
+b - a # On parallel Mac, 5.9 minutes for 10 iterations over 8 cores and 14.6
+# hours for 1000 iterations over 8 cores. On parallel Windows, 4.5 minutes for
+# 10 iterations over 8 cores, and 6.0 hours for 1000 iterations over 8 cores.
+stopCluster(cl)
+```
+
+Let's clean up these results.
+```{r adSim_Cleaning}
+ss_FA_rates <- lapply(1:length(adResults3_ls), function(i){
+  adResults3_ls[[i]]$falseAlarmRates
+}) %>% do.call(bind_rows, .)
+# write_csv(ss_FA_rates, path = "false_alarm_rates_ss_1000_20170320.csv")
+ss_detectionTimes <- lapply(1:length(adResults3_ls), function(i){
+  adResults3_ls[[i]]$time2Detect
+}) %>% do.call(bind_rows, .)
+# write_csv(ss_detectionTimes, path = "detection_times_ss_1000_20170320.csv")
+```
+
+Now we can look at the results.
