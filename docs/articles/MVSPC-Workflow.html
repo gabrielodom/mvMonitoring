@@ -29,7 +29,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -75,7 +75,7 @@
       <h1>Multivariate Statistical Process Control with mvMonitoring</h1>
                         <h4 class="author">Gabriel Odom</h4>
             
-            <h4 class="date">2017-10-18</h4>
+            <h4 class="date">2017-11-03</h4>
           </div>
 
     
@@ -259,7 +259,7 @@ First <code>mspProcessData</code> simulates three features, with each feaure ope
 <p>First begin by generating multi-state data from a fault scenario. This code will yield observations under Fault 2A, as described the Synthetic Fault Induction section. We choose the default options for the period length (7 days * 24 hours * 60 minutes = 10,080 observations), the starting index of the fault (8500 out of 10080), and the time stamp for beggining the data is 16 May of 2016 at 10:00AM (my wedding anniversary). As we can see from the <code>str()</code> function, we have an <code>xts</code> matrix with 10080 rows and four columns (the state indicator and the three features).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mvMonitoring)
 fault1A_xts &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspProcessData.html">mspProcessData</a></span>(<span class="dt">faults =</span> <span class="st">"A1"</span>,
-                              <span class="dt">period =</span> <span class="dv">7</span> *<span class="st"> </span><span class="dv">24</span> *<span class="st"> </span><span class="dv">60</span>,
+                              <span class="dt">period =</span> <span class="dv">7</span> <span class="op">*</span><span class="st"> </span><span class="dv">24</span> <span class="op">*</span><span class="st"> </span><span class="dv">60</span>,
                               <span class="dt">faultStartIndex =</span> <span class="dv">8500</span>,
                               <span class="dt">startTime =</span> <span class="st">"2015-05-16 10:00:00 CST"</span>)
 
@@ -278,14 +278,14 @@ fault1A_xts &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 <a href="#train-the-fault-detection-threshold" class="anchor"></a>Train the Fault Detection Threshold</h2>
 <p>Now that these observations are generated and stored in memory, the <code>mspTrain</code> function can train the MSAD-PCA model. The last 1620 observations (27 hours’ worth) will be saved for testing. The <code>mspTrain</code> function takes in the training data set partitioned between the observation and the label column. If this function errors, make sure the label column is not included in the data matrix – this will cause a singularity in the data. The function will 1. Train on the first three days’ worth of observations, as set by <code>trainObs</code>. 1. Scan the fourth day for anomalies, as set by <code>updateFreq</code>. 1. Remove any alarmed observations. 1. “Forget” the first day’s observations. 1. “Learn” the non-alarmed observations from the fourth day. 1. Retrain and repeat until the end of the data matrix</p>
 <p>Furthermore, the <code>Dynamic = TRUE</code> option means that the <code>mspTrain</code> function will include the lags specified by the <code>lagsIncluded</code> argument. Finally, the number of sequential anomalous observations necessary to raise an alarm is set at 5 by the <code>faultsToTriggerAlarm</code> argument. These last three arguments are set to their defaults.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">train1A_xts &lt;-<span class="st"> </span>fault1A_xts[<span class="dv">1</span>:<span class="dv">8461</span>,]
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">train1A_xts &lt;-<span class="st"> </span>fault1A_xts[<span class="dv">1</span><span class="op">:</span><span class="dv">8461</span>,]
 <span class="co"># This function will run in 13 seconds on the author's machine.</span>
-train1A_ls &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspTrain.html">mspTrain</a></span>(<span class="dt">data =</span> train1A_xts[,-<span class="dv">1</span>],
+train1A_ls &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspTrain.html">mspTrain</a></span>(<span class="dt">data =</span> train1A_xts[,<span class="op">-</span><span class="dv">1</span>],
                        <span class="dt">labelVector =</span> train1A_xts[,<span class="dv">1</span>],
-                       <span class="dt">trainObs =</span> <span class="dv">3</span> *<span class="st"> </span><span class="dv">24</span> *<span class="st"> </span><span class="dv">60</span>,
-                       <span class="dt">updateFreq =</span> <span class="dv">1</span> *<span class="st"> </span><span class="dv">24</span> *<span class="st"> </span><span class="dv">60</span>,
+                       <span class="dt">trainObs =</span> <span class="dv">3</span> <span class="op">*</span><span class="st"> </span><span class="dv">24</span> <span class="op">*</span><span class="st"> </span><span class="dv">60</span>,
+                       <span class="dt">updateFreq =</span> <span class="dv">1</span> <span class="op">*</span><span class="st"> </span><span class="dv">24</span> <span class="op">*</span><span class="st"> </span><span class="dv">60</span>,
                        <span class="dt">Dynamic =</span> <span class="ot">TRUE</span>,
-                       <span class="dt">lagsIncluded =</span> <span class="dv">0</span>:<span class="dv">1</span>,
+                       <span class="dt">lagsIncluded =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>,
                        <span class="dt">faultsToTriggerAlarm =</span> <span class="dv">5</span>)</code></pre></div>
 <p>The <code>mspTrain</code> function returns a list of four objects:</p>
 <ul>
@@ -335,50 +335,49 @@ train1A_ls &lt;-<span class="st"> </span><span class="kw"><a href="../reference/
 <h3 class="hasAnchor">
 <a href="#adding-lagged-features" class="anchor"></a>Adding Lagged Features</h3>
 <p>First, concatenate the last given observation from the training set as “row 0” of the test data set. This will enable <code>mspMonitor</code> to include lag-1 features. Similarly, one would include the last <span class="math inline">\(k\)</span> observations of the training set should the process dictate the need for any lag-<span class="math inline">\(k\)</span> features. Because the Fault Start Index was set to 8500, this testing window will show the change point between observations generated under normal conditions and those generated under a fault state.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xts)</code></pre></div>
-<pre><code>## Warning: package 'xts' was built under R version 3.4.1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test1A_xts &lt;-<span class="st"> </span>fault1A_xts[<span class="dv">8460</span>:<span class="dv">8520</span>, -<span class="dv">1</span>]
-lagTest1A_xts &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/xts/topics/diff">lag.xts</a></span>(test1A_xts, <span class="dv">0</span>:<span class="dv">1</span>)
-lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">cbind</span>(fault1A_xts[<span class="dv">8461</span>:<span class="dv">8520</span>,<span class="dv">1</span>],
-                       lagTest1A_xts[-<span class="dv">1</span>,])
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xts)
+test1A_xts &lt;-<span class="st"> </span>fault1A_xts[<span class="dv">8460</span><span class="op">:</span><span class="dv">8520</span>, <span class="op">-</span><span class="dv">1</span>]
+lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">lag.xts</span>(test1A_xts, <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>)
+lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">cbind</span>(fault1A_xts[<span class="dv">8461</span><span class="op">:</span><span class="dv">8520</span>,<span class="dv">1</span>],
+                       lagTest1A_xts[<span class="op">-</span><span class="dv">1</span>,])
 <span class="kw">head</span>(lagTest1A_xts)</code></pre></div>
 <pre><code>##                     state         x         y         z       x.1
-## 2015-05-22 07:00:00     1 0.5698732 -1.239954 0.6490469 0.3836185
-## 2015-05-22 07:01:00     1 0.5665031 -1.342424 0.9688437 0.5698732
-## 2015-05-22 07:02:00     1 0.5542677 -1.494687 0.9239378 0.5665031
-## 2015-05-22 07:03:00     1 0.6739608 -1.720810 0.8854540 0.5542677
-## 2015-05-22 07:04:00     1 0.6376903 -1.788339 1.0352382 0.6739608
-## 2015-05-22 07:05:00     1 0.6552435 -1.546860 0.9305761 0.6376903
-##                             y.1       z.1
-## 2015-05-22 07:00:00  0.09216435 0.3248307
-## 2015-05-22 07:01:00 -1.23995354 0.6490469
-## 2015-05-22 07:02:00 -1.34242372 0.9688437
-## 2015-05-22 07:03:00 -1.49468656 0.9239378
-## 2015-05-22 07:04:00 -1.72080988 0.8854540
-## 2015-05-22 07:05:00 -1.78833883 1.0352382</code></pre>
+## 2015-05-22 07:00:00     1 0.8952197 -1.762959 1.3973496 0.4321741
+## 2015-05-22 07:01:00     1 0.5192872 -1.513536 0.8545564 0.8952197
+## 2015-05-22 07:02:00     1 0.7102784 -1.718552 1.0048432 0.5192872
+## 2015-05-22 07:03:00     1 0.7297041 -1.611477 0.7835430 0.7102784
+## 2015-05-22 07:04:00     1 0.6061820 -1.525118 0.9042388 0.7297041
+## 2015-05-22 07:05:00     1 0.5328942 -1.366411 0.7420912 0.6061820
+##                            y.1       z.1
+## 2015-05-22 07:00:00  0.1327537 0.5059442
+## 2015-05-22 07:01:00 -1.7629587 1.3973496
+## 2015-05-22 07:02:00 -1.5135355 0.8545564
+## 2015-05-22 07:03:00 -1.7185519 1.0048432
+## 2015-05-22 07:04:00 -1.6114769 0.7835430
+## 2015-05-22 07:05:00 -1.5251179 0.9042388</code></pre>
 </div>
 <div id="monitoring-the-test-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#monitoring-the-test-data" class="anchor"></a>Monitoring the Test Data</h3>
 <p>With the lagged test observations in the working environment, the <code>mspMonitor</code> function can be applied. This function (similarly to <code>mspTrain</code>) takes in the label information as a separate argument from the input data. Further, the <code>mspMonitor</code> function takes in the <code>TrainingSpecs</code> object returned in the results list from <code>mspTrain</code>. Notice that the first six rows of the monitor matrix are the exact same as the first six rows of the lagged test matrix, except that the rows of the monitor matrix have the monitoring statistic and corresponding indicator columns appended.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">monitor1A_xts &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspMonitor.html">mspMonitor</a></span>(<span class="dt">observations =</span> lagTest1A_xts[,-<span class="dv">1</span>],
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">monitor1A_xts &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspMonitor.html">mspMonitor</a></span>(<span class="dt">observations =</span> lagTest1A_xts[,<span class="op">-</span><span class="dv">1</span>],
                             <span class="dt">labelVector =</span> lagTest1A_xts[,<span class="dv">1</span>],
-                            <span class="dt">trainingSummary =</span> train1A_ls$TrainingSpecs)
+                            <span class="dt">trainingSummary =</span> train1A_ls<span class="op">$</span>TrainingSpecs)
 <span class="kw">head</span>(monitor1A_xts)</code></pre></div>
-<pre><code>##                             x         y         z       x.1         y.1
-## 2015-05-22 07:00:00 0.5698732 -1.239954 0.6490469 0.3836185  0.09216435
-## 2015-05-22 07:01:00 0.5665031 -1.342424 0.9688437 0.5698732 -1.23995354
-## 2015-05-22 07:02:00 0.5542677 -1.494687 0.9239378 0.5665031 -1.34242372
-## 2015-05-22 07:03:00 0.6739608 -1.720810 0.8854540 0.5542677 -1.49468656
-## 2015-05-22 07:04:00 0.6376903 -1.788339 1.0352382 0.6739608 -1.72080988
-## 2015-05-22 07:05:00 0.6552435 -1.546860 0.9305761 0.6376903 -1.78833883
+<pre><code>##                             x         y         z       x.1        y.1
+## 2015-05-22 07:00:00 0.8952197 -1.762959 1.3973496 0.4321741  0.1327537
+## 2015-05-22 07:01:00 0.5192872 -1.513536 0.8545564 0.8952197 -1.7629587
+## 2015-05-22 07:02:00 0.7102784 -1.718552 1.0048432 0.5192872 -1.5135355
+## 2015-05-22 07:03:00 0.7297041 -1.611477 0.7835430 0.7102784 -1.7185519
+## 2015-05-22 07:04:00 0.6061820 -1.525118 0.9042388 0.7297041 -1.6114769
+## 2015-05-22 07:05:00 0.5328942 -1.366411 0.7420912 0.6061820 -1.5251179
 ##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm
-## 2015-05-22 07:00:00 0.3248307 1.7662000        0 27.710387       0    NA
-## 2015-05-22 07:01:00 0.6490469 1.0545932        0  6.554359       0    NA
-## 2015-05-22 07:02:00 0.9688437 0.3124641        0  5.451298       0    NA
-## 2015-05-22 07:03:00 0.9239378 0.1130409        0  4.315437       0    NA
-## 2015-05-22 07:04:00 0.8854540 0.2300205        0  3.918578       0    NA
-## 2015-05-22 07:05:00 1.0352382 0.2384099        0  4.894332       0    NA</code></pre>
+## 2015-05-22 07:00:00 0.5059442 0.8526590        0 30.325145       0    NA
+## 2015-05-22 07:01:00 1.3973496 0.8828911        0  4.451750       0    NA
+## 2015-05-22 07:02:00 0.8545564 0.1655790        0  3.942880       0    NA
+## 2015-05-22 07:03:00 1.0048432 0.2496153        0  4.019013       0    NA
+## 2015-05-22 07:04:00 0.7835430 0.3408599        0  4.468941       0    NA
+## 2015-05-22 07:05:00 0.9042388 0.7839264        0  5.427270       0    NA</code></pre>
 </div>
 </div>
 <div id="warn-operators-during-alarms" class="section level2">
@@ -386,11 +385,11 @@ lagTest1A_xts &lt;-<span class="st"> </span><span class="kw">cbind</span>(fault1
 <a href="#warn-operators-during-alarms" class="anchor"></a>Warn Operators during Alarms</h2>
 <p>Note that all <code>Alarm</code> codes in the monitor matrix above are recorded with <code>NA</code> values. This is because the <code>mspMonitor</code> function does not check the sequential flag conditions of the monitor matrix. This is the responsibility of the <code>mspWarning</code> function. Because the <code>mspWarning</code> function is designed to test one incoming observation at a time through a script or batch file, the following example is designed to mimic the behavior of the <code>mspWarning</code> function as each new observation comes online.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alarm1A_xts &lt;-<span class="st"> </span>monitor1A_xts
-for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(alarm1A_xts)){
-  if(i &lt;<span class="st"> </span>(<span class="dv">5</span> +<span class="st"> </span><span class="dv">1</span>)){
-    alarm1A_xts[<span class="dv">1</span>:i,] &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspWarning.html">mspWarning</a></span>(alarm1A_xts[<span class="dv">1</span>:i,])
-  }else{
-    alarm1A_xts[(i -<span class="st"> </span><span class="dv">5</span>):i,] &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspWarning.html">mspWarning</a></span>(alarm1A_xts[(i -<span class="st"> </span><span class="dv">5</span>):i,])
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(alarm1A_xts)){
+  <span class="cf">if</span>(i <span class="op">&lt;</span><span class="st"> </span>(<span class="dv">5</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)){
+    alarm1A_xts[<span class="dv">1</span><span class="op">:</span>i,] &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspWarning.html">mspWarning</a></span>(alarm1A_xts[<span class="dv">1</span><span class="op">:</span>i,])
+  }<span class="cf">else</span>{
+    alarm1A_xts[(i <span class="op">-</span><span class="st"> </span><span class="dv">5</span>)<span class="op">:</span>i,] &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mspWarning.html">mspWarning</a></span>(alarm1A_xts[(i <span class="op">-</span><span class="st"> </span><span class="dv">5</span>)<span class="op">:</span>i,])
   }
 }</code></pre></div>
 <p>The fault was introduced at index 8500, which corresponds to about 40 minutes into the test hour.</p>
