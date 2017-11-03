@@ -7,3 +7,9 @@ r:
   - oldrel
   - release
   - devel
+notifications:
+  email:
+    recipients:
+      - gabriel_odom@baylor.edu
+      - melissa_johnson2@baylor.edu
+      - gabriel.odom@med.miami.edu
