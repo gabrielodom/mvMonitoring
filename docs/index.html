@@ -80,7 +80,6 @@
 <div id="multi-state-adaptive-dynamic-process-monitoring" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#multi-state-adaptive-dynamic-process-monitoring" class="anchor"></a>Multi-State Adaptive-Dynamic Process Monitoring</h1></div>
-<p>Travis Status (Devel v. 0.1.1) and CRAN Status (Stable v. 0.1.0)</p>
 <p><a href="https://travis-ci.org/gabrielodom/mvmonitoring"><img src="https://travis-ci.org/gabrielodom/mvmonitoring.svg?branch=master" alt="Travis-CI Build Status"></a> <img src="http://www.r-pkg.org/badges/version/mvMonitoring" alt="CRAN Build Status"></p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
@@ -132,27 +131,27 @@ dataAndFlags &lt;-<span class="st"> </span><span class="kw"><a href="reference/m
 
 <span class="co"># Alarm check the last row of the matrix returned by the mspMonitor function</span>
 <span class="kw"><a href="reference/mspWarning.html">mspWarning</a></span>(dataAndFlags)</code></pre></div>
-<pre><code>##                              x           y           z        x.1
-## 2015-05-23 09:54:00 0.09264872  0.01031704 -0.06258439 0.11801015
-## 2015-05-23 09:55:00 0.16689457 -0.00195657  0.16269003 0.09264872
-## 2015-05-23 09:56:00 0.19536647  0.02068424 -0.01183057 0.16689457
-## 2015-05-23 09:57:00 0.17242374  0.02840832 -0.02127601 0.19536647
-## 2015-05-23 09:58:00 0.14087443  0.02899328 -0.01508397 0.17242374
-## 2015-05-23 09:59:00 0.21160403  0.03332580 -0.01416589 0.14087443
-##                             y.1         z.1       SPE SPE_Flag       T2
-## 2015-05-23 09:54:00  0.01827313  0.02662851 11.205412        1 19.35102
-## 2015-05-23 09:55:00  0.01031704 -0.06258439  6.412733        1 15.73511
-## 2015-05-23 09:56:00 -0.00195657  0.16269003  4.331050        0 14.48464
-## 2015-05-23 09:57:00  0.02068424 -0.01183057  5.808295        1 14.93753
-## 2015-05-23 09:58:00  0.02840832 -0.02127601  8.050446        1 16.16376
-## 2015-05-23 09:59:00  0.02899328 -0.01508397  3.645306        0 13.60293
+<pre><code>##                             x          y             z       x.1
+## 2015-05-23 09:54:00 0.2380168 0.04026879  0.0608968245 0.1308493
+## 2015-05-23 09:55:00 0.1902723 0.04469953  0.1445579603 0.2380168
+## 2015-05-23 09:56:00 0.1563415 0.04237695 -0.0007458416 0.1902723
+## 2015-05-23 09:57:00 0.1843748 0.04333763 -0.2298855055 0.1563415
+## 2015-05-23 09:58:00 0.1205682 0.03324271  0.1564868304 0.1843748
+## 2015-05-23 09:59:00 0.1206673 0.01343149 -0.1114591086 0.1205682
+##                            y.1           z.1       SPE SPE_Flag       T2
+## 2015-05-23 09:54:00 0.03433471 -0.0337641861  4.078645        0 13.93270
+## 2015-05-23 09:55:00 0.04026879  0.0608968245  7.946402        1 14.63548
+## 2015-05-23 09:56:00 0.04469953  0.1445579603 10.169183        1 17.15515
+## 2015-05-23 09:57:00 0.04237695 -0.0007458416  6.892095        1 17.45977
+## 2015-05-23 09:58:00 0.04333763 -0.2298855055 14.461771        1 18.22293
+## 2015-05-23 09:59:00 0.03324271  0.1564868304 12.101278        1 20.98581
 ##                     T2_Flag Alarm
 ## 2015-05-23 09:54:00       0    NA
 ## 2015-05-23 09:55:00       0    NA
 ## 2015-05-23 09:56:00       0    NA
 ## 2015-05-23 09:57:00       0    NA
 ## 2015-05-23 09:58:00       0    NA
-## 2015-05-23 09:59:00       0     0</code></pre>
+## 2015-05-23 09:59:00       0     2</code></pre>
 </div>
 <div id="acknowledgements" class="section level2">
 <h2 class="hasAnchor">
