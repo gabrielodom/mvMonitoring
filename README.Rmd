@@ -1,6 +1,7 @@
 # Multi-State Adaptive-Dynamic Process Monitoring
 
-[![Travis-CI Build Status](https://travis-ci.org/gabrielodom/mvmonitoring.svg?branch=master)](https://travis-ci.org/gabrielodom/mvmonitoring)
+[![Travis-CI Build Status](https://travis-ci.org/gabrielodom/mvMonitoring.svg?branch=master)](https://travis-ci.org/gabrielodom/mvMonitoring)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring)](https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring)
 ![CRAN Build Status](http://www.r-pkg.org/badges/version/mvMonitoring)
 
 ## Overview

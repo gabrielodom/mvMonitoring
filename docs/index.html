@@ -80,7 +80,7 @@
 <div id="multi-state-adaptive-dynamic-process-monitoring" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#multi-state-adaptive-dynamic-process-monitoring" class="anchor"></a>Multi-State Adaptive-Dynamic Process Monitoring</h1></div>
-<p><a href="https://travis-ci.org/gabrielodom/mvmonitoring"><img src="https://travis-ci.org/gabrielodom/mvmonitoring.svg?branch=master" alt="Travis-CI Build Status"></a> <img src="http://www.r-pkg.org/badges/version/mvMonitoring" alt="CRAN Build Status"></p>
+<p><a href="https://travis-ci.org/gabrielodom/mvMonitoring"><img src="https://travis-ci.org/gabrielodom/mvMonitoring.svg?branch=master" alt="Travis-CI Build Status"></a> <a href="https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring" alt="CRAN Downloads"></a> <img src="http://www.r-pkg.org/badges/version/mvMonitoring" alt="CRAN Build Status"></p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -96,7 +96,7 @@
 <h2 class="hasAnchor">
 <a href="#installation-of-development-version" class="anchor"></a>Installation of Development Version</h2>
 <p>Make sure you have the latest version of the <code>devtools</code> package, and pull the package from GitHub. Remember, if you can read this file, you are one of the few people who have access to this package. In addition, you can also run the following:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"gabrielodom/mvMonitoring"</span>, <span class="dt">auth_token =</span> <span class="st">"tokenHere"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">"gabrielodom/mvMonitoring"</span>, <span class="dt">auth_token =</span> <span class="st">"tokenHere"</span>)</code></pre></div>
 <p>where you create the value of “tokenHere” by generating a personal access token (PAT) at <a href="https://github.com/settings/tokens" class="uri">https://github.com/settings/tokens</a> and copying the quoted string to this argument. Load the library after installation by</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mvMonitoring)</code></pre></div>
 </div>
@@ -106,52 +106,54 @@
 <p>These are the examples shown in the help files for the mspProcessData(), mspTrain(), mspMonitor(), and mspWarning() functions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate one week's worth of normal operating (NOC) data recorded at the one-</span>
 <span class="co"># minute level</span>
-nrml &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspProcessData.html">mspProcessData</a></span>(<span class="dt">faults =</span> <span class="st">"NOC"</span>)
-<span class="co"># The state values are recorded in the first column.</span>
+nrml &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspProcessData.html">mspProcessData</a></span>(<span class="dt">faults =</span> <span class="st">"NOC"</span>)</code></pre></div>
+<pre><code>## Warning in strptime(xx, f &lt;- "%Y-%m-%d %H:%M:%OS", tz = tz): unknown
+## timezone 'zone/tz/2017c.1.0/zoneinfo/America/Chicago'</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The state values are recorded in the first column.</span>
 n &lt;-<span class="st"> </span><span class="kw">nrow</span>(nrml)
 
 <span class="co"># Calculate the training summary, but save five observations for monitoring.</span>
 <span class="co"># This function will treat the first 3 days as in control (IC), and then update</span>
 <span class="co"># the training window each day.</span>
-trainResults_ls &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspTrain.html">mspTrain</a></span>(<span class="dt">data =</span> nrml[<span class="dv">1</span><span class="op">:</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">5</span>), <span class="op">-</span><span class="dv">1</span>],
-                            <span class="dt">labelVector =</span> nrml[<span class="dv">1</span><span class="op">:</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">5</span>), <span class="dv">1</span>],
+trainResults_ls &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspTrain.html">mspTrain</a></span>(<span class="dt">data =</span> nrml[<span class="dv">1</span>:(n -<span class="st"> </span><span class="dv">5</span>), -<span class="dv">1</span>],
+                            <span class="dt">labelVector =</span> nrml[<span class="dv">1</span>:(n -<span class="st"> </span><span class="dv">5</span>), <span class="dv">1</span>],
                             <span class="dt">trainObs =</span> <span class="dv">4320</span>)
 
 <span class="co"># While training, we included 1 lag (the default), so we will also lag the</span>
 <span class="co"># observations we will test.</span>
-testObs &lt;-<span class="st"> </span>nrml[(n <span class="op">-</span><span class="st"> </span><span class="dv">6</span>)<span class="op">:</span>n, <span class="op">-</span><span class="dv">1</span>]
-testObs &lt;-<span class="st"> </span>xts<span class="op">:::</span><span class="kw">lag.xts</span>(testObs, <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>)
-testObs &lt;-<span class="st"> </span>testObs[<span class="op">-</span><span class="dv">1</span>,]
-testObs &lt;-<span class="st"> </span><span class="kw">cbind</span>(nrml[(n <span class="op">-</span><span class="st"> </span><span class="dv">5</span>)<span class="op">:</span>n, <span class="dv">1</span>], testObs)
+testObs &lt;-<span class="st"> </span>nrml[(n -<span class="st"> </span><span class="dv">6</span>):n, -<span class="dv">1</span>]
+testObs &lt;-<span class="st"> </span>xts:::<span class="kw">lag.xts</span>(testObs, <span class="dv">0</span>:<span class="dv">1</span>)
+testObs &lt;-<span class="st"> </span>testObs[-<span class="dv">1</span>,]
+testObs &lt;-<span class="st"> </span><span class="kw">cbind</span>(nrml[(n -<span class="st"> </span><span class="dv">5</span>):n, <span class="dv">1</span>], testObs)
 
 <span class="co"># Run the monitoring function.</span>
-dataAndFlags &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspMonitor.html">mspMonitor</a></span>(<span class="dt">observations =</span> testObs[, <span class="op">-</span><span class="dv">1</span>],
+dataAndFlags &lt;-<span class="st"> </span><span class="kw"><a href="reference/mspMonitor.html">mspMonitor</a></span>(<span class="dt">observations =</span> testObs[, -<span class="dv">1</span>],
                            <span class="dt">labelVector =</span> testObs[, <span class="dv">1</span>],
-                           <span class="dt">trainingSummary =</span> trainResults_ls<span class="op">$</span>TrainingSpecs)
+                           <span class="dt">trainingSummary =</span> trainResults_ls$TrainingSpecs)
 
 <span class="co"># Alarm check the last row of the matrix returned by the mspMonitor function</span>
 <span class="kw"><a href="reference/mspWarning.html">mspWarning</a></span>(dataAndFlags)</code></pre></div>
-<pre><code>##                             x          y             z       x.1
-## 2015-05-23 09:54:00 0.2380168 0.04026879  0.0608968245 0.1308493
-## 2015-05-23 09:55:00 0.1902723 0.04469953  0.1445579603 0.2380168
-## 2015-05-23 09:56:00 0.1563415 0.04237695 -0.0007458416 0.1902723
-## 2015-05-23 09:57:00 0.1843748 0.04333763 -0.2298855055 0.1563415
-## 2015-05-23 09:58:00 0.1205682 0.03324271  0.1564868304 0.1843748
-## 2015-05-23 09:59:00 0.1206673 0.01343149 -0.1114591086 0.1205682
-##                            y.1           z.1       SPE SPE_Flag       T2
-## 2015-05-23 09:54:00 0.03433471 -0.0337641861  4.078645        0 13.93270
-## 2015-05-23 09:55:00 0.04026879  0.0608968245  7.946402        1 14.63548
-## 2015-05-23 09:56:00 0.04469953  0.1445579603 10.169183        1 17.15515
-## 2015-05-23 09:57:00 0.04237695 -0.0007458416  6.892095        1 17.45977
-## 2015-05-23 09:58:00 0.04333763 -0.2298855055 14.461771        1 18.22293
-## 2015-05-23 09:59:00 0.03324271  0.1564868304 12.101278        1 20.98581
+<pre><code>##                             x           y            z       x.1
+## 2015-05-23 09:54:00 0.1638124 0.034330731  0.186431384 0.2099605
+## 2015-05-23 09:55:00 0.1798024 0.015766237  0.084086596 0.1638124
+## 2015-05-23 09:56:00 0.1555545 0.026973105 -0.056991606 0.1798024
+## 2015-05-23 09:57:00 0.1497505 0.018573261  0.006661291 0.1555545
+## 2015-05-23 09:58:00 0.1177037 0.016776487  0.086683720 0.1497505
+## 2015-05-23 09:59:00 0.1915586 0.009724014 -0.141549935 0.1177037
+##                            y.1          z.1      SPE SPE_Flag       T2
+## 2015-05-23 09:54:00 0.02366357 -0.049540908 5.197805        0 11.43600
+## 2015-05-23 09:55:00 0.03433073  0.186431384 3.729784        0 12.02146
+## 2015-05-23 09:56:00 0.01576624  0.084086596 4.585059        0 13.06433
+## 2015-05-23 09:57:00 0.02697311 -0.056991606 4.918190        0 13.30757
+## 2015-05-23 09:58:00 0.01857326  0.006661291 7.066714        1 14.02897
+## 2015-05-23 09:59:00 0.01677649  0.086683720 2.419285        0 13.14163
 ##                     T2_Flag Alarm
 ## 2015-05-23 09:54:00       0    NA
 ## 2015-05-23 09:55:00       0    NA
 ## 2015-05-23 09:56:00       0    NA
 ## 2015-05-23 09:57:00       0    NA
 ## 2015-05-23 09:58:00       0    NA
-## 2015-05-23 09:59:00       0     2</code></pre>
+## 2015-05-23 09:59:00       0     0</code></pre>
 </div>
 <div id="acknowledgements" class="section level2">
 <h2 class="hasAnchor">
