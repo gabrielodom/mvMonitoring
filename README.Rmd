@@ -56,5 +56,8 @@ dataAndFlags <- mspMonitor(observations = testObs[, -1],
 mspWarning(dataAndFlags)
 ```
 
+## Paper Graphics
+The `R` code to build and save the simulation graphics from the paper are in the `inst/mspGraphsGrid.R` file.
+
 ## Acknowledgements
 This work is  supported by the King Abdullah University of Science and Technology (KAUST) Office of Sponsored Research (OSR) under Award No: OSR-2015-CRG4-2582 and by the National Science Foundation PFI:BIC Award No: 1632227.
