@@ -4,8 +4,14 @@
 \alias{mspContributionPlot}
 \title{Contribution Plots}
 \usage{
-mspContributionPlot(trainData, trainLabel, newData, newLabel, var.amnt,
-  trainObs)
+mspContributionPlot(
+  trainData,
+  trainLabel,
+  newData,
+  newLabel,
+  var.amnt,
+  trainObs
+)
 }
 \arguments{
 \item{trainData}{an xts data matrix containing the training observations}

@@ -4,7 +4,8 @@
 \name{normal_switch_xts}
 \alias{normal_switch_xts}
 \title{Process Data under Normal Conditions}
-\format{An xts data matrix with 10080 rows and four columns, corresponding to
+\format{
+An xts data matrix with 10080 rows and four columns, corresponding to
   one week worth of data recorded at a 1-minute interval, and four columns as
   defined here:
 \itemize{
@@ -24,7 +25,8 @@ follows:
   \item{State3 -- }{Rotated by (yaw = 90, pitch = 0, roll = -30) and scaled by
   (0.25 * x, 0.1 * y , 0.75 * z).}
 }
-See the vignette for more details.}
+See the vignette for more details.
+}
 \source{
 Simluated in R.
 }

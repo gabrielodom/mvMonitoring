@@ -4,7 +4,8 @@
 \name{fault2A_xts}
 \alias{fault2A_xts}
 \title{Process Data under a System Drift Fault}
-\format{An xts data matrix with 10080 rows and four columns, corresponding to
+\format{
+An xts data matrix with 10080 rows and four columns, corresponding to
   one week worth of data recorded at a 1-minute interval. The columns under
   normal conditions are defined in the help file for normal_switch_xts. The
   fault is a drift on each feature by s / 10 ^ 3, where s is the observation
@@ -27,7 +28,8 @@ follows:
   \item{State3 -- }{Rotated by (yaw = 90, pitch = 0, roll = -30) and scaled by
   (0.25 * x, 0.1 * y , 0.75 * z).}
 }
-See the vignette for more details.}
+See the vignette for more details.
+}
 \source{
 Simluated in R.
 }

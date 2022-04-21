@@ -4,8 +4,13 @@
 \alias{processMonitor}
 \title{Adaptive Process Training}
 \usage{
-processMonitor(data, trainObs, updateFreq = ceiling(0.5 * trainObs),
-  faultsToTriggerAlarm = 5, ...)
+processMonitor(
+  data,
+  trainObs,
+  updateFreq = ceiling(0.5 * trainObs),
+  faultsToTriggerAlarm = 5,
+  ...
+)
 }
 \arguments{
 \item{data}{An xts data matrix}

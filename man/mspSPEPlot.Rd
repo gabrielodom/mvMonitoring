@@ -4,8 +4,16 @@
 \alias{mspSPEPlot}
 \title{Squared Prediction Error Contribution Plots}
 \usage{
-mspSPEPlot(trainData, trainLabel, trainSPE, newData, newLabel, newSPE, trainObs,
-  var.amnt)
+mspSPEPlot(
+  trainData,
+  trainLabel,
+  trainSPE,
+  newData,
+  newLabel,
+  newSPE,
+  trainObs,
+  var.amnt
+)
 }
 \arguments{
 \item{trainData}{an xts data matrix containing the training observations}

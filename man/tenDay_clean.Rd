@@ -4,8 +4,10 @@
 \name{tenDay_clean}
 \alias{tenDay_clean}
 \title{Real Process Data for Training}
-\format{An xts matrix of 1,299 rows and 35 features recorded over
-  2017-01-17 at 00:10 to 2017-01-27 at 00:00.}
+\format{
+An xts matrix of 1,299 rows and 35 features recorded over
+  2017-01-17 at 00:10 to 2017-01-27 at 00:00.
+}
 \source{
 Kathryn Newhart
 }

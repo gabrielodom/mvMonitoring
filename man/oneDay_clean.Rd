@@ -4,8 +4,10 @@
 \name{oneDay_clean}
 \alias{oneDay_clean}
 \title{Real Process Data for Testing}
-\format{An xts matrix of 75 rows and 35 features recorded over
-  2017-01-27 at 00:10 to 2017-01-27 at 12:30.}
+\format{
+An xts matrix of 75 rows and 35 features recorded over
+  2017-01-27 at 00:10 to 2017-01-27 at 12:30.
+}
 \source{
 Kathryn Newhart
 }

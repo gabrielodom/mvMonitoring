@@ -5,11 +5,20 @@
 \title{Simulate Normal or Fault Observations from a Single-State or Multi-State
 Process}
 \usage{
-mspProcessData(faults, period = 7 * 24 * 60, faultStartIndex = round(0.8433
-  * period), startTime = "2015-05-16 10:00:00 CST", multiState = TRUE,
-  angles2 = list(yaw = 0, pitch = 90, roll = 30), scales2 = c(1, 0.5, 2),
-  angles3 = list(yaw = 90, pitch = 0, roll = -30), scales3 = c(0.25, 0.1,
-  0.75), adpcaTest = FALSE, msadpcaTest = FALSE, ...)
+mspProcessData(
+  faults,
+  period = 7 * 24 * 60,
+  faultStartIndex = round(0.8433 * period),
+  startTime = "2015-05-16 10:00:00 CST",
+  multiState = TRUE,
+  angles2 = list(yaw = 0, pitch = 90, roll = 30),
+  scales2 = c(1, 0.5, 2),
+  angles3 = list(yaw = 90, pitch = 0, roll = -30),
+  scales3 = c(0.25, 0.1, 0.75),
+  adpcaTest = FALSE,
+  msadpcaTest = FALSE,
+  ...
+)
 }
 \arguments{
 \item{faults}{A character vector of faults chosen. Options are "NOC", "A1",

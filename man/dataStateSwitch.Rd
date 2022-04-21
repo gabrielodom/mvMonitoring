@@ -4,9 +4,13 @@
 \alias{dataStateSwitch}
 \title{Alternate Observations in a Data Frame over States}
 \usage{
-dataStateSwitch(df, angles2 = list(yaw = 0, pitch = 90, roll = 30),
-  scales2 = c(1, 0.5, 2), angles3 = list(yaw = 90, pitch = 0, roll = -30),
-  scales3 = c(0.25, 0.1, 0.75))
+dataStateSwitch(
+  df,
+  angles2 = list(yaw = 0, pitch = 90, roll = 30),
+  scales2 = c(1, 0.5, 2),
+  angles3 = list(yaw = 90, pitch = 0, roll = -30),
+  scales3 = c(0.25, 0.1, 0.75)
+)
 }
 \arguments{
 \item{df}{A data frame returned by processNOCdata() or faultSwitch().}
