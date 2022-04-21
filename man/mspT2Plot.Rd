@@ -4,8 +4,16 @@
 \alias{mspT2Plot}
 \title{T-Squared Contribution Plots}
 \usage{
-mspT2Plot(trainData, trainLabel, trainT2, newData, newLabel, newT2, trainObs,
-  var.amnt)
+mspT2Plot(
+  trainData,
+  trainLabel,
+  trainT2,
+  newData,
+  newLabel,
+  newT2,
+  trainObs,
+  var.amnt
+)
 }
 \arguments{
 \item{trainData}{an xts data matrix containing the training observations}

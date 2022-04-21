@@ -4,8 +4,16 @@
 \alias{mspTrain}
 \title{Multi-State Adaptive-Dynamic Process Training}
 \usage{
-mspTrain(data, labelVector, trainObs, updateFreq = ceiling(0.5 * trainObs),
-  Dynamic = TRUE, lagsIncluded = c(0, 1), faultsToTriggerAlarm = 5, ...)
+mspTrain(
+  data,
+  labelVector,
+  trainObs,
+  updateFreq = ceiling(0.5 * trainObs),
+  Dynamic = TRUE,
+  lagsIncluded = c(0, 1),
+  faultsToTriggerAlarm = 5,
+  ...
+)
 }
 \arguments{
 \item{data}{An xts data matrix}

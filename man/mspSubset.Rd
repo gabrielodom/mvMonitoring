@@ -4,9 +4,11 @@
 \alias{mspSubset}
 \title{Multi-State Subsetting}
 \usage{
-mspSubset(data, labelVector = rep(1, nrow(data)),
-  subsetMatrix = matrix(TRUE, nrow = length(unique(labelVector)), ncol =
-  ncol(data)))
+mspSubset(
+  data,
+  labelVector = rep(1, nrow(data)),
+  subsetMatrix = matrix(TRUE, nrow = length(unique(labelVector)), ncol = ncol(data))
+)
 }
 \arguments{
 \item{data}{An xts data matrix}

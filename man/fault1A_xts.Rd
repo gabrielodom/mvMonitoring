@@ -4,7 +4,8 @@
 \name{fault1A_xts}
 \alias{fault1A_xts}
 \title{Process Data under a System Shift Fault}
-\format{An xts data matrix with 10080 rows and four columns, corresponding to
+\format{
+An xts data matrix with 10080 rows and four columns, corresponding to
   one week worth of data recorded at a 1-minute interval. The columns under
   normal conditions are defined in the help file for normal_switch_xts. The
   fault is a system shock to each of the three features by 2. The fault
@@ -27,7 +28,8 @@ follows:
   \item{State3 -- }{Rotated by (yaw = 90, pitch = 0, roll = -30) and scaled by
   (0.25 * x, 0.1 * y , 0.75 * z).}
 }
-See the vignette for more details.}
+See the vignette for more details.
+}
 \source{
 Simluated in R.
 }

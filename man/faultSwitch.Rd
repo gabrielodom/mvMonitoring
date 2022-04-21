@@ -4,8 +4,14 @@
 \alias{faultSwitch}
 \title{Induce the Specified Fault on NOC Observations}
 \usage{
-faultSwitch(df, fault, period = 7 * 24 * 60, faultStartIndex = round(0.8433
-  * period), shift = 2, postStateSplit = FALSE)
+faultSwitch(
+  df,
+  fault,
+  period = 7 * 24 * 60,
+  faultStartIndex = round(0.8433 * period),
+  shift = 2,
+  postStateSplit = FALSE
+)
 }
 \arguments{
 \item{df}{A data frame returned by the processNOCdata() function.}
