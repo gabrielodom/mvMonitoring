@@ -67,14 +67,14 @@ threshold.pca <- function(pca_object, alpha = 0.001, ...){
                          from = 0)
 
   # BMS::quantile.density
-  SPE.lim.np <- quantile(SPE.np.dens, 1 - alpha)
+  SPE.lim.np <- BMS::quantile.density(SPE.np.dens, 1 - alpha)
 
   T2.np.dens <- density(t2,
                         bw = "SJ", # Sheather Jones
                         kernel = "gaussian",
                         from = 0)
   # BMS::quantile.density
-  T2.lim.np <- quantile(T2.np.dens, 1 - alpha)
+  T2.lim.np <- BMS::quantile.density(T2.np.dens, 1 - alpha)
 
   object <- list(SPE_threshold = SPE.lim.np,
                  T2_threshold = T2.lim.np,
