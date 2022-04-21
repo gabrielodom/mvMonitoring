@@ -3,6 +3,7 @@
 S3method(faultDetect,threshold)
 S3method(pca,matrix)
 S3method(pca,xts)
+S3method(quantile,density)
 S3method(threshold,pca)
 export(dataStateSwitch)
 export(faultDetect)

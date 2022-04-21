@@ -1,4 +1,8 @@
-# Multi-State Adaptive-Dynamic Process Monitoring
+---
+title: "Multi-State Adaptive-Dynamic Process Monitoring"
+author: 
+---
+
 
 [![Travis-CI Build Status](https://travis-ci.org/gabrielodom/mvMonitoring.svg?branch=master)](https://travis-ci.org/gabrielodom/mvMonitoring)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring)](https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring)
@@ -9,24 +13,25 @@ We create this package, `mvMonitoring`, from the foundation laid by Kazor et al 
 
 ## Installation from CRAN
 As of 18 October, 2017, we have submitted this package to CRAN. Shortly thereafter, you will be able to install the stable version of the package via
-```{r packLoad_CRAN, eval=FALSE}
+```
 install.packages("mvMonitoring")
 ```
 
 ## Installation of Development Version
 Make sure you have the latest version of the `devtools` package, and pull the package from GitHub. Remember, if you can read this file, you are one of the few people who have access to this package. In addition, you can also run the following:
-```{r packLoad_GitHub, eval=FALSE}
+```
 devtools::install_github("gabrielodom/mvMonitoring", auth_token = "tokenHere")
 ```
+
 where you create the value of "tokenHere" by generating a personal access token (PAT) at https://github.com/settings/tokens and copying the quoted string to this argument.
 Load the library after installation by
-```{r packLoad}
+```
 library(mvMonitoring)
 ```
 
 ## Examples
 These are the examples shown in the help files for the mspProcessData(), mspTrain(), mspMonitor(), and mspWarning() functions.
-```{r mspExamples}
+```
 # Generate one week's worth of normal operating (NOC) data recorded at the one-
 # minute level
 nrml <- mspProcessData(faults = "NOC")
@@ -36,9 +41,11 @@ n <- nrow(nrml)
 # Calculate the training summary, but save five observations for monitoring.
 # This function will treat the first 3 days as in control (IC), and then update
 # the training window each day.
-trainResults_ls <- mspTrain(data = nrml[1:(n - 5), -1],
-                            labelVector = nrml[1:(n - 5), 1],
-                            trainObs = 4320)
+trainResults_ls <- mspTrain(
+  data = nrml[1:(n - 5), -1],
+  labelVector = nrml[1:(n - 5), 1],
+  trainObs = 4320
+)
 
 # While training, we included 1 lag (the default), so we will also lag the
 # observations we will test.
@@ -48,9 +55,11 @@ testObs <- testObs[-1,]
 testObs <- cbind(nrml[(n - 5):n, 1], testObs)
 
 # Run the monitoring function.
-dataAndFlags <- mspMonitor(observations = testObs[, -1],
-                           labelVector = testObs[, 1],
-                           trainingSummary = trainResults_ls$TrainingSpecs)
+dataAndFlags <- mspMonitor(
+  observations = testObs[, -1],
+  labelVector = testObs[, 1],
+  trainingSummary = trainResults_ls$TrainingSpecs
+)
 
 # Alarm check the last row of the matrix returned by the mspMonitor function
 mspWarning(dataAndFlags)

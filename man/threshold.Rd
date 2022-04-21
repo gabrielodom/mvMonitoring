@@ -57,5 +57,6 @@ threshold(pca_object = pca_obj)
 
 }
 \seealso{
-Called by: \code{\link{faultFilter}}.
+Called by: \code{\link{faultFilter}}. This function uses a port of
+  the \code{quantile.density()} function from the now-orphaned BMS package.
 }

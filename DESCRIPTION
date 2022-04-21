@@ -2,13 +2,24 @@ Package: mvMonitoring
 Type: Package
 Title: Multi-State Adaptive Dynamic Principal Component Analysis for
     Multivariate Process Monitoring
-Version: 0.1.0
-Authors@R: c(person("Melissa", "Johnson", email = "melissa_johnson2@baylor.edu", role = c("aut")),
-  person("Gabriel", "Odom", email = "gabriel.odom@med.miami.edu", role = c("aut","cre")), 
-  person("Ben", "Barnard", email = "ben_barnard@baylor.edu", role = c("aut")),
-  person("Karen", "Kazor", role = c("aut")),
-  person("Amanda", "Hering", email = "mandy_hering@baylor.edu", role = c("aut")))
-Maintainer: Gabriel Odom <gabriel.odom@med.miami.edu>
+Version: 0.2.0
+Authors@R:
+  c(
+    person(
+      "Melissa", "Innerst", email = "innerst@juniata.edu", role = c("aut")
+    ),
+    person(
+      "Gabriel", "Odom", email = "gabriel.odom@fiu.edu", role = c("aut", "cre")
+    ), 
+    person(
+      "Ben", "Barnard", email = "ben_barnard@baylor.edu", role = c("aut")
+    ),
+    person("Karen", "Kazor", role = c("aut")),
+    person(
+      "Amanda", "Hering", email = "mandy_hering@baylor.edu", role = c("aut")
+    )
+  )
+Maintainer: Gabriel Odom <gabriel.odom@fiu.edu>
 Description: Use multi-state splitting to apply Adaptive-Dynamic PCA (ADPCA) to
     data generated from a continuous-time multivariate industrial or natural
     process. Employ PCA-based dimension reduction to extract linear combinations
@@ -32,7 +43,7 @@ Imports:
     graphics
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests:
     testthat (>= 3.0.0),
     knitr,
