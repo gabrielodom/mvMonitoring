@@ -81,7 +81,7 @@
       <h1 data-toc-skip>Multivariate Statistical Process Control with mvMonitoring</h1>
                         <h4 data-toc-skip class="author">Gabriel Odom</h4>
             
-            <h4 data-toc-skip class="date">2022-04-21</h4>
+            <h4 data-toc-skip class="date">2022-04-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gabrielodom/mvMonitoring/blob/HEAD/vignettes/MVSPC-Workflow.Rmd" class="external-link"><code>vignettes/MVSPC-Workflow.Rmd</code></a></small>
       <div class="hidden name"><code>MVSPC-Workflow.Rmd</code></div>
@@ -95,7 +95,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction <a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This is the accompanying package to the research published by <a href="https://link.springer.com/article/10.1007/s00477-016-1246-2" class="external-link">Kazor et al (2016)</a> and forthcoming paper by <a href="https://www.overleaf.com/read/vbfbjsywtkvv#/26878504/" class="external-link">Odom et al (2017)</a> (manuscript in progress). The <code>mvMonitoring</code> package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
+<p>This is the accompanying package to the research published by <a href="https://doi.org/10.1007/s00477-016-1246-2" class="external-link">Kazor et al (2016)</a> and <a href="https://doi.org/10.1002/asmb.2333" class="external-link">Odom et al (2018)</a>. The <code>mvMonitoring</code> package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.</p>
 </div>
 <div class="section level2">
 <h2 id="motivation">Motivation <a class="anchor" aria-label="anchor" href="#motivation"></a>
@@ -346,20 +346,20 @@ t = \frac{(b - a)(t^*_s - \text{min}(t^*_s))}{\text{max}(t^*_s) - \text{min}(t^*
 <span class="va">lagTest1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">fault1A_xts</span><span class="op">[</span><span class="fl">8461</span><span class="op">:</span><span class="fl">8520</span>,<span class="fl">1</span><span class="op">]</span>,
                        <span class="va">lagTest1A_xts</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lagTest1A_xts</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                     state         x         y         z       x.1         y.1</span>
-<span class="co">## 2015-05-22 07:00:00     1 0.5707662 -1.399283 0.6455640 0.3830219  0.08987747</span>
-<span class="co">## 2015-05-22 07:01:00     1 0.3673432 -1.177629 0.7563658 0.5707662 -1.39928308</span>
-<span class="co">## 2015-05-22 07:02:00     1 0.4969083 -1.437263 1.0858186 0.3673432 -1.17762868</span>
-<span class="co">## 2015-05-22 07:03:00     1 0.4427885 -1.512438 1.0766973 0.4969083 -1.43726341</span>
-<span class="co">## 2015-05-22 07:04:00     1 0.5141362 -1.481937 1.0149583 0.4427885 -1.51243798</span>
-<span class="co">## 2015-05-22 07:05:00     1 0.3879009 -1.347691 0.9356194 0.5141362 -1.48193652</span>
+<pre><code><span class="co">##                     state         x         y         z       x.1        y.1</span>
+<span class="co">## 2015-05-22 07:00:00     1 0.5103484 -1.397993 0.7571143 0.3883195  0.0787231</span>
+<span class="co">## 2015-05-22 07:01:00     1 0.5987963 -1.612843 0.8629015 0.5103484 -1.3979932</span>
+<span class="co">## 2015-05-22 07:02:00     1 0.6270785 -1.584831 0.8395377 0.5987963 -1.6128433</span>
+<span class="co">## 2015-05-22 07:03:00     1 0.6561021 -1.474142 1.0843090 0.6270785 -1.5848308</span>
+<span class="co">## 2015-05-22 07:04:00     1 0.7734800 -1.469460 1.1097472 0.6561021 -1.4741421</span>
+<span class="co">## 2015-05-22 07:05:00     1 0.6597862 -1.452126 1.0251729 0.7734800 -1.4694603</span>
 <span class="co">##                           z.1</span>
-<span class="co">## 2015-05-22 07:00:00 0.2647849</span>
-<span class="co">## 2015-05-22 07:01:00 0.6455640</span>
-<span class="co">## 2015-05-22 07:02:00 0.7563658</span>
-<span class="co">## 2015-05-22 07:03:00 1.0858186</span>
-<span class="co">## 2015-05-22 07:04:00 1.0766973</span>
-<span class="co">## 2015-05-22 07:05:00 1.0149583</span></code></pre>
+<span class="co">## 2015-05-22 07:00:00 0.2505031</span>
+<span class="co">## 2015-05-22 07:01:00 0.7571143</span>
+<span class="co">## 2015-05-22 07:02:00 0.8629015</span>
+<span class="co">## 2015-05-22 07:03:00 0.8395377</span>
+<span class="co">## 2015-05-22 07:04:00 1.0843090</span>
+<span class="co">## 2015-05-22 07:05:00 1.1097472</span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="monitoring-the-test-data">Monitoring the Test Data<a class="anchor" aria-label="anchor" href="#monitoring-the-test-data"></a>
@@ -370,20 +370,20 @@ t = \frac{(b - a)(t^*_s - \text{min}(t^*_s))}{\text{max}(t^*_s) - \text{min}(t^*
                             labelVector <span class="op">=</span> <span class="va">lagTest1A_xts</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,
                             trainingSummary <span class="op">=</span> <span class="va">train1A_ls</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">monitor1A_xts</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                             x         y         z       x.1         y.1</span>
-<span class="co">## 2015-05-22 07:00:00 0.5707662 -1.399283 0.6455640 0.3830219  0.08987747</span>
-<span class="co">## 2015-05-22 07:01:00 0.3673432 -1.177629 0.7563658 0.5707662 -1.39928308</span>
-<span class="co">## 2015-05-22 07:02:00 0.4969083 -1.437263 1.0858186 0.3673432 -1.17762868</span>
-<span class="co">## 2015-05-22 07:03:00 0.4427885 -1.512438 1.0766973 0.4969083 -1.43726341</span>
-<span class="co">## 2015-05-22 07:04:00 0.5141362 -1.481937 1.0149583 0.4427885 -1.51243798</span>
-<span class="co">## 2015-05-22 07:05:00 0.3879009 -1.347691 0.9356194 0.5141362 -1.48193652</span>
-<span class="co">##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm</span>
-<span class="co">## 2015-05-22 07:00:00 0.2647849 1.0258065        0 26.980563       0    NA</span>
-<span class="co">## 2015-05-22 07:01:00 0.6455640 2.1357031        0  7.246128       0    NA</span>
-<span class="co">## 2015-05-22 07:02:00 0.7563658 0.3958352        0  6.784374       0    NA</span>
-<span class="co">## 2015-05-22 07:03:00 1.0858186 0.3516739        0  5.139558       0    NA</span>
-<span class="co">## 2015-05-22 07:04:00 1.0766973 0.3662805        0  5.194101       0    NA</span>
-<span class="co">## 2015-05-22 07:05:00 1.0149583 1.0048317        0  6.046283       0    NA</span></code></pre>
+<pre><code><span class="co">##                             x         y         z       x.1        y.1</span>
+<span class="co">## 2015-05-22 07:00:00 0.5103484 -1.397993 0.7571143 0.3883195  0.0787231</span>
+<span class="co">## 2015-05-22 07:01:00 0.5987963 -1.612843 0.8629015 0.5103484 -1.3979932</span>
+<span class="co">## 2015-05-22 07:02:00 0.6270785 -1.584831 0.8395377 0.5987963 -1.6128433</span>
+<span class="co">## 2015-05-22 07:03:00 0.6561021 -1.474142 1.0843090 0.6270785 -1.5848308</span>
+<span class="co">## 2015-05-22 07:04:00 0.7734800 -1.469460 1.1097472 0.6561021 -1.4741421</span>
+<span class="co">## 2015-05-22 07:05:00 0.6597862 -1.452126 1.0251729 0.7734800 -1.4694603</span>
+<span class="co">##                           z.1         SPE SPE_Flag        T2 T2_Flag Alarm</span>
+<span class="co">## 2015-05-22 07:00:00 0.2505031 1.383058523        0 26.682504       0    NA</span>
+<span class="co">## 2015-05-22 07:01:00 0.7571143 0.005578324        0  5.290245       0    NA</span>
+<span class="co">## 2015-05-22 07:02:00 0.8629015 0.064923517        0  4.870892       0    NA</span>
+<span class="co">## 2015-05-22 07:03:00 0.8395377 0.490244558        0  4.836981       0    NA</span>
+<span class="co">## 2015-05-22 07:04:00 1.0843090 0.747663993        0  4.343685       0    NA</span>
+<span class="co">## 2015-05-22 07:05:00 1.1097472 0.933547598        0  4.451383       0    NA</span></code></pre>
 </div>
 </div>
 <div class="section level3">

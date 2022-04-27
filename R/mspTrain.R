@@ -109,7 +109,7 @@
 #'
 #'   For more details, see Kazor et al (2016):
 #'
-#'   \url{http://link.springer.com/article/10.1007/s00477-016-1246-2}
+#'   \url{https://doi.org/10.1007/s00477-016-1246-2}
 #'
 #' @seealso Calls: \code{\link{processMonitor}}. Pipe flow: \code{mspTrain}
 #'   into \code{\link{mspMonitor}} into \code{\link{mspWarning}}.
