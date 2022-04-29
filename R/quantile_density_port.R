@@ -22,7 +22,7 @@
 #'   function from package BMS (\url{https://CRAN.R-project.org/package=BMS}).
 #'   In spring of 2022, CRAN informed us that the BMS has been orphaned, so we
 #'   copied the code (and corresponding documentation) we needed from it. See
-#'   \url{https://www.doi.org/10.18637/jss.v068.i04} for their paper.
+#'   \doi{10.18637/jss.v068.i04} for their paper.
 #'
 #'   The function \code{quantile.density()} applies generically to the built-in
 #'   class \code{density} (as least for versions where there is no such method

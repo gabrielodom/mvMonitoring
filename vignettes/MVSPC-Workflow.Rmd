@@ -45,7 +45,7 @@ Multi-State AD-PCA (MSAD-PCA) allows process engineers to account for a few very
 These are brief descriptions of the external functions useful for multivariate statistical process monitoring via MSAD- or AD-PCA.
 
 ## Simulating Data with `mspProcessData`
-This function generates three-dimensional multi-state or single-state non-linear, non-stationary, and autocorrelated process observations. We follow the seminal work of [Dong and McAvoy (1996)](http://onlinelibrary.wiley.com/doi/10.1002/aic.690420810/abstract) for generation of the foundational stationary and independent features.
+This function generates three-dimensional multi-state or single-state non-linear, non-stationary, and autocorrelated process observations. We follow the seminal work of [Dong and McAvoy (1996)](https://doi.org/10.1002/aic.690420810) for generation of the foundational stationary and independent features.
 
 ### Latent Feature Creation
 So that the simulated features have non-zero correlations, Dong and McAvoy created their three features all as polynomial functions of a single latent variable $t(s)$, where $s = 1, \ldots, \omega$ is the observational index of the process.

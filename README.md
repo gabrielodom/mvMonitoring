@@ -6,7 +6,7 @@ author:
 
 [![Travis-CI Build Status](https://travis-ci.org/gabrielodom/mvMonitoring.svg?branch=master)](https://travis-ci.org/gabrielodom/mvMonitoring)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring)](https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring)
-![CRAN Build Status](http://www.r-pkg.org/badges/version/mvMonitoring)
+![CRAN Build Status](https://www.r-pkg.org/badges/version/mvMonitoring)
 
 ## Overview
 We create this package, `mvMonitoring`, from the foundation laid by Kazor et al (2016). This package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.
