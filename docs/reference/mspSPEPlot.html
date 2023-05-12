@@ -18,7 +18,7 @@ statistic to visualize the contribution of each variable to a fault."><!-- mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -81,29 +81,44 @@ statistic to visualize the contribution of each variable to a fault.</p>
     <h2>Arguments</h2>
     <dl><dt>trainData</dt>
 <dd><p>an xts data matrix containing the training observations</p></dd>
+
+
 <dt>trainLabel</dt>
 <dd><p>Class labels for the training data as a logical (two states
 only) or finite numeric (two or more states) vector or matrix column (not from
 a data frame) with length equal to the number of rows in ``data." For data with
 only one state, this will be a vector of 1s.</p></dd>
+
+
 <dt>trainSPE</dt>
 <dd><p>the SPE values corresponding to the
 newLabel state calculated by mspTrain using the full training data with
 all variables included</p></dd>
+
+
 <dt>newData</dt>
 <dd><p>an xts data matrix containing the new observation</p></dd>
+
+
 <dt>newLabel</dt>
 <dd><p>the class label for the new observation</p></dd>
+
+
 <dt>newSPE</dt>
 <dd><p>the SPE value returned by mspMonitor using
 the full new observation with all variables included</p></dd>
+
+
 <dt>trainObs</dt>
 <dd><p>the number of observations upon which to train the algorithm.
 This will be split based on class information by a priori class membership
 proportions.</p></dd>
+
+
 <dt>var.amnt</dt>
 <dd><p>the energy proportion to preserve in the projection, which
 dictates the number of principal components to keep</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
@@ -154,7 +169,7 @@ dictates the number of principal components to keep</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

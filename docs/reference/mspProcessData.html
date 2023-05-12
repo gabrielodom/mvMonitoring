@@ -20,7 +20,7 @@ Process — mspProcessData"><meta property="og:description" content="Generate si
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -90,44 +90,69 @@ Process</h1>
 <dd><p>A character vector of faults chosen. Options are "NOC", "A1",
 "B1", "C1", "A2", "B2", "C2", "A3", "B3", "C3", or "All". See details for
 more information.</p></dd>
+
+
 <dt>period</dt>
 <dd><p>The observation cycle length. Defaults to one week's worth of
 minute-level observations (10,080 observations).</p></dd>
+
+
 <dt>faultStartIndex</dt>
 <dd><p>An integer specifying the index at which the faults
 will start. Defaults to roughly 85 percent through the cycle.</p></dd>
+
+
 <dt>startTime</dt>
 <dd><p>a POSIXct object specifying the day and time for the
 starting observation.</p></dd>
+
+
 <dt>multiState</dt>
 <dd><p>Should the observations be generated from a multi-state
 process? Defaults to TRUE.</p></dd>
+
+
 <dt>angles2</dt>
 <dd><p>Change the principal angles for State 2. Defaults to yaw = 0,
 pitch = 90, and roll = 30.</p></dd>
+
+
 <dt>scales2</dt>
 <dd><p>Change the principal scales for State 2. Defaults to 1, 0.5,
 and 2.</p></dd>
+
+
 <dt>angles3</dt>
 <dd><p>Change the principal angles for State 3. Defaults to yaw = 90,
 pitch = 0, and roll = -30.</p></dd>
+
+
 <dt>scales3</dt>
 <dd><p>Change the principal scales for State 3. Defaults to 0.25,
 0.1, and 0.75.</p></dd>
+
+
 <dt>adpcaTest</dt>
 <dd><p>If "multiState" is TRUE, incorrectly label all the states
 the same. This should only be used to test AD-PCA performance under a true
 multi-state model. Defaults to FALSE.</p></dd>
+
+
 <dt>msadpcaTest</dt>
 <dd><p>If "multiState" is FALSE, incorrectly label all the states
 at random. This should only be used to test MSAD-PCA performance under a
 true single-state model. Defaults to FALSE.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Lazy dots for internal arguments</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of data frames named with the names of the given faults with
+    
+
+<p>A list of data frames named with the names of the given faults with
   the following information:</p><ul><li><p>dateTime -- A POSIXct column of times starting at the user-
       defined `startTime` argument, length given by the `period` argument,
       and spacing given by the `increment` argument. For example, if the
@@ -207,7 +232,7 @@ true single-state model. Defaults to FALSE.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

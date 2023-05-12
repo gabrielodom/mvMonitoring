@@ -19,7 +19,7 @@ for a given state."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -78,26 +78,36 @@ for a given state.</p>
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An xts data matrix</p></dd>
+
+
 <dt>labelVector</dt>
 <dd><p>Class labels as a logical (two states only) or
 finite numeric (two or more states) vector or matrix column (not
 from a data frame) with length equal to the number of rows in "data."
 For data with only one state, this will be a vector of 1s.</p></dd>
+
+
 <dt>subsetMatrix</dt>
 <dd><p>A matrix of logicals with number of rows equal to the number of
 states and number of columns equal to the number of columns in data. The i,j entry in
 the matrix indicates whether or not to monitor the jth variable in the
 ith state.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the following components:</p>
+    
+
+<p>A list with the following components:</p>
 <dl><dt>Class1Data -- </dt>
 <dd><p>an xts data matrix containing the subset of the state 1 data.</p></dd>
+
 <dt>Class2Data -- </dt>
 <dd><p>an xts data matrix containing the subset of the state 2 data.</p></dd>
+
 <dt>Class3Data -- </dt>
 <dd><p>an xts data matrix containing the subset of the state 3 data.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -131,7 +141,7 @@ and to allow the user to monitor a different subset of the variables during each
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

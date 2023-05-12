@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -72,13 +72,18 @@
     <h2>Arguments</h2>
     <dl><dt>mspMonitor_object</dt>
 <dd><p>An xts matrix returned by the mspMonitor() function</p></dd>
+
+
 <dt>faultsToTriggerAlarm</dt>
 <dd><p>Specifies how many sequential faults will cause
 an alarm to trigger. Defaults to 5.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An xts matrix of the same dimensions as mspMonitor_object, with a
+    
+
+<p>An xts matrix of the same dimensions as mspMonitor_object, with a
   recorded negative or positive and type-specific alarm status. Alarm codes
   are: 0 = no alarm, 1 = Hotelling's T2 alarm, 2 = Squared Prediction Error
   alarm, and 3 = both alarms.</p>
@@ -159,7 +164,7 @@ an alarm to trigger. Defaults to 5.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -1,6 +1,6 @@
 ---
 title: "Multi-State Adaptive-Dynamic Process Monitoring"
-author: 
+author: Gabriel Odom, Ben Barnard, and Melissa Innerst
 ---
 
 
@@ -12,18 +12,17 @@ author:
 We create this package, `mvMonitoring`, from the foundation laid by Kazor et al (2016). This package is designed to make simulation of multi-state multivariate process monitoring statistics easy and straightforward, as well as streamlining the online process monitoring component.
 
 ## Installation from CRAN
-As of 18 October, 2017, we have submitted this package to CRAN. Shortly thereafter, you will be able to install the stable version of the package via
+Install the stable version of this package via
 ```
 install.packages("mvMonitoring")
 ```
 
 ## Installation of Development Version
-Make sure you have the latest version of the `devtools` package, and pull the package from GitHub. Remember, if you can read this file, you are one of the few people who have access to this package. In addition, you can also run the following:
+Make sure you have the latest version of the `devtools` package, and pull the package from GitHub. 
 ```
-devtools::install_github("gabrielodom/mvMonitoring", auth_token = "tokenHere")
+devtools::install_github("gabrielodom/mvMonitoring")
 ```
 
-where you create the value of "tokenHere" by generating a personal access token (PAT) at https://github.com/settings/tokens and copying the quoted string to this argument.
 Load the library after installation by
 ```
 library(mvMonitoring)

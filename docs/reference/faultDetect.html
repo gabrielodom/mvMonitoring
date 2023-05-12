@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -73,16 +73,25 @@
     <dl><dt>threshold_object</dt>
 <dd><p>An object of classes "threshold" and "pca" returned
 by the internal threshold() function.</p></dd>
+
+
 <dt>observation</dt>
 <dd><p>A single row of an xts data matrix (a 1 x p matrix) to
 compare against the thresholds</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Lazy dots for additional internal arguments</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A named 1 x 4 matrix with the following entries for the single row
-  observation passed to this function:</p><ul><li><p>SPE -- the SPE statistic value</p></li>
+    
+
+<p>A named 1 x 4 matrix with the following entries for the single row
+  observation passed to this function:</p>
+<p></p>
+<ul><li><p>SPE -- the SPE statistic value</p></li>
 <li><p>SPE_Flag -- the SPE fault indicator, where 1 represents a flag and
       0 marks that the observation is within the normal operating conditions</p></li>
 <li><p>T2 -- the T2 statistic value</p></li>
@@ -118,11 +127,17 @@ compare against the thresholds</p></dd>
 <span class="r-in"><span class="va">scaledData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">pca_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="pca.html">pca</a></span><span class="op">(</span><span class="va">scaledData</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">thresh_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="threshold.html">threshold</a></span><span class="op">(</span>pca_object <span class="op">=</span> <span class="va">pca_obj</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>     old.coords = TRUE) :</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>  extra argument ‘old.coords’ will be disregarded</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>     old.coords = TRUE) :</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>  extra argument ‘old.coords’ will be disregarded</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">faultDetect</span><span class="op">(</span>threshold_object <span class="op">=</span> <span class="va">thresh_obj</span>,</span>
 <span class="r-in">            observation <span class="op">=</span> <span class="va">scaledData</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            SPE SPE_Flag        T2 T2_Flag</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.1753795        0 0.3655341       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.3040244        0 0.3149038       0</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
@@ -138,7 +153,7 @@ compare against the thresholds</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

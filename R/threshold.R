@@ -62,18 +62,30 @@ threshold.pca <- function(pca_object, alpha = 0.001, ...){
   spe <- pca_object$SPE
   t2 <- pca_object$T2
 
-  SPE.np.dens <- density(spe,
-                         bw = "SJ", # Sheather Jones
-                         kernel = "gaussian",
-                         from = 0)
+  # UPDATE 2023-05-12: R-devel now has a modification to the density.default()
+  #   function as described in https://bugs.r-project.org/show_bug.cgi?id=18337
+  # We will add the option old.coords=TRUE to preserve compatibility with our
+  #   previous testing scripts. I checked the change, and the differences are
+  #   in the 6th decimal place.
+  SPE.np.dens <- density(
+    spe,
+    bw = "SJ", # Sheather Jones
+    kernel = "gaussian",
+    from = 0,
+    old.coords = TRUE
+  )
 
   # Ported BMS::quantile.density to quantile.density()
   SPE.lim.np <- quantile(SPE.np.dens, 1 - alpha)
 
-  T2.np.dens <- density(t2,
-                        bw = "SJ", # Sheather Jones
-                        kernel = "gaussian",
-                        from = 0)
+  # UPDATE 2023-05-12: see comment above
+  T2.np.dens <- density(
+    t2,
+    bw = "SJ", # Sheather Jones
+    kernel = "gaussian",
+    from = 0,
+    old.coords = TRUE
+  )
   # Ported BMS::quantile.density to quantile.density()
   T2.lim.np <- quantile(T2.np.dens, 1 - alpha)
 

@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -81,35 +81,52 @@
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An xts data matrix</p></dd>
+
+
 <dt>labelVector</dt>
 <dd><p>Class labels as a logical (two states only) or finite
 numeric (two or more states) vector or matrix column (not from data frame)
 with length equal to the number of rows in "data". For data with only one
 state, this will be a vector of 1s.</p></dd>
+
+
 <dt>trainObs</dt>
 <dd><p>The number of observations upon which to train the algorithm.
 This will be split based on class information by a priori class membership
 proportion.</p></dd>
+
+
 <dt>updateFreq</dt>
 <dd><p>The algorithm update frequency. Defaults to half as many
 observations as the training frequency.</p></dd>
+
+
 <dt>Dynamic</dt>
 <dd><p>Specify if the PCA algorithm should include lagged variables.
 Defaults to TRUE.</p></dd>
+
+
 <dt>lagsIncluded</dt>
 <dd><p>A vector of lags to include. If Dynamic = TRUE, specify
 which lags to include. Defaults to c(0, 1), signifying that the Dynamic
 process observations will include current observations and observations
 from one time step previous. See "Details" for more information.</p></dd>
+
+
 <dt>faultsToTriggerAlarm</dt>
 <dd><p>The number of sequential faults needed to trigger
 an alarm. Defaults to 5.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Lazy dots for additional internal arguments</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the following components:</p><ul><li><p>FaultChecks -- an xts flagging matrix with the same number of rows
+    
+
+<p>A list with the following components:</p><ul><li><p>FaultChecks -- an xts flagging matrix with the same number of rows
     as "data". This flag matrix has the following five columns: </p><ul><li><p>SPE -- the SPE statistic value for each observation in "data"</p></li>
 <li><p>SPE_Flag -- a vector of SPE indicators recording 0 if the test
         statistic is less than or equal to the critical value passed through
@@ -224,7 +241,7 @@ an alarm. Defaults to 5.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -19,7 +19,7 @@ contribution values of the training data."><!-- mathjax --><script src="https://
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
       </span>
     </div>
 
@@ -81,26 +81,39 @@ contribution values of the training data.</p>
     <h2>Arguments</h2>
     <dl><dt>trainData</dt>
 <dd><p>an xts data matrix containing the training observations</p></dd>
+
+
 <dt>trainLabel</dt>
 <dd><p>Class labels for the training data as a logical (two states
 only) or finite numeric (two or more states) vector or matrix column (not from
 a data frame) with length equal to the number of rows in ``data." For data with
 only one state, this will be a vector of 1s.</p></dd>
+
+
 <dt>newData</dt>
 <dd><p>an xts data matrix containing the new observation</p></dd>
+
+
 <dt>newLabel</dt>
 <dd><p>the class label for the new observation</p></dd>
+
+
 <dt>var.amnt</dt>
 <dd><p>the energy proportion to preserve in the projection, which
 dictates the number of principal components to keep</p></dd>
+
+
 <dt>trainObs</dt>
 <dd><p>the number of observations upon which to train the algorithm.
 This will be split based on class information by a priori class membership
 proportions.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A contribution plot and a list with the following items:</p><ul><li><p>TrainCV -- A list vectors containing the contribution values corresponding
+    
+
+<p>A contribution plot and a list with the following items:</p><ul><li><p>TrainCV -- A list vectors containing the contribution values corresponding
 to each observation in the set of training observations.</p></li>
 <li><p>NewCV -- The vector of contribution values associated with the
 new observation</p></li>
@@ -145,7 +158,7 @@ new observation</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
