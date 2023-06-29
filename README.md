@@ -4,7 +4,7 @@ author: Gabriel Odom, Ben Barnard, and Melissa Innerst
 ---
 
 
-[![Travis-CI Build Status](https://travis-ci.org/gabrielodom/mvMonitoring.svg?branch=master)](https://travis-ci.org/gabrielodom/mvMonitoring)
+[![Travis-CI Build Status](https://travis-ci.org/gabrielodom/mvMonitoring.svg?branch=master)](https://app.travis-ci.com/github/gabrielodom/mvMonitoring)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring)](https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring)
 ![CRAN Build Status](https://www.r-pkg.org/badges/version/mvMonitoring)
 

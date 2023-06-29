@@ -1,3 +1,6 @@
+## UPDATE 2023-06-29
+We are resubmitting the mvMonitoring package after resolving bugs related to breaking changes documented in <https://bugs.r-project.org/show_bug.cgi?id=18337>.
+
 
 ## Front Matter
 This is my very first package submission. I hope to make your job reviewing this package as easy as possible.
