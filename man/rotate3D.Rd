@@ -24,9 +24,9 @@ Render a 3-Dimensional projection matrix given positive or
   negative degree changes in yaw, pitch, and / or roll.
 }
 \details{
-When plotting with the package scatterplot3d, the default perpective
-  is such that the pitch action appears as a roll while the roll action
-  appears as a pitch.
+When plotting with the package scatterplot3d, the default
+  perspective is such that the pitch action appears as a roll while the roll
+  action appears as a pitch.
 
   This function is used only in data generation of the package vignette. This
   function is called by rotateScale3D().

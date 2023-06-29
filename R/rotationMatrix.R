@@ -12,9 +12,9 @@
 #'
 #' @return A 3 x 3 projection matrix corresponding to the degree changes entered.
 #'
-#' @details When plotting with the package scatterplot3d, the default perpective
-#'   is such that the pitch action appears as a roll while the roll action
-#'   appears as a pitch.
+#' @details When plotting with the package scatterplot3d, the default
+#'   perspective is such that the pitch action appears as a roll while the roll
+#'   action appears as a pitch.
 #'
 #'   This function is used only in data generation of the package vignette. This
 #'   function is called by rotateScale3D().

@@ -120,7 +120,7 @@ mspMonitor <- function(observations,
     xx <- cbind(classData[i,], faultObj)
     data.frame(dateTime = index(xx), xx[,-1])
   })
-  # Use ldply instead of do.call(rbind, .) becuase rbind.xts() can't handle the
+  # Use ldply instead of do.call(rbind, .) because rbind.xts() can't handle the
   # object size necessary to bind a large list.
   obsAndFlags <- ldply(dataAndFaults)
   obsAndFlags <- xts(obsAndFlags[,-1], order.by = obsAndFlags[,1])

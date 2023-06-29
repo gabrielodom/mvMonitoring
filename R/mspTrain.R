@@ -63,7 +63,7 @@
 #'   estimation to calculate the 1 - alpha quantiles of the SPE and Hotelling's
 #'   T2 statistics from a set of training observations, then flags any
 #'   observation in the testing data set with process monitoring statistics
-#'   beyond these calculated critical values. Becuase of natural variablity
+#'   beyond these calculated critical values. Because of natural variability
 #'   inherent in all real data, we do not remove observations simply because
 #'   they are have been flagged as outside normal operating conditions. This
 #'   function records an alarm only for observations having five flags in a
@@ -71,7 +71,7 @@
 #'   alarm-positive observations are then removed from the data set and held in
 #'   a separate xts matrix for inspection.
 #'
-#'   Concering the lagsIncluded variable: the argument lagsIncluded = c(0,1)
+#'   Concerning the lagsIncluded variable: the argument lagsIncluded = c(0,1)
 #'   will column concatenate the current data with the same data from one
 #'   discrete time step back. This will necessarily remove the first row of the
 #'   data matrix, as we will have NA values under the lagged features. The
@@ -79,9 +79,9 @@
 #'   observations with the observations from one step previous and the
 #'   observations from two steps previous, which will necessarily require the
 #'   removal of the first two rows of the data matrix. To include only certain
-#'   lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ... ,
-#'   lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...
-#'   , K, and these rows will be removed from consideration. From the lag.xts()
+#'   lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ...,
+#'   lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...,
+#'   K, and these rows will be removed from consideration. From the lag.xts()
 #'   function helpfile: "The primary motivation for having methods specific to
 #'   xts was to make use of faster C-level code within xts. Additionally, it was
 #'   decided that lag's default behavior should match the common time-series
@@ -149,7 +149,7 @@ mspTrain <- function(data,
 
   if(!is.xts(data)){
     stop("Object 'data' is not an xts object. Please transform your data to an
-         extendible time series.")
+         extendable time series.")
   }
 
   # Lag the data

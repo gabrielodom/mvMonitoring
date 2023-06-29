@@ -105,7 +105,7 @@ The faults return data frames as follows: \itemize{
     }
     This drift is applied only in State 2.
   }
-  \item{A3 -- }{The fault is a signal amplificaton in the determining latent
+  \item{A3 -- }{The fault is a signal amplification in the determining latent
     t vector. The fault starts at "faultStartIndex", and the x, y, and z
     features under the fault state are defined here: \itemize{
       \item{x : }{x(t_*) = t_* + error}
@@ -115,7 +115,7 @@ The faults return data frames as follows: \itemize{
     where t_* = 5 x t x (period - s) / (period - faultStartIndex) and s is
     the observation index.
   }
-  \item{B3 -- }{The fault is a signal amplificaton in the determining latent
+  \item{B3 -- }{The fault is a signal amplification in the determining latent
     t vector for the "z" feature only. The fault starts at "faultStartIndex",
     and the x, y, and z features under the fault state are defined here:
     \itemize{

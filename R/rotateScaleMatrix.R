@@ -4,15 +4,15 @@
 #'   negative degree changes in yaw, pitch, and / or roll and increment or
 #'   decrement feature scales.
 #'
-#' @param rot_angles a list or vector containg the rotation angles in the order
-#'   following: yaw, pitch, roll. Defaults to <0,0,0>.
+#' @param rot_angles a list or vector containing the rotation angles in the
+#'   order following: yaw, pitch, roll. Defaults to <0,0,0>.
 #' @param scale_factors a list or vector containing the values by which to
 #'   multiply each dimension. Defaults to <1,1,1>.
 #'
 #' @return A 3 x 3 projection matrix corresponding to the degree and scale
 #'   changes entered.
 #'
-#' @details See the help file of function rotate_3D() for a brief explination of
+#' @details See the help file of function rotate_3D() for a brief explanation of
 #'   how these angles behave in scatterplot3d functionality (from package
 #'   scatterplot3d).
 #'

@@ -39,7 +39,7 @@ mspSubset <- function(data,
   # Is data an xts object?
    if(!is.xts(data)){
     stop("Object 'data' is not an xts object. Please transform your data to an
-         extendible time series.")
+         extendable time series.")
   }
 
   # What are the states?

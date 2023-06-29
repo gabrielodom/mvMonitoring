@@ -7,8 +7,8 @@
 rotateScale3D(rot_angles = c(0, 0, 0), scale_factors = c(1, 1, 1))
 }
 \arguments{
-\item{rot_angles}{a list or vector containg the rotation angles in the order
-following: yaw, pitch, roll. Defaults to <0,0,0>.}
+\item{rot_angles}{a list or vector containing the rotation angles in the
+order following: yaw, pitch, roll. Defaults to <0,0,0>.}
 
 \item{scale_factors}{a list or vector containing the values by which to
 multiply each dimension. Defaults to <1,1,1>.}
@@ -23,7 +23,7 @@ Render a 3-Dimensional projection matrix given positive or
   decrement feature scales.
 }
 \details{
-See the help file of function rotate_3D() for a brief explination of
+See the help file of function rotate_3D() for a brief explanation of
   how these angles behave in scatterplot3d functionality (from package
   scatterplot3d).
 

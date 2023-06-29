@@ -28,5 +28,5 @@
 #'   (0.25 * x, 0.1 * y , 0.75 * z).}
 #' }
 #' See the vignette for more details.
-#' @source Simluated in R.
+#' @source Simulated in R.
 "fault2A_xts"

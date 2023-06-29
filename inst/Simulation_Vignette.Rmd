@@ -73,7 +73,7 @@ pacf(t_star,
 As we can see, $t$ is autocorrelated and non-stationary with mean `r mean(t_star)` and variance `r var(t_star)`.
 
 ###  Features and State Features
-We will simulate three features, with each feaure operating under $k$ different states. We will use $<x(t), y(t), z(t)>$ instead of the $<x_1(t), x_2(t), x_3(t)>$ notation used in Kazor et al. This will assist us when we introduce feature states. Our state notation will be $<x_k(t), y_k(t), z_k(t)>$ for State $k$.
+We will simulate three features, with each feature operating under $k$ different states. We will use $<x(t), y(t), z(t)>$ instead of the $<x_1(t), x_2(t), x_3(t)>$ notation used in Kazor et al. This will assist us when we introduce feature states. Our state notation will be $<x_k(t), y_k(t), z_k(t)>$ for State $k$.
 
 We create the three features under State 1 (normal operating conditions, or \emph{NOC}) as three functions of $t$:
 \begin{align}

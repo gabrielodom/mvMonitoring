@@ -24,16 +24,15 @@ This is the accompanying package to the research published by
 
 The `mvMonitoring` package can be used to detect outliers in a correlated multivariate process with non-linear, non-stationary, or autocorrelated feature behavior. These process outliers are often indicative of system fault. The common  and naive approach to multivariate process monitoring is to use expert opinion to identify a few important features to monitor visually, and raise an alarm if these features travel outside pre-defined normal operating boundaries.
 
-However, this split univariate approach fails to account for the correlated nature of the process features, so some engineers have taken to monitoring the system as a single correlated multivariate process rather than a collection of independent univaraite processes. In the literature review of the motivating papers, the authors cite how this approach has benefitted the science of process monitoring as a whole. Unfortunately, this approach has its own shortcomings -- namely, montioring a multivariate process in its original feature space can lead to exorbitant computational costs.
+However, this split univariate approach fails to account for the correlated nature of the process features, so some engineers have taken to monitoring the system as a single correlated multivariate process rather than a collection of independent univariate processes. In the literature review of the motivating papers, the authors cite how this approach has benefitted the science of process monitoring as a whole. Unfortunately, this approach has its own shortcomings -- namely, monitoring a multivariate process in its original feature space can lead to exorbitant computational costs.
 
 To this end, *principal components analysis* (PCA) and its many modifications have been employed to reduce the computation necessary to monitor a multivariate process as a whole. This package is an implementation of one such PCA modification.
 
 ## Multi- or Single-State AD-PCA
 
-AD-PCA is *adaptive-dynamic* PCA, which accounts for non-linearity, non-stationarity, and autocorrelation in the multivariate process, and this modification is thoroghly discussed in Kazor et al (2016).
+AD-PCA: *adaptive-dynamic* PCA, which accounts for non-linearity, non-stationarity, and autocorrelation in the multivariate process. This modification is thoroughly discussed in Kazor et al (2016).
 
-Multi-State Monitoring
-  : a modification of PCA which accounts for multiple process states and models them seperately. States can be any mutually exclusive blocking factor, and states do not necessarily follow a strict order.
+Multi-State Monitoring: a modification of PCA which accounts for multiple process states and models them separately. States can be any mutually exclusive blocking factor, and states do not necessarily follow a strict order.
 
 Multi-State AD-PCA (MSAD-PCA) allows process engineers to account for a few very different process states. Specifically, this modification should be used when features under different process states have different means, correlations, or variances.
 
@@ -76,7 +75,7 @@ Finally then, the $t$ vector will lie entirely in $[a,b]$.
 
 #### Single State Features
 
-First `mspProcessData` simulates three features, with each feaure operating under $k$ different states. Let $<x_k(t), y_k(t), z_k(t)>$ be the notation for State $k$. These are the three features under State 1 (normal operating conditions, or *NOC*) as three functions of $t$:
+First `mspProcessData` simulates three features, with each feature operating under $k$ different states. Let $<x_k(t), y_k(t), z_k(t)>$ be the notation for State $k$. These are the three features under State 1 (normal operating conditions, or *NOC*) as three functions of $t$:
 \begin{align}
   \textbf{x}(\textbf{t}) &\equiv \textbf{t} + \boldsymbol\varepsilon_1, \\
   \textbf{y}(\textbf{t}) &\equiv \textbf{t} ^ 2 - 3 * \textbf{t} + \boldsymbol\varepsilon_2, \\
@@ -115,7 +114,7 @@ These rotation matrices $\textbf{P}_1$ and $\textbf{P}_2$ turn the states in thr
 
 ### Synthetic Fault Induction
 
-Faults can be introduced to single- or multi-state data via the `mspProcessData` function. The default fault strt index is 8500, or roughly 84\% through the 10,080 observation cycle. These faults are added through the internal `faultSwitch` function.
+Faults can be introduced to single- or multi-state data via the `mspProcessData` function. The default fault start index is 8500, or roughly 84\% through the 10,080 observation cycle. These faults are added through the internal `faultSwitch` function.
 
 - Fault 1A is a positive shift to all three features before state rotation: $\textbf{X}^*(t_s) = \textbf{X}(t_s) + 2,\ s \ge 8500$.
 
@@ -146,11 +145,11 @@ The `mspTrain` function will generate projection matrices and test statistic thr
 
 An `xts` data matrix is first and foremost a matrix, *not* a data frame. For users very familiar with data frame manipulation (with `dplyr` for instance), the slight but profound differences between manipulating matrices and data frames become quickly apparent. Because of the class requirements for matrices, *all* features must be integer or double objects. The `mspTrain` function cannot train on character information.
 
-The `xts` object class stands for *extendible time series* and comes from the package `xts`, which is itself built on the package `zoo`. The date and time information (necessarily as `POSIX` objects) are stored as the row indices of `xts` matrices. We recommend the package `lubridate` for manipulating `POSIX` objects. 
+The `xts` object class stands for *extendable time series* and comes from the package `xts`, which is itself built on the package `zoo`. The date and time information (necessarily as `POSIX` objects) are stored as the row indices of `xts` matrices. We recommend the package `lubridate` for manipulating `POSIX` objects. 
 
 ### The Class Vector
 
-When implementing single-state AD-PCA, this class vector simply needs to be a numeric column of the same value. However, for MSAD-PCA, the class vector should be an integer vector of class membership. The `mspTrain` function will split the observations by the class label, apply single-state AD-PCA to each class, then return the class-specific projection matrices and thresholds. Because of this split-apply-combine strategy, users must ensure that one or more classes are not too "rare" -- that is, the class-specific sample size should be sufficiently large to allow for stable covariance matrix inversion. For $p$ features (inlcuding lags), covariance inversion requires a class sample size greater than $p ^ 2 / 2$. Because of this, pay close attention to model parsimony -- don't block the observations on a factor unless the factor significantly affects the observations' mean vector or covariance matrix.
+When implementing single-state AD-PCA, this class vector simply needs to be a numeric column of the same value. However, for MSAD-PCA, the class vector should be an integer vector of class membership. The `mspTrain` function will split the observations by the class label, apply single-state AD-PCA to each class, then return the class-specific projection matrices and thresholds. Because of this split-apply-combine strategy, users must ensure that one or more classes are not too "rare" -- that is, the class-specific sample size should be sufficiently large to allow for stable covariance matrix inversion. For $p$ features (including lags), covariance inversion requires a class sample size greater than $p ^ 2 / 2$. Because of this, pay close attention to model parsimony -- don't block the observations on a factor unless the factor significantly affects the observations' mean vector or covariance matrix.
 
 ### Adaptive and Dynamic Modelling
 
@@ -184,7 +183,7 @@ In future updates of this package, this function will also have an option to iss
 This section provides a fully-commented code walkthrough for the main `msp` functions in the `mvMonitoring` package.
 
 ## Generating Synthetic Data
-First begin by generating multi-state data from a fault scenario. This code will yield observations under Fault 2A, as described the Synthetic Fault Induction section. We choose the default options for the period length (7 days \* 24 hours \* 60 minutes = 10,080 observations), the starting index of the fault (8500 out of 10080), and the time stamp for beggining the data is 16 May of 2016 at 10:00AM (my wedding anniversary). As we can see from the `str()` function, we have an `xts` matrix with 10080 rows and four columns (the state indicator and the three features).
+First begin by generating multi-state data from a fault scenario. This code will yield observations under Fault 2A, as described the Synthetic Fault Induction section. We choose the default options for the period length (7 days \* 24 hours \* 60 minutes = 10,080 observations), the starting index of the fault (8500 out of 10080), and the time stamp for beginning the data is 16 May of 2016 at 10:00AM (my wedding anniversary). As we can see from the `str()` function, we have an `xts` matrix with 10080 rows and four columns (the state indicator and the three features).
 ```{r, message = FALSE}
 library(mvMonitoring)
 fault1A_xts <- mspProcessData(faults = "A1",

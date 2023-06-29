@@ -9,7 +9,7 @@ The \code{mvMonitoring} package has four main functions for
   external use, all of which begin with the string "msp" (for "multivariate
   statistical process") followed by the function use. Functions without this
   "msp" key are primarily internal functions. They are available to see and
-  use, but will largely be uneccesary to call in common workflows.
+  use, but will largely be unnecessary to call in common workflows.
 }
 \section{\code{mvMonitoring} external functions}{
 
@@ -19,7 +19,7 @@ The \code{mvMonitoring} package has four main functions for
     }
     \item{\code{\link{mspTrain}} - }{A function to take in observations for
       training under normal conditions, and to return the training summary
-      fromt these observations.
+      from these observations.
     }
     \item{\code{\link{mspMonitor}} - }{A function to take in real-time
       process observations and detect system anomalies based on the training

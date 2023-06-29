@@ -26,7 +26,7 @@ minute-level observations (10,080 observations).}
 \item{stateDuration}{The number of observations generated during a stay in
 each state. Defaults to 60.}
 
-\item{increment}{The time-sequence base increment. See "Deatails" of the
+\item{increment}{The time-sequence base increment. See "Details" of the
 seq.POSIXt() function options. Defaults to "min" for minutes.}
 
 \item{multiState}{Should the observations be generated from a multi-state

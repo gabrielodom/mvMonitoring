@@ -31,7 +31,7 @@ follows:
 See the vignette for more details.
 }
 \source{
-Simluated in R.
+Simulated in R.
 }
 \usage{
 fault2A_xts

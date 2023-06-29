@@ -7,7 +7,7 @@
 #' @format An xts data matrix with 10080 rows and four columns, corresponding to
 #'   one week worth of data recorded at a 1-minute interval. The columns under
 #'   normal conditions are defined in the help file for normal_switch_xts. The
-#'   fault is a signal amplificaton in the underlying determining t vector. The
+#'   fault is a signal amplification in the underlying determining t vector. The
 #'   fault starts at row 8500, and the four columns under the fault state are
 #'   defined here:
 #' \itemize{
@@ -29,5 +29,5 @@
 #'   (0.25 * x, 0.1 * y , 0.75 * z).}
 #' }
 #' See the vignette for more details.
-#' @source Simluated in R.
+#' @source Simulated in R.
 "fault3A_xts"
