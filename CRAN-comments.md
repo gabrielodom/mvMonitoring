@@ -1,6 +1,11 @@
 ## UPDATE 2023-06-29
 We are resubmitting the mvMonitoring package after resolving bugs related to breaking changes documented in <https://bugs.r-project.org/show_bug.cgi?id=18337>.
 
+## X-CRAN-Comment
+Archived on 2023-05-18 as issues were not corrected in time.
+
+Response: Maintainer is no longer funded on this project; updating this package is a "labour of love".
+
 
 ## Front Matter
 This is my very first package submission. I hope to make your job reviewing this package as easy as possible.
