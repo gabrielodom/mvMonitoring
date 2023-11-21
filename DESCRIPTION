@@ -2,7 +2,8 @@ Package: mvMonitoring
 Type: Package
 Title: Multi-State Adaptive Dynamic Principal Component Analysis for
     Multivariate Process Monitoring
-Version: 0.2.2
+Version: 0.2.3
+Date: 2023-11-21
 Authors@R:
   c(
     person(

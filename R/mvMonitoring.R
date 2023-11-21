@@ -29,6 +29,7 @@
 #'   }
 #'
 #' @docType package
+#' @aliases mvMonitoring-package
 
 
 NULL
