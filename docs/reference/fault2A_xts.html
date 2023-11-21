@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -67,7 +67,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="va">fault2A_xts</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">fault2A_xts</span></span></code></pre></div>
     </div>
 
     <div id="format">
@@ -77,23 +77,39 @@
   normal conditions are defined in the help file for normal_switch_xts. The
   fault is a drift on each feature by s / 10 ^ 3, where s is the observation
   index. The fault starts at row 8500, and the four columns under the fault
-  state are defined here:</p><ul><li><p>state : the state indicator for the multivariate system, with three
-  levels</p></li>
-<li><p>x : x(t) = t + drift + error</p></li>
-<li><p>y : y(t) = t ^ 2 - 3t + drift + error</p></li>
-<li><p>z : z(t) = - t ^ 3 + 3t ^ 2 + drift + error</p></li>
-</ul><p>where t is a 10080-entry vector of autocorrelated and non-stationary hidden
+  state are defined here:</p><dl><dt>state : </dt>
+<dd><p>the state indicator for the multivariate system, with three
+  levels</p></dd>
+
+  <dt>x : </dt>
+<dd><p>x(t) = t + drift + error</p></dd>
+
+  <dt>y : </dt>
+<dd><p>y(t) = t ^ 2 - 3t + drift + error</p></dd>
+
+  <dt>z : </dt>
+<dd><p>z(t) = - t ^ 3 + 3t ^ 2 + drift + error</p></dd>
+
+
+</dl><p>where t is a 10080-entry vector of autocorrelated and non-stationary hidden
 process realizations. The states alternate each hour and are defined as
-follows:</p><ul><li><p>State1 -- As presented</p></li>
-<li><p>State2 -- Rotated by (yaw = 0, pitch = 90, roll = 30) and scaled by
-  (1 * x, 0.5 * y , 2 * z).</p></li>
-<li><p>State3 -- Rotated by (yaw = 90, pitch = 0, roll = -30) and scaled by
-  (0.25 * x, 0.1 * y , 0.75 * z).</p></li>
-</ul><p>See the vignette for more details.</p>
+follows:</p><dl><dt>State1 -- </dt>
+<dd><p>As presented</p></dd>
+
+  <dt>State2 -- </dt>
+<dd><p>Rotated by (yaw = 0, pitch = 90, roll = 30) and scaled by
+  (1 * x, 0.5 * y , 2 * z).</p></dd>
+
+  <dt>State3 -- </dt>
+<dd><p>Rotated by (yaw = 90, pitch = 0, roll = -30) and scaled by
+  (0.25 * x, 0.1 * y , 0.75 * z).</p></dd>
+
+
+</dl><p>See the vignette for more details.</p>
     </div>
     <div id="source">
     <h2>Source</h2>
-    <p>Simluated in R.</p>
+    <p>Simulated in R.</p>
     </div>
 
   </div>

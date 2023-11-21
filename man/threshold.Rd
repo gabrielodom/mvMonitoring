@@ -16,7 +16,7 @@ the training data passed to this function. Defaults to 0.001.}
 }
 \value{
 A list with classes "threshold" and "pca" containing:
-  \itemize{
+  \describe{
     \item{SPE_threshold -- }{the 1 - alpha quantile of the estimated SPE
       density}
     \item{T2_threshold -- }{the 1 - alpha quantile of the estimated Hotelling's

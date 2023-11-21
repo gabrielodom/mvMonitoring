@@ -9,7 +9,7 @@
 #' @param ... Lazy dots for additional internal arguments
 #'
 #' @return A list with classes "threshold" and "pca" containing:
-#'   \itemize{
+#'   \describe{
 #'     \item{SPE_threshold -- }{the 1 - alpha quantile of the estimated SPE
 #'       density}
 #'     \item{T2_threshold -- }{the 1 - alpha quantile of the estimated Hotelling's

@@ -10,7 +10,7 @@
 #'   fault is a signal amplification in the underlying determining t vector. The
 #'   fault starts at row 8500, and the four columns under the fault state are
 #'   defined here:
-#' \itemize{
+#' \describe{
 #'   \item{state : }{the state indicator for the multivariate system, with three
 #'   levels}
 #'   \item{x : }{x(t_*) = t_* + error}
@@ -21,7 +21,7 @@
 #' index, and t is a 10080-entry vector of autocorrelated and non-stationary
 #' hidden process realizations. The states alternate each hour and are defined
 #' as follows:
-#' \itemize{
+#' \describe{
 #'   \item{State1 -- }{As presented}
 #'   \item{State2 -- }{Rotated by (yaw = 0, pitch = 90, roll = 30) and scaled by
 #'   (1 * x, 0.5 * y , 2 * z).}

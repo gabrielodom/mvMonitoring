@@ -32,7 +32,7 @@
 #' @param ... Lazy dots for internal arguments
 #'
 #' @return A list of data frames named with the names of the given faults with
-#'   the following information: \itemize{
+#'   the following information: \describe{
 #'     \item{dateTime -- }{A POSIXct column of times starting at the user-
 #'       defined `startTime` argument, length given by the `period` argument,
 #'       and spacing given by the `increment` argument. For example, if the
@@ -56,7 +56,7 @@
 #'
 #' @details For details on how the faults are induced, see the "details" of the
 #'   faultSwitch() function. This function also includes AD-PCA versus MSAD-PCA
-#'   treatment arm testing. There are four possibilities to test: \itemize{
+#'   treatment arm testing. There are four possibilities to test: \describe{
 #'     \item{1. }{The true process has one state, and we correctly assume the
 #'     true process has one state. In this case, AD-PCA and MSAD-PCA are exactly
 #'     the same. Draw observations from this state by setting the "multiState"

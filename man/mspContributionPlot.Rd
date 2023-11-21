@@ -33,11 +33,11 @@ This will be split based on class information by a priori class membership
 proportions.}
 }
 \value{
-A contribution plot and a list with the following items: \itemize{
-\item{TrainCV -- }{A list vectors containing the contribution values corresponding
-to each observation in the set of training observations.}
-\item{NewCV -- }{The vector of contribution values associated with the
-new observation}
+A contribution plot and a list with the following items: \describe{
+  \item{TrainCV -- }{A list vectors containing the contribution values
+    corresponding to each observation in the set of training observations.}
+  \item{NewCV -- }{The vector of contribution values associated with the
+    new observation}
 }
 }
 \description{

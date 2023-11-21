@@ -12,11 +12,11 @@
 #'   an alarm. Defaults to 5.
 #'
 #' @return A list with the following components:
-#'   \itemize{
+#'   \describe{
 #'     \item{FaultChecks -- }{a class-specific xts flagging matrix with the
 #'       same number of rows as "data". This flag matrix has the following five
 #'       columns:
-#'         \itemize{
+#'         \describe{
 #'           \item{SPE -- }{the SPE statistic value for each observation in
 #'             "data"}
 #'           \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the

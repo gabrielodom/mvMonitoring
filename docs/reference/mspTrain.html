@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -65,16 +65,16 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mspTrain</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">labelVector</span>,
-  <span class="va">trainObs</span>,
-  updateFreq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="va">trainObs</span><span class="op">)</span>,
-  Dynamic <span class="op">=</span> <span class="cn">TRUE</span>,
-  lagsIncluded <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,
-  faultsToTriggerAlarm <span class="op">=</span> <span class="fl">5</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mspTrain</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">labelVector</span>,</span>
+<span>  <span class="va">trainObs</span>,</span>
+<span>  updateFreq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="va">trainObs</span><span class="op">)</span>,</span>
+<span>  Dynamic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  lagsIncluded <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  faultsToTriggerAlarm <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -126,28 +126,48 @@ an alarm. Defaults to 5.</p></dd>
     <h2>Value</h2>
     
 
-<p>A list with the following components:</p><ul><li><p>FaultChecks -- an xts flagging matrix with the same number of rows
-    as "data". This flag matrix has the following five columns: </p><ul><li><p>SPE -- the SPE statistic value for each observation in "data"</p></li>
-<li><p>SPE_Flag -- a vector of SPE indicators recording 0 if the test
+<p>A list with the following components:</p><dl><dt>FaultChecks -- </dt>
+<dd><p>an xts flagging matrix with the same number of rows
+    as "data". This flag matrix has the following five columns:</p><dl><dt>SPE -- </dt>
+<dd><p>the SPE statistic value for each observation in "data"</p></dd>
+
+      <dt>SPE_Flag -- </dt>
+<dd><p>a vector of SPE indicators recording 0 if the test
         statistic is less than or equal to the critical value passed through
-        from the threshold object</p></li>
-<li><p>T2 -- the T2 statistic value for each observation in "data"</p></li>
-<li><p>T2_Flag -- a vector of T2 fault indicators, defined like
-        SPE_Flag</p></li>
-<li><p>Alarm -- a column indicating if there have been five flags in
+        from the threshold object</p></dd>
+
+      <dt>T2 -- </dt>
+<dd><p>the T2 statistic value for each observation in "data"</p></dd>
+
+      <dt>T2_Flag -- </dt>
+<dd><p>a vector of T2 fault indicators, defined like
+        SPE_Flag</p></dd>
+
+      <dt>Alarm -- </dt>
+<dd><p>a column indicating if there have been five flags in
         a row for either the SPE or T2 monitoring statistics or both. Alarm
         states are as follows: 0 = no alarm, 1 = Hotelling's T2 alarm,
-        2 = Squared Prediction Error alarm, and 3 = both alarms.</p></li>
-</ul></li>
-<li><p>Non_Alarmed_Obs -- an xts data matrix of all the non-alarmed
-    observations</p></li>
-<li><p>Alarms -- an xts data matrix of the features and specific alarms
-    for Alarmed observations with the alarm codes are listed above</p></li>
-<li><p>TrainingSpecs -- a list of k lists, one for each class, with each
+        2 = Squared Prediction Error alarm, and 3 = both alarms.</p></dd>
+
+      
+</dl><p></p></dd>
+
+  <dt>Non_Alarmed_Obs -- </dt>
+<dd><p>an xts data matrix of all the non-alarmed
+    observations</p></dd>
+
+  <dt>Alarms -- </dt>
+<dd><p>an xts data matrix of the features and specific alarms
+    for Alarmed observations with the alarm codes are listed above</p></dd>
+
+  <dt>TrainingSpecs -- </dt>
+<dd><p>a list of k lists, one for each class, with each
     list containing the specific threshold object returned by the internal
     threshold() function for that class. See the threshold() function's help
-    file for more details.</p></li>
-</ul></div>
+    file for more details.</p></dd>
+
+  
+</dl></div>
     <div id="details">
     <h2>Details</h2>
     <p>This function is designed to identify and sort out sequences of
@@ -164,14 +184,14 @@ an alarm. Defaults to 5.</p></dd>
   estimation to calculate the 1 - alpha quantiles of the SPE and Hotelling's
   T2 statistics from a set of training observations, then flags any
   observation in the testing data set with process monitoring statistics
-  beyond these calculated critical values. Becuase of natural variablity
+  beyond these calculated critical values. Because of natural variability
   inherent in all real data, we do not remove observations simply because
   they are have been flagged as outside normal operating conditions. This
   function records an alarm only for observations having five flags in a
   row, as set by the default argument value of "faultsToTriggerAlarm". These
   alarm-positive observations are then removed from the data set and held in
   a separate xts matrix for inspection.</p>
-<p>Concering the lagsIncluded variable: the argument lagsIncluded = c(0,1)
+<p>Concerning the lagsIncluded variable: the argument lagsIncluded = c(0,1)
   will column concatenate the current data with the same data from one
   discrete time step back. This will necessarily remove the first row of the
   data matrix, as we will have NA values under the lagged features. The
@@ -179,9 +199,9 @@ an alarm. Defaults to 5.</p></dd>
   observations with the observations from one step previous and the
   observations from two steps previous, which will necessarily require the
   removal of the first two rows of the data matrix. To include only certain
-  lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ... ,
-  lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...
-  , K, and these rows will be removed from consideration. From the lag.xts()
+  lags with the current data, specify lagsIncluded = c(0, lag_1, lag_2, ...,
+  lag_K). This induce NA values in the first max(lag_k) rows, for k = 1, ...,
+  K, and these rows will be removed from consideration. From the lag.xts()
   function helpfile: "The primary motivation for having methods specific to
   xts was to make use of faster C-level code within xts. Additionally, it was
   decided that lag's default behavior should match the common time-series
@@ -215,18 +235,18 @@ an alarm. Defaults to 5.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="co"># cut down on R CMD check time</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="va">nrml</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"NOC"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="fu">mspTrain</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span class="r-in">         labelVector <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span>
-<span class="r-in">         trainObs <span class="op">=</span> <span class="fl">4320</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.xts(data):</span> object 'nrml' not found</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="co"># cut down on R CMD check time</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">nrml</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"NOC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="fu">mspTrain</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>         labelVector <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>         trainObs <span class="op">=</span> <span class="fl">4320</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'nrml' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

@@ -1,3 +1,7 @@
+## V. 0.2.4
+
+Replacing all calls to `\itemize{}` with calls to `\describe{}` in LaTeX documentation. See <https://www.mail-archive.com/r-package-devel@r-project.org/msg09002.html>
+
 ## V. 0.2.3
 
 Updating mvMonitoring.R package overview help file per instruction from K. Hornik. See <https://github.com/gabrielodom/mvMonitoring/issues/31>

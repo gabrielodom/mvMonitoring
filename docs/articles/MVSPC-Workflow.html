@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ mvMonitoring</h1>
                         <h4 data-toc-skip class="author">Gabriel
 Odom</h4>
             
-            <h4 data-toc-skip class="date">2023-05-12</h4>
+            <h4 data-toc-skip class="date">2023-11-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gabrielodom/mvMonitoring/blob/HEAD/vignettes/MVSPC-Workflow.Rmd" class="external-link"><code>vignettes/MVSPC-Workflow.Rmd</code></a></small>
       <div class="hidden name"><code>MVSPC-Workflow.Rmd</code></div>
@@ -122,11 +122,11 @@ features travel outside pre-defined normal operating boundaries.</p>
 <p>However, this split univariate approach fails to account for the
 correlated nature of the process features, so some engineers have taken
 to monitoring the system as a single correlated multivariate process
-rather than a collection of independent univaraite processes. In the
+rather than a collection of independent univariate processes. In the
 literature review of the motivating papers, the authors cite how this
 approach has benefitted the science of process monitoring as a whole.
 Unfortunately, this approach has its own shortcomings – namely,
-montioring a multivariate process in its original feature space can lead
+monitoring a multivariate process in its original feature space can lead
 to exorbitant computational costs.</p>
 <p>To this end, <em>principal components analysis</em> (PCA) and its
 many modifications have been employed to reduce the computation
@@ -136,18 +136,14 @@ an implementation of one such PCA modification.</p>
 <div class="section level3">
 <h3 id="multi--or-single-state-ad-pca">Multi- or Single-State AD-PCA<a class="anchor" aria-label="anchor" href="#multi--or-single-state-ad-pca"></a>
 </h3>
-<p>AD-PCA is <em>adaptive-dynamic</em> PCA, which accounts for
+<p>AD-PCA: <em>adaptive-dynamic</em> PCA, which accounts for
 non-linearity, non-stationarity, and autocorrelation in the multivariate
-process, and this modification is thoroghly discussed in Kazor et al
+process. This modification is thoroughly discussed in Kazor et al
 (2016).</p>
-<dl>
-<dt>Multi-State Monitoring</dt>
-<dd>
-a modification of PCA which accounts for multiple process states and
-models them seperately. States can be any mutually exclusive blocking
-factor, and states do not necessarily follow a strict order.
-</dd>
-</dl>
+<p>Multi-State Monitoring: a modification of PCA which accounts for
+multiple process states and models them separately. States can be any
+mutually exclusive blocking factor, and states do not necessarily follow
+a strict order.</p>
 <p>Multi-State AD-PCA (MSAD-PCA) allows process engineers to account for
 a few very different process states. Specifically, this modification
 should be used when features under different process states have
@@ -215,7 +211,7 @@ vector will lie entirely in <span class="math inline">\([a,b]\)</span>.</p>
 <h5 id="single-state-features">Single State Features<a class="anchor" aria-label="anchor" href="#single-state-features"></a>
 </h5>
 <p>First <code>mspProcessData</code> simulates three features, with each
-feaure operating under <span class="math inline">\(k\)</span> different
+feature operating under <span class="math inline">\(k\)</span> different
 states. Let <span class="math inline">\(&lt;x_k(t), y_k(t),
 z_k(t)&gt;\)</span> be the notation for State <span class="math inline">\(k\)</span>. These are the three features under
 State 1 (normal operating conditions, or <em>NOC</em>) as three
@@ -287,7 +283,7 @@ applies the state-specific rotation and scaling through the internal
 <h4 id="synthetic-fault-induction">Synthetic Fault Induction<a class="anchor" aria-label="anchor" href="#synthetic-fault-induction"></a>
 </h4>
 <p>Faults can be introduced to single- or multi-state data via the
-<code>mspProcessData</code> function. The default fault strt index is
+<code>mspProcessData</code> function. The default fault start index is
 8500, or roughly 84% through the 10,080 observation cycle. These faults
 are added through the internal <code>faultSwitch</code> function.</p>
 <ul>
@@ -355,7 +351,7 @@ become quickly apparent. Because of the class requirements for matrices,
 <em>all</em> features must be integer or double objects. The
 <code>mspTrain</code> function cannot train on character
 information.</p>
-<p>The <code>xts</code> object class stands for <em>extendible time
+<p>The <code>xts</code> object class stands for <em>extendable time
 series</em> and comes from the package <code>xts</code>, which is itself
 built on the package <code>zoo</code>. The date and time information
 (necessarily as <code>POSIX</code> objects) are stored as the row
@@ -374,7 +370,7 @@ class-specific projection matrices and thresholds. Because of this
 split-apply-combine strategy, users must ensure that one or more classes
 are not too “rare” – that is, the class-specific sample size should be
 sufficiently large to allow for stable covariance matrix inversion. For
-<span class="math inline">\(p\)</span> features (inlcuding lags),
+<span class="math inline">\(p\)</span> features (including lags),
 covariance inversion requires a class sample size greater than <span class="math inline">\(p ^ 2 / 2\)</span>. Because of this, pay close
 attention to model parsimony – don’t block the observations on a factor
 unless the factor significantly affects the observations’ mean vector or
@@ -483,22 +479,22 @@ This code will yield observations under Fault 2A, as described the
 Synthetic Fault Induction section. We choose the default options for the
 period length (7 days * 24 hours * 60 minutes = 10,080 observations),
 the starting index of the fault (8500 out of 10080), and the time stamp
-for beggining the data is 16 May of 2016 at 10:00AM (my wedding
+for beginning the data is 16 May of 2016 at 10:00AM (my wedding
 anniversary). As we can see from the <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code> function, we
 have an <code>xts</code> matrix with 10080 rows and four columns (the
 state indicator and the three features).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gabrielodom/mvMonitoring" class="external-link">mvMonitoring</a></span><span class="op">)</span>
-<span class="va">fault1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"A1"</span>,
-                              period <span class="op">=</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">60</span>,
-                              faultStartIndex <span class="op">=</span> <span class="fl">8500</span>,
-                              startTime <span class="op">=</span> <span class="st">"2015-05-16 10:00:00 CST"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fault1A_xts</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## An xts object on 2015-05-16 10:00:00 / 2015-05-23 09:59:00 containing: </span>
-<span class="co">##   Data:    double [10080, 4]</span>
-<span class="co">##   Columns: state, x, y, z</span>
-<span class="co">##   Index:   POSIXct,POSIXt [10080] (TZ: "")</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gabrielodom/mvMonitoring" class="external-link">mvMonitoring</a></span><span class="op">)</span></span>
+<span><span class="va">fault1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"A1"</span>,</span>
+<span>                              period <span class="op">=</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">60</span>,</span>
+<span>                              faultStartIndex <span class="op">=</span> <span class="fl">8500</span>,</span>
+<span>                              startTime <span class="op">=</span> <span class="st">"2015-05-16 10:00:00 CST"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fault1A_xts</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## An xts object on 2015-05-16 10:00:00 / 2015-05-23 09:59:00 containing: </span></span>
+<span><span class="co">##   Data:    double [10080, 4]</span></span>
+<span><span class="co">##   Columns: state, x, y, z</span></span>
+<span><span class="co">##   Index:   POSIXct,POSIXt [10080] (TZ: "")</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="train-the-fault-detection-threshold">Train the Fault Detection Threshold<a class="anchor" aria-label="anchor" href="#train-the-fault-detection-threshold"></a>
@@ -523,69 +519,69 @@ anomalous observations necessary to raise an alarm is set at 5 by the
 <code>faultsToTriggerAlarm</code> argument. These last three arguments
 are set to their defaults.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">train1A_xts</span> <span class="op">&lt;-</span> <span class="va">fault1A_xts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8461</span>,<span class="op">]</span>
-<span class="co"># This function will run in 13 seconds on the author's machine.</span>
-<span class="va">train1A_ls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspTrain.html">mspTrain</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train1A_xts</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>,
-                       labelVector <span class="op">=</span> <span class="va">train1A_xts</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,
-                       trainObs <span class="op">=</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">60</span>,
-                       updateFreq <span class="op">=</span> <span class="fl">1</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">60</span>,
-                       Dynamic <span class="op">=</span> <span class="cn">TRUE</span>,
-                       lagsIncluded <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span>,
-                       faultsToTriggerAlarm <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
-<pre><code><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
-<span class="co">##     old.coords = TRUE) :</span>
-<span class="co">##  extra argument 'old.coords' will be disregarded</span></code></pre>
+<code class="sourceCode R"><span><span class="va">train1A_xts</span> <span class="op">&lt;-</span> <span class="va">fault1A_xts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8461</span>,<span class="op">]</span></span>
+<span><span class="co"># This function will run in 13 seconds on the author's machine.</span></span>
+<span><span class="va">train1A_ls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspTrain.html">mspTrain</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train1A_xts</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>                       labelVector <span class="op">=</span> <span class="va">train1A_xts</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,</span>
+<span>                       trainObs <span class="op">=</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">60</span>,</span>
+<span>                       updateFreq <span class="op">=</span> <span class="fl">1</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">60</span>,</span>
+<span>                       Dynamic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                       lagsIncluded <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span>,</span>
+<span>                       faultsToTriggerAlarm <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span></span>
+<span><span class="co">##     old.coords = TRUE) :</span></span>
+<span><span class="co">##  extra argument 'old.coords' will be disregarded</span></span></code></pre>
 <p>The <code>mspTrain</code> function returns a list of four
 objects:</p>
 <ul>
@@ -671,26 +667,26 @@ was set to 8500, this testing window will show the change point between
 observations generated under normal conditions and those generated under
 a fault state.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuaulrich/xts" class="external-link">xts</a></span><span class="op">)</span>
-<span class="va">test1A_xts</span> <span class="op">&lt;-</span> <span class="va">fault1A_xts</span><span class="op">[</span><span class="fl">8460</span><span class="op">:</span><span class="fl">8520</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>
-<span class="va">lagTest1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/xts/man/diff.html" class="external-link">lag.xts</a></span><span class="op">(</span><span class="va">test1A_xts</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">lagTest1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">fault1A_xts</span><span class="op">[</span><span class="fl">8461</span><span class="op">:</span><span class="fl">8520</span>,<span class="fl">1</span><span class="op">]</span>,
-                       <span class="va">lagTest1A_xts</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lagTest1A_xts</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                     state         x         y         z       x.1        y.1</span>
-<span class="co">## 2015-05-22 07:00:00     1 0.7878195 -1.520524 1.1743690 0.3742171  0.1260429</span>
-<span class="co">## 2015-05-22 07:01:00     1 0.4563032 -1.287462 0.7932264 0.7878195 -1.5205242</span>
-<span class="co">## 2015-05-22 07:02:00     1 0.5859762 -1.429038 0.8402356 0.4563032 -1.2874622</span>
-<span class="co">## 2015-05-22 07:03:00     1 0.2948961 -1.235475 0.7567704 0.5859762 -1.4290382</span>
-<span class="co">## 2015-05-22 07:04:00     1 0.4145937 -1.079753 0.5965479 0.2948961 -1.2354749</span>
-<span class="co">## 2015-05-22 07:05:00     1 0.5202981 -1.405956 0.5705013 0.4145937 -1.0797529</span>
-<span class="co">##                           z.1</span>
-<span class="co">## 2015-05-22 07:00:00 0.4522373</span>
-<span class="co">## 2015-05-22 07:01:00 1.1743690</span>
-<span class="co">## 2015-05-22 07:02:00 0.7932264</span>
-<span class="co">## 2015-05-22 07:03:00 0.8402356</span>
-<span class="co">## 2015-05-22 07:04:00 0.7567704</span>
-<span class="co">## 2015-05-22 07:05:00 0.5965479</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuaulrich/xts" class="external-link">xts</a></span><span class="op">)</span></span>
+<span><span class="va">test1A_xts</span> <span class="op">&lt;-</span> <span class="va">fault1A_xts</span><span class="op">[</span><span class="fl">8460</span><span class="op">:</span><span class="fl">8520</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lagTest1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/xts/man/diff.html" class="external-link">lag.xts</a></span><span class="op">(</span><span class="va">test1A_xts</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">lagTest1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">fault1A_xts</span><span class="op">[</span><span class="fl">8461</span><span class="op">:</span><span class="fl">8520</span>,<span class="fl">1</span><span class="op">]</span>,</span>
+<span>                       <span class="va">lagTest1A_xts</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lagTest1A_xts</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                     state         x         y         z       x.1        y.1</span></span>
+<span><span class="co">## 2015-05-22 07:00:00     1 0.5357652 -1.350724 0.7527411 0.3440182  0.0806325</span></span>
+<span><span class="co">## 2015-05-22 07:01:00     1 0.6470256 -1.332191 0.8228733 0.5357652 -1.3507237</span></span>
+<span><span class="co">## 2015-05-22 07:02:00     1 0.6169399 -1.523472 1.0138078 0.6470256 -1.3321906</span></span>
+<span><span class="co">## 2015-05-22 07:03:00     1 0.6096512 -1.618545 0.9675310 0.6169399 -1.5234719</span></span>
+<span><span class="co">## 2015-05-22 07:04:00     1 0.7532528 -1.568173 1.0334942 0.6096512 -1.6185449</span></span>
+<span><span class="co">## 2015-05-22 07:05:00     1 0.6001876 -1.630557 0.9020732 0.7532528 -1.5681727</span></span>
+<span><span class="co">##                           z.1</span></span>
+<span><span class="co">## 2015-05-22 07:00:00 0.2486086</span></span>
+<span><span class="co">## 2015-05-22 07:01:00 0.7527411</span></span>
+<span><span class="co">## 2015-05-22 07:02:00 0.8228733</span></span>
+<span><span class="co">## 2015-05-22 07:03:00 1.0138078</span></span>
+<span><span class="co">## 2015-05-22 07:04:00 0.9675310</span></span>
+<span><span class="co">## 2015-05-22 07:05:00 1.0334942</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="monitoring-the-test-data">Monitoring the Test Data<a class="anchor" aria-label="anchor" href="#monitoring-the-test-data"></a>
@@ -706,24 +702,24 @@ first six rows of the lagged test matrix, except that the rows of the
 monitor matrix have the monitoring statistic and corresponding indicator
 columns appended.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">monitor1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspMonitor.html">mspMonitor</a></span><span class="op">(</span>observations <span class="op">=</span> <span class="va">lagTest1A_xts</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>,
-                            labelVector <span class="op">=</span> <span class="va">lagTest1A_xts</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,
-                            trainingSummary <span class="op">=</span> <span class="va">train1A_ls</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">monitor1A_xts</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                             x         y         z       x.1        y.1</span>
-<span class="co">## 2015-05-22 07:00:00 0.7878195 -1.520524 1.1743690 0.3742171  0.1260429</span>
-<span class="co">## 2015-05-22 07:01:00 0.4563032 -1.287462 0.7932264 0.7878195 -1.5205242</span>
-<span class="co">## 2015-05-22 07:02:00 0.5859762 -1.429038 0.8402356 0.4563032 -1.2874622</span>
-<span class="co">## 2015-05-22 07:03:00 0.2948961 -1.235475 0.7567704 0.5859762 -1.4290382</span>
-<span class="co">## 2015-05-22 07:04:00 0.4145937 -1.079753 0.5965479 0.2948961 -1.2354749</span>
-<span class="co">## 2015-05-22 07:05:00 0.5202981 -1.405956 0.5705013 0.4145937 -1.0797529</span>
-<span class="co">##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm</span>
-<span class="co">## 2015-05-22 07:00:00 0.4522373 0.3538988        0 30.212447       0    NA</span>
-<span class="co">## 2015-05-22 07:01:00 1.1743690 2.1286178        0  5.753455       0    NA</span>
-<span class="co">## 2015-05-22 07:02:00 0.7932264 0.3746660        0  6.289753       0    NA</span>
-<span class="co">## 2015-05-22 07:03:00 0.8402356 1.8454972        0  7.308560       0    NA</span>
-<span class="co">## 2015-05-22 07:04:00 0.7567704 2.7839801        0  8.801232       0    NA</span>
-<span class="co">## 2015-05-22 07:05:00 0.5965479 0.3354933        0  7.996050       0    NA</span></code></pre>
+<code class="sourceCode R"><span><span class="va">monitor1A_xts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspMonitor.html">mspMonitor</a></span><span class="op">(</span>observations <span class="op">=</span> <span class="va">lagTest1A_xts</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>                            labelVector <span class="op">=</span> <span class="va">lagTest1A_xts</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,</span>
+<span>                            trainingSummary <span class="op">=</span> <span class="va">train1A_ls</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">monitor1A_xts</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                             x         y         z       x.1        y.1</span></span>
+<span><span class="co">## 2015-05-22 07:00:00 0.5357652 -1.350724 0.7527411 0.3440182  0.0806325</span></span>
+<span><span class="co">## 2015-05-22 07:01:00 0.6470256 -1.332191 0.8228733 0.5357652 -1.3507237</span></span>
+<span><span class="co">## 2015-05-22 07:02:00 0.6169399 -1.523472 1.0138078 0.6470256 -1.3321906</span></span>
+<span><span class="co">## 2015-05-22 07:03:00 0.6096512 -1.618545 0.9675310 0.6169399 -1.5234719</span></span>
+<span><span class="co">## 2015-05-22 07:04:00 0.7532528 -1.568173 1.0334942 0.6096512 -1.6185449</span></span>
+<span><span class="co">## 2015-05-22 07:05:00 0.6001876 -1.630557 0.9020732 0.7532528 -1.5681727</span></span>
+<span><span class="co">##                           z.1       SPE SPE_Flag        T2 T2_Flag Alarm</span></span>
+<span><span class="co">## 2015-05-22 07:00:00 0.2486086 0.6528551        0 26.563188       0    NA</span></span>
+<span><span class="co">## 2015-05-22 07:01:00 0.7527411 0.8902785        0  5.856376       0    NA</span></span>
+<span><span class="co">## 2015-05-22 07:02:00 0.8228733 0.1903380        0  4.952093       0    NA</span></span>
+<span><span class="co">## 2015-05-22 07:03:00 1.0138078 0.0181310        0  4.264220       0    NA</span></span>
+<span><span class="co">## 2015-05-22 07:04:00 0.9675310 0.1974976        0  4.024429       0    NA</span></span>
+<span><span class="co">## 2015-05-22 07:05:00 1.0334942 0.1604523        0  4.052323       0    NA</span></span></code></pre>
 </div>
 </div>
 <div class="section level3">
@@ -739,19 +735,19 @@ a script or batch file, the following example is designed to mimic the
 behavior of the <code>mspWarning</code> function as each new observation
 comes online.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">alarm1A_xts</span> <span class="op">&lt;-</span> <span class="va">monitor1A_xts</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
-  <span class="kw">if</span><span class="op">(</span><span class="va">i</span> <span class="op">&lt;</span> <span class="op">(</span><span class="fl">5</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
-    <span class="va">alarm1A_xts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">i</span>,<span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspWarning.html">mspWarning</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">i</span>,<span class="op">]</span><span class="op">)</span>
-  <span class="op">}</span><span class="kw">else</span><span class="op">{</span>
-    <span class="va">alarm1A_xts</span><span class="op">[</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span><span class="op">:</span><span class="va">i</span>,<span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspWarning.html">mspWarning</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">[</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span><span class="op">:</span><span class="va">i</span>,<span class="op">]</span><span class="op">)</span>
-  <span class="op">}</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">alarm1A_xts</span> <span class="op">&lt;-</span> <span class="va">monitor1A_xts</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="va">i</span> <span class="op">&lt;</span> <span class="op">(</span><span class="fl">5</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">alarm1A_xts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">i</span>,<span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspWarning.html">mspWarning</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">i</span>,<span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
+<span>    <span class="va">alarm1A_xts</span><span class="op">[</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span><span class="op">:</span><span class="va">i</span>,<span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mspWarning.html">mspWarning</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">[</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span><span class="op">:</span><span class="va">i</span>,<span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>The fault was introduced at index 8500, which corresponds to about 40
 minutes into the test hour.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">)</span><span class="op">]</span>,
-     main <span class="op">=</span> <span class="st">"Alarm Codes for Test Data"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">alarm1A_xts</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">"Alarm Codes for Test Data"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="MVSPC-Workflow_files/figure-html/unnamed-chunk-6-1.png" width="100%">
 The alarm codes are</p>
 <ul>

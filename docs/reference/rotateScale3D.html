@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -67,14 +67,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rotateScale3D</span><span class="op">(</span>rot_angles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, scale_factors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rotateScale3D</span><span class="op">(</span>rot_angles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, scale_factors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>rot_angles</dt>
-<dd><p>a list or vector containg the rotation angles in the order
-following: yaw, pitch, roll. Defaults to &lt;0,0,0&gt;.</p></dd>
+<dd><p>a list or vector containing the rotation angles in the
+order following: yaw, pitch, roll. Defaults to &lt;0,0,0&gt;.</p></dd>
 
 
 <dt>scale_factors</dt>
@@ -91,7 +91,7 @@ multiply each dimension. Defaults to &lt;1,1,1&gt;.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>See the help file of function rotate_3D() for a brief explination of
+    <p>See the help file of function rotate_3D() for a brief explanation of
   how these angles behave in scatterplot3d functionality (from package
   scatterplot3d).</p>
 <p>This function is used only in data generation in the package vignette
@@ -106,13 +106,13 @@ multiply each dimension. Defaults to &lt;1,1,1&gt;.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">rotateScale3D</span><span class="op">(</span>rot_angles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>yaw <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>, pitch <span class="op">=</span> <span class="fl">0</span>, roll <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>,</span>
-<span class="r-in">              scale_factors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">rotateScale3D</span><span class="op">(</span>rot_angles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>yaw <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>, pitch <span class="op">=</span> <span class="fl">0</span>, roll <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              scale_factors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]       [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.19696155 -0.1677313 -0.2247173</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.03472964  0.9512512  1.2744350</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.00000000 -0.2588190  4.8296291</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

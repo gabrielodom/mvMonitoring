@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mspWarning</span><span class="op">(</span><span class="va">mspMonitor_object</span>, faultsToTriggerAlarm <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mspWarning</span><span class="op">(</span><span class="va">mspMonitor_object</span>, faultsToTriggerAlarm <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -113,43 +113,43 @@ an alarm to trigger. Defaults to 5.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="co"># cut down on R CMD check time</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="va">nrml</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"NOC"</span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in nrow(nrml):</span> object 'nrml' not found</span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="co"># Calculate the training summary, but save five observations for monitoring.</span></span>
-<span class="r-in">  <span class="va">trainResults_ls</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspTrain.html">mspTrain</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span class="r-in">                              labelVector <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span>, <span class="fl">1</span><span class="op">]</span>,</span>
-<span class="r-in">                              trainObs <span class="op">=</span> <span class="fl">4320</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.xts(data):</span> object 'nrml' not found</span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="co"># While training, we included 1 lag (the default), so we will also lag the</span></span>
-<span class="r-in">  <span class="co">#   observations we will test.</span></span>
-<span class="r-in">  <span class="va">testObs</span> <span class="op">&lt;-</span> <span class="va">nrml</span><span class="op">[</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">6</span><span class="op">)</span><span class="op">:</span><span class="va">n</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="co"># cut down on R CMD check time</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">nrml</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"NOC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'nrml' not found</span>
-<span class="r-in">  <span class="va">testObs</span> <span class="op">&lt;-</span> <span class="fu">xts</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/pkg/xts/man/diff.html" class="external-link">lag.xts</a></span><span class="op">(</span><span class="va">testObs</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in FUN(X[[i]], ...):</span> object 'testObs' not found</span>
-<span class="r-in">  <span class="va">testObs</span> <span class="op">&lt;-</span> <span class="va">testObs</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Calculate the training summary, but save five observations for monitoring.</span></span></span>
+<span class="r-in"><span>  <span class="va">trainResults_ls</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspTrain.html">mspTrain</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                              labelVector <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                              trainObs <span class="op">=</span> <span class="fl">4320</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'nrml' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># While training, we included 1 lag (the default), so we will also lag the</span></span></span>
+<span class="r-in"><span>  <span class="co">#   observations we will test.</span></span></span>
+<span class="r-in"><span>  <span class="va">testObs</span> <span class="op">&lt;-</span> <span class="va">nrml</span><span class="op">[</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">6</span><span class="op">)</span><span class="op">:</span><span class="va">n</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'nrml' not found</span>
+<span class="r-in"><span>  <span class="va">testObs</span> <span class="op">&lt;-</span> <span class="fu">xts</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/pkg/xts/man/diff.html" class="external-link">lag.xts</a></span><span class="op">(</span><span class="va">testObs</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'testObs' not found</span>
-<span class="r-in">  <span class="va">testObs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">[</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span><span class="op">:</span><span class="va">n</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">testObs</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in cbind(nrml[(n - 5):n, 1], testObs):</span> object 'nrml' not found</span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="co"># Run the monitoring function.</span></span>
-<span class="r-in">  <span class="va">dataAndFlags</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspMonitor.html">mspMonitor</a></span><span class="op">(</span>observations <span class="op">=</span> <span class="va">testObs</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span class="r-in">                             labelVector <span class="op">=</span> <span class="va">testObs</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span>
-<span class="r-in">                             trainingSummary <span class="op">=</span> <span class="va">trainResults_ls</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in unique(labelVector):</span> object 'testObs' not found</span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="co"># Alarm check the last row of the matrix returned by the mspMonitor</span></span>
-<span class="r-in">  <span class="co">#   function</span></span>
-<span class="r-in">  <span class="fu">mspWarning</span><span class="op">(</span><span class="va">dataAndFlags</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mspWarning(dataAndFlags):</span> object 'dataAndFlags' not found</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+<span class="r-in"><span>  <span class="va">testObs</span> <span class="op">&lt;-</span> <span class="va">testObs</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'testObs' not found</span>
+<span class="r-in"><span>  <span class="va">testObs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">[</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span><span class="op">:</span><span class="va">n</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">testObs</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'nrml' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Run the monitoring function.</span></span></span>
+<span class="r-in"><span>  <span class="va">dataAndFlags</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspMonitor.html">mspMonitor</a></span><span class="op">(</span>observations <span class="op">=</span> <span class="va">testObs</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                             labelVector <span class="op">=</span> <span class="va">testObs</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                             trainingSummary <span class="op">=</span> <span class="va">trainResults_ls</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'testObs' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Alarm check the last row of the matrix returned by the mspMonitor</span></span></span>
+<span class="r-in"><span>  <span class="co">#   function</span></span></span>
+<span class="r-in"><span>  <span class="fu">mspWarning</span><span class="op">(</span><span class="va">dataAndFlags</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'dataAndFlags' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

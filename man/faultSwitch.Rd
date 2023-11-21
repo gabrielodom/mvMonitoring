@@ -45,14 +45,14 @@ Infect the input data frame with a specific fault, then return
   the infected data frame.
 }
 \details{
-The faults return data frames as follows: \itemize{
+The faults return data frames as follows: \describe{
   \item{A1 -- }{A data frame with 10080 rows and five columns, corresponding
     by default to one week worth of data recorded at a 1-minute interval (as
     defined by the "period" argument of this function and the "increment"
     argument of the processNOCdata() function). The fault is a system shift
     to each of the three features by 2 (the "shift" argument). The fault
     starts at row 8500 (specified by the argument "faultStartIndex"), and the
-    five columns under the fault state are defined here: \itemize{
+    five columns under the fault state are defined here: \describe{
       \item{dateTime : }{a POSIXct column}
       \item{state : }{the state indicator for the multivariate system, with
         three levels when the argument "multiState" is TRUE and one level
@@ -65,14 +65,14 @@ The faults return data frames as follows: \itemize{
     hidden process realizations generated within the processNOCdata() function.
   }
   \item{B1 -- }{A matrix as defined in A1, but with x, y, and z feature
-    columns defined as follows: \itemize{
+    columns defined as follows: \describe{
       \item{x : }{x(t) = t + shift + error}
       \item{y : }{y(t) = t ^ 2 - 3t + error}
       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + error}
     }
   }
   \item{C1 -- }{A matrix as defined in A1, but with x, y, and z feature
-    columns defined as follows: \itemize{
+    columns defined as follows: \describe{
       \item{x : }{x(t) = t + shift / 4 + error}
       \item{y : }{y(t) = t ^ 2 - 3t + error}
       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + shift / 4 + error}
@@ -82,7 +82,7 @@ The faults return data frames as follows: \itemize{
   \item{A2 -- }{The fault is a drift on each feature by
     (s - faultStartIndex / 10 ^ 3, where s is the observation index. The
     fault starts at "faultStartIndex", and the x, y, and z feature columns
-    are defined as follows: \itemize{
+    are defined as follows: \describe{
       \item{x : }{x(t) = t + drift + error}
       \item{y : }{y(t) = t ^ 2 - 3t + drift + error}
       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + drift + error}
@@ -91,14 +91,14 @@ The faults return data frames as follows: \itemize{
   \item{B2 -- }{The fault is a drift a drift on the "y" and "z" feature by
     (s - faultStartIndex / 10 ^ 3, where s is the observation index. The
     fault starts at "faultStartIndex", and the x, y, and z feature columns
-    are defined as follows: \itemize{
+    are defined as follows: \describe{
       \item{x : }{x(t) = t + error}
       \item{y : }{y(t) = t ^ 2 - 3t + drift + error}
       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + drift + error}
     }
   }
   \item{C2 -- }{The fault is a negative drift on the "y" feature by 1.5 *
-    (s - faultStartIndex) / (period - faultStartIndex). Thus, \itemize{
+    (s - faultStartIndex) / (period - faultStartIndex). Thus, \describe{
       \item{x : }{x(t) = t + error}
       \item{y : }{y(t) = t ^ 2 - 3t - drift + error}
       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + error}
@@ -107,7 +107,7 @@ The faults return data frames as follows: \itemize{
   }
   \item{A3 -- }{The fault is a signal amplification in the determining latent
     t vector. The fault starts at "faultStartIndex", and the x, y, and z
-    features under the fault state are defined here: \itemize{
+    features under the fault state are defined here: \describe{
       \item{x : }{x(t_*) = t_* + error}
       \item{y : }{y(t_*) = (t_*) ^ 2 - 3t_* + error}
       \item{z : }{z(t_*) = -(t_*) ^ 3 + 3(t_*) ^ 2 + error}
@@ -118,7 +118,7 @@ The faults return data frames as follows: \itemize{
   \item{B3 -- }{The fault is a signal amplification in the determining latent
     t vector for the "z" feature only. The fault starts at "faultStartIndex",
     and the x, y, and z features under the fault state are defined here:
-    \itemize{
+    \describe{
       \item{x : }{x(t) = t + error}
       \item{y : }{y(t) = (t) ^ 2 - 3t + error}
       \item{z : }{z(t_*) = -(t_*) ^ 3 + 3(t_*) ^ 2 + error}
@@ -127,7 +127,7 @@ The faults return data frames as follows: \itemize{
     index.
   }
   \item{C3 -- }{This fault is a change in the error structure of feature "y".
-    We let errorNew = 2 * error - 0.25, so that \itemize{
+    We let errorNew = 2 * error - 0.25, so that \describe{
       \item{x : }{x(t) = t + error}
       \item{y : }{y(t) = t ^ 2 - 3t + errorNew}
       \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + error}

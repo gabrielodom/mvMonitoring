@@ -10,7 +10,7 @@
 #' @param ... Lazy dots for additional internal arguments
 #'
 #' @return A list of class "pca" with the following:
-#' \itemize{
+#' \describe{
 #'   \item{projectionMatrix -- }{the q eigenvectors corresponding to the q
 #'     largest eigenvalues as a p x q projection matrix}
 #'   \item{LambdaInv -- }{the diagonal matrix of inverse eigenvalues}

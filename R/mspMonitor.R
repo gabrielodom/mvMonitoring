@@ -14,7 +14,7 @@
 #' @param ... Lazy dots for additional internal arguments
 #'
 #' @return An n x (p + 5) xts matrix, where the last five columns are:
-#'   \itemize{
+#'   \describe{
 #'     \item{SPE -- }{the SPE statistic value for each observation
 #'       in "observations"}
 #'     \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the test

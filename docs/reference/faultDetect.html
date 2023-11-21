@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">faultDetect</span><span class="op">(</span><span class="va">threshold_object</span>, <span class="va">observation</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">faultDetect</span><span class="op">(</span><span class="va">threshold_object</span>, <span class="va">observation</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,12 +91,21 @@ compare against the thresholds</p></dd>
 <p>A named 1 x 4 matrix with the following entries for the single row
   observation passed to this function:</p>
 <p></p>
-<ul><li><p>SPE -- the SPE statistic value</p></li>
-<li><p>SPE_Flag -- the SPE fault indicator, where 1 represents a flag and
-      0 marks that the observation is within the normal operating conditions</p></li>
-<li><p>T2 -- the T2 statistic value</p></li>
-<li><p>T2_Flag -- the T2 fault indicator, defined the same as SPE_Flag</p></li>
-</ul></div>
+<dl><dt>SPE -- </dt>
+<dd><p>the SPE statistic value</p></dd>
+
+    <dt>SPE_Flag -- </dt>
+<dd><p>the SPE fault indicator, where 1 represents a flag and
+      0 marks that the observation is within the normal operating conditions</p></dd>
+
+    <dt>T2 -- </dt>
+<dd><p>the T2 statistic value</p></dd>
+
+    <dt>T2_Flag -- </dt>
+<dd><p>the T2 fault indicator, defined the same as SPE_Flag</p></dd>
+
+  
+</dl></div>
     <div id="details">
     <h2>Details</h2>
     <p>This function takes in a threshold object returned by the
@@ -123,22 +132,22 @@ compare against the thresholds</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">nrml</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"NOC"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">scaledData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pca_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="pca.html">pca</a></span><span class="op">(</span><span class="va">scaledData</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">thresh_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="threshold.html">threshold</a></span><span class="op">(</span>pca_object <span class="op">=</span> <span class="va">pca_obj</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nrml</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"NOC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">scaledData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pca_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="pca.html">pca</a></span><span class="op">(</span><span class="va">scaledData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">thresh_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="threshold.html">threshold</a></span><span class="op">(</span>pca_object <span class="op">=</span> <span class="va">pca_obj</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>In density.default(spe, bw = "SJ", kernel = "gaussian", from = 0, </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>     old.coords = TRUE) :</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>  extra argument ‘old.coords’ will be disregarded</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>In density.default(t2, bw = "SJ", kernel = "gaussian", from = 0, </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>     old.coords = TRUE) :</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>  extra argument ‘old.coords’ will be disregarded</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">faultDetect</span><span class="op">(</span>threshold_object <span class="op">=</span> <span class="va">thresh_obj</span>,</span>
-<span class="r-in">            observation <span class="op">=</span> <span class="va">scaledData</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">faultDetect</span><span class="op">(</span>threshold_object <span class="op">=</span> <span class="va">thresh_obj</span>,</span></span>
+<span class="r-in"><span>            observation <span class="op">=</span> <span class="va">scaledData</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            SPE SPE_Flag        T2 T2_Flag</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.3040244        0 0.3149038       0</span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.2706896        0 0.2492299       0</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

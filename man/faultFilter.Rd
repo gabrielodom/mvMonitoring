@@ -21,10 +21,10 @@ an alarm to trigger. Defaults to 5.}
 }
 \value{
 A list of class "fault_ls" with the following:
-  \itemize{
+  \describe{
     \item{faultObj -- }{An xts flagging matrix with the same number of rows as
       "testData". This flag matrix has the following five columns:
-        \itemize{
+        \describe{
           \item{SPE -- }{The SPE statistic value for each observation in
             "testData". This statistic is defined as
             \deqn{

@@ -23,9 +23,9 @@
 #'   an alarm. Defaults to 5.
 #' @param ... Lazy dots for additional internal arguments
 #'
-#' @return A list with the following components: \itemize{
+#' @return A list with the following components: \describe{
 #'   \item{FaultChecks -- }{an xts flagging matrix with the same number of rows
-#'     as "data". This flag matrix has the following five columns: \itemize{
+#'     as "data". This flag matrix has the following five columns: \describe{
 #'       \item{SPE -- }{the SPE statistic value for each observation in "data"}
 #'       \item{SPE_Flag -- }{a vector of SPE indicators recording 0 if the test
 #'         statistic is less than or equal to the critical value passed through

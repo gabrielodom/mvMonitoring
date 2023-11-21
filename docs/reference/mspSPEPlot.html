@@ -18,7 +18,7 @@ statistic to visualize the contribution of each variable to a fault."><!-- mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -65,16 +65,16 @@ statistic to visualize the contribution of each variable to a fault.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mspSPEPlot</span><span class="op">(</span>
-  <span class="va">trainData</span>,
-  <span class="va">trainLabel</span>,
-  <span class="va">trainSPE</span>,
-  <span class="va">newData</span>,
-  <span class="va">newLabel</span>,
-  <span class="va">newSPE</span>,
-  <span class="va">trainObs</span>,
-  <span class="va">var.amnt</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mspSPEPlot</span><span class="op">(</span></span>
+<span>  <span class="va">trainData</span>,</span>
+<span>  <span class="va">trainLabel</span>,</span>
+<span>  <span class="va">trainSPE</span>,</span>
+<span>  <span class="va">newData</span>,</span>
+<span>  <span class="va">newLabel</span>,</span>
+<span>  <span class="va">newSPE</span>,</span>
+<span>  <span class="va">trainObs</span>,</span>
+<span>  <span class="va">var.amnt</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -123,38 +123,38 @@ dictates the number of principal components to keep</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Create some data</span></span>
-<span class="r-in"><span class="va">dataA1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"B1"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">traindataA1</span> <span class="op">&lt;-</span> <span class="va">dataA1</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8567</span>,<span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Train on the data that should be in control</span></span>
-<span class="r-in"><span class="va">trainResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspTrain.html">mspTrain</a></span><span class="op">(</span><span class="va">traindataA1</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">traindataA1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, trainObs <span class="op">=</span> <span class="fl">4320</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Lag an out of control observation</span></span>
-<span class="r-in"><span class="va">testdataA1</span> <span class="op">&lt;-</span> <span class="va">dataA1</span><span class="op">[</span><span class="fl">8567</span><span class="op">:</span><span class="fl">8568</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">testdataA1</span> <span class="op">&lt;-</span> <span class="fu">lag.xts</span><span class="op">(</span><span class="va">testdataA1</span>,<span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">testdataA1</span> <span class="op">&lt;-</span> <span class="va">testdataA1</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span></span>
-<span class="r-in"><span class="va">testdataA1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">dataA1</span><span class="op">[</span><span class="fl">8568</span>,<span class="fl">1</span><span class="op">]</span>,<span class="va">testdataA1</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Monitor this observation</span></span>
-<span class="r-in"><span class="va">monitorResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspMonitor.html">mspMonitor</a></span><span class="op">(</span>observations <span class="op">=</span> <span class="va">testdataA1</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span class="r-in">                             labelVector <span class="op">=</span> <span class="va">testdataA1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,</span>
-<span class="r-in">                             trainingSummary <span class="op">=</span> <span class="va">trainResults</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">tD</span> <span class="op">&lt;-</span> <span class="va">traindataA1</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">tL</span> <span class="op">&lt;-</span> <span class="va">traindataA1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">nD</span> <span class="op">&lt;-</span> <span class="va">testdataA1</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">nL</span> <span class="op">&lt;-</span> <span class="va">testdataA1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">tO</span> <span class="op">&lt;-</span> <span class="va">trainObs</span></span>
-<span class="r-in"><span class="va">vA</span> <span class="op">&lt;-</span> <span class="fl">0.95</span></span>
-<span class="r-in"><span class="va">nSPE</span> <span class="op">&lt;-</span> <span class="va">monitorResults</span><span class="op">$</span><span class="va">SPE</span></span>
-<span class="r-in"><span class="va">tSPE</span> <span class="op">&lt;-</span> <span class="va">trainResults</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">[[</span><span class="va">nL</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">SPE</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">mspSPEPlot</span><span class="op">(</span><span class="va">tD</span>,<span class="va">tL</span>,<span class="va">tSPE</span>,<span class="va">nD</span>,<span class="va">nL</span>,<span class="va">nSPE</span>,<span class="va">tO</span>,<span class="va">vA</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Create some data</span></span></span>
+<span class="r-in"><span><span class="va">dataA1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"B1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">traindataA1</span> <span class="op">&lt;-</span> <span class="va">dataA1</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8567</span>,<span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Train on the data that should be in control</span></span></span>
+<span class="r-in"><span><span class="va">trainResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspTrain.html">mspTrain</a></span><span class="op">(</span><span class="va">traindataA1</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">traindataA1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, trainObs <span class="op">=</span> <span class="fl">4320</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Lag an out of control observation</span></span></span>
+<span class="r-in"><span><span class="va">testdataA1</span> <span class="op">&lt;-</span> <span class="va">dataA1</span><span class="op">[</span><span class="fl">8567</span><span class="op">:</span><span class="fl">8568</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">testdataA1</span> <span class="op">&lt;-</span> <span class="fu">lag.xts</span><span class="op">(</span><span class="va">testdataA1</span>,<span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">testdataA1</span> <span class="op">&lt;-</span> <span class="va">testdataA1</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">testdataA1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">dataA1</span><span class="op">[</span><span class="fl">8568</span>,<span class="fl">1</span><span class="op">]</span>,<span class="va">testdataA1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Monitor this observation</span></span></span>
+<span class="r-in"><span><span class="va">monitorResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="mspMonitor.html">mspMonitor</a></span><span class="op">(</span>observations <span class="op">=</span> <span class="va">testdataA1</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                             labelVector <span class="op">=</span> <span class="va">testdataA1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                             trainingSummary <span class="op">=</span> <span class="va">trainResults</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">tD</span> <span class="op">&lt;-</span> <span class="va">traindataA1</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">tL</span> <span class="op">&lt;-</span> <span class="va">traindataA1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">nD</span> <span class="op">&lt;-</span> <span class="va">testdataA1</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">nL</span> <span class="op">&lt;-</span> <span class="va">testdataA1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">tO</span> <span class="op">&lt;-</span> <span class="va">trainObs</span></span></span>
+<span class="r-in"><span><span class="va">vA</span> <span class="op">&lt;-</span> <span class="fl">0.95</span></span></span>
+<span class="r-in"><span><span class="va">nSPE</span> <span class="op">&lt;-</span> <span class="va">monitorResults</span><span class="op">$</span><span class="va">SPE</span></span></span>
+<span class="r-in"><span><span class="va">tSPE</span> <span class="op">&lt;-</span> <span class="va">trainResults</span><span class="op">$</span><span class="va">TrainingSpecs</span><span class="op">[[</span><span class="va">nL</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">SPE</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">mspSPEPlot</span><span class="op">(</span><span class="va">tD</span>,<span class="va">tL</span>,<span class="va">tSPE</span>,<span class="va">nD</span>,<span class="va">nL</span>,<span class="va">nSPE</span>,<span class="va">tO</span>,<span class="va">vA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

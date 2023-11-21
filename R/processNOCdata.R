@@ -21,7 +21,7 @@
 #' @param errVar Error variance of the normal white noise process on the feature
 #'   variables.
 #'
-#' @return An data frame with the following information: \itemize{
+#' @return An data frame with the following information: \describe{
 #'   \item{dateTime -- }{A POSIXct column of times starting at the user-defined
 #'     `startTime` argument, length given by the `period` argument, and spacing
 #'     given by the `increment` argument. For example, if the starting value is
@@ -43,7 +43,7 @@
 #'   be unbounded. Next, this function draws a realization of this random
 #'   variable t and calculates three functions of it, then jitters these
 #'   functions with a normal white noise variable (with variance set by
-#'   "errVar"). These three functions are: \itemize{
+#'   "errVar"). These three functions are: \describe{
 #'     \item{x : }{x(t) = t + error}
 #'     \item{y : }{y(t) = t ^ 2 - 3t + error}
 #'     \item{z : }{z(t) = -t ^ 3 + 3t ^ 2 + error}

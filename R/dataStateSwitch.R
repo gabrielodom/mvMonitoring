@@ -13,7 +13,7 @@
 #' @return A data frame containing the time index, state, and feature values
 #'   after state-specific rotation and scaling; this data frame also contains
 #'   the other columns of df that aren't the feature values. This data frame has
-#'   \itemize{
+#'   \describe{
 #'     \item{dateTime - }{a POSIX column of the time stamps for each
 #'       observation}
 #'     \item{state - }{column of state membership (1, 2, or 3)}

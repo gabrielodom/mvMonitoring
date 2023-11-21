@@ -16,11 +16,11 @@
 #' @param trainObs the number of observations upon which to train the algorithm.
 #' This will be split based on class information by a priori class membership
 #' proportions.
-#' @return A contribution plot and a list with the following items: \itemize{
-#' \item{TrainCV -- }{A list vectors containing the contribution values corresponding
-#' to each observation in the set of training observations.}
-#' \item{NewCV -- }{The vector of contribution values associated with the
-#' new observation}
+#' @return A contribution plot and a list with the following items: \describe{
+#'   \item{TrainCV -- }{A list vectors containing the contribution values
+#'     corresponding to each observation in the set of training observations.}
+#'   \item{NewCV -- }{The vector of contribution values associated with the
+#'     new observation}
 #' }
 #' @export
 #' @importFrom robustbase adjbox

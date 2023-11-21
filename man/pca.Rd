@@ -16,7 +16,7 @@ dictates the number of principal components to keep. Defaults to 0.90.}
 }
 \value{
 A list of class "pca" with the following:
-\itemize{
+\describe{
   \item{projectionMatrix -- }{the q eigenvectors corresponding to the q
     largest eigenvalues as a p x q projection matrix}
   \item{LambdaInv -- }{the diagonal matrix of inverse eigenvalues}

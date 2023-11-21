@@ -20,7 +20,7 @@ Process — mspProcessData"><meta property="og:description" content="Generate si
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -68,20 +68,20 @@ Process</h1>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mspProcessData</span><span class="op">(</span>
-  <span class="va">faults</span>,
-  period <span class="op">=</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">60</span>,
-  faultStartIndex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.8433</span> <span class="op">*</span> <span class="va">period</span><span class="op">)</span>,
-  startTime <span class="op">=</span> <span class="st">"2015-05-16 10:00:00 CST"</span>,
-  multiState <span class="op">=</span> <span class="cn">TRUE</span>,
-  angles2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>yaw <span class="op">=</span> <span class="fl">0</span>, pitch <span class="op">=</span> <span class="fl">90</span>, roll <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>,
-  scales2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>,
-  angles3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>yaw <span class="op">=</span> <span class="fl">90</span>, pitch <span class="op">=</span> <span class="fl">0</span>, roll <span class="op">=</span> <span class="op">-</span><span class="fl">30</span><span class="op">)</span>,
-  scales3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="fl">0.75</span><span class="op">)</span>,
-  adpcaTest <span class="op">=</span> <span class="cn">FALSE</span>,
-  msadpcaTest <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mspProcessData</span><span class="op">(</span></span>
+<span>  <span class="va">faults</span>,</span>
+<span>  period <span class="op">=</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">*</span> <span class="fl">60</span>,</span>
+<span>  faultStartIndex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.8433</span> <span class="op">*</span> <span class="va">period</span><span class="op">)</span>,</span>
+<span>  startTime <span class="op">=</span> <span class="st">"2015-05-16 10:00:00 CST"</span>,</span>
+<span>  multiState <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  angles2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>yaw <span class="op">=</span> <span class="fl">0</span>, pitch <span class="op">=</span> <span class="fl">90</span>, roll <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>,</span>
+<span>  scales2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  angles3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>yaw <span class="op">=</span> <span class="fl">90</span>, pitch <span class="op">=</span> <span class="fl">0</span>, roll <span class="op">=</span> <span class="op">-</span><span class="fl">30</span><span class="op">)</span>,</span>
+<span>  scales3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="fl">0.75</span><span class="op">)</span>,</span>
+<span>  adpcaTest <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  msadpcaTest <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -153,22 +153,35 @@ true single-state model. Defaults to FALSE.</p></dd>
     
 
 <p>A list of data frames named with the names of the given faults with
-  the following information:</p><ul><li><p>dateTime -- A POSIXct column of times starting at the user-
+  the following information:</p><dl><dt>dateTime -- </dt>
+<dd><p>A POSIXct column of times starting at the user-
       defined `startTime` argument, length given by the `period` argument,
       and spacing given by the `increment` argument. For example, if the
       starting value is "2016-01-10", period is 10080, and the incrementation
       is in minutes, then this sequence will be one week's worth of
       observations recorded every minute from midnight on the tenth of
-      January.</p></li>
-<li><p>state -- An integer column of all 1's (when the `multiState`
-      argument is FALSE), or a column of the state values (1, 2 or 3).</p></li>
-<li><p>altState -- If either adpcaTest or msadpcaTest are TRUE, this
+      January.</p></dd>
+
+    <dt>state -- </dt>
+<dd><p>An integer column of all 1's (when the `multiState`
+      argument is FALSE), or a column of the state values (1, 2 or 3).</p></dd>
+
+    <dt>altState -- </dt>
+<dd><p>If either adpcaTest or msadpcaTest are TRUE, this
       column will contain incorrect state information used for testing the
-      different treatment arms against their respective controls.</p></li>
-<li><p>x -- A double column of generated values for the first feature.</p></li>
-<li><p>y -- A double column of generated values for the second feature.</p></li>
-<li><p>z -- A double column of generated values for the third feature.</p></li>
-</ul><p>If the user only specifies one fault, then this function will return the
+      different treatment arms against their respective controls.</p></dd>
+
+    <dt>x -- </dt>
+<dd><p>A double column of generated values for the first feature.</p></dd>
+
+    <dt>y -- </dt>
+<dd><p>A double column of generated values for the second feature.</p></dd>
+
+    <dt>z -- </dt>
+<dd><p>A double column of generated values for the third feature.</p></dd>
+
+    
+</dl><p>If the user only specifies one fault, then this function will return the
   single xts matrix, instead of a list of one matrix. For details on how
   these features are defined, see the "details" of the processNOCdata()
   function.</p>
@@ -177,31 +190,40 @@ true single-state model. Defaults to FALSE.</p></dd>
     <h2>Details</h2>
     <p>For details on how the faults are induced, see the "details" of the
   faultSwitch() function. This function also includes AD-PCA versus MSAD-PCA
-  treatment arm testing. There are four possibilities to test:</p><ul><li><p>1. The true process has one state, and we correctly assume the
+  treatment arm testing. There are four possibilities to test:</p><dl><dt>1. </dt>
+<dd><p>The true process has one state, and we correctly assume the
     true process has one state. In this case, AD-PCA and MSAD-PCA are exactly
     the same. Draw observations from this state by setting the "multiState"
     argument to FALSE. The "state" label will correctly mark each observation
-    as from the same state.</p></li>
-<li><p>2. The true process has one state, but we incorrectly assume the
+    as from the same state.</p></dd>
+
+    <dt>2. </dt>
+<dd><p>The true process has one state, but we incorrectly assume the
     true process has multiple states. In this case, AD-PCA should outperform
     MSAD-PCA in false alarm rates and waiting time to the first alarm. Draw
     observations from this state by setting the "multiState" argument to
     FALSE and the "msadpcaTest" argument to TRUE. The "state" label will be
     contain randomly generated state values (1, 2, and 3 are all equally
-    likely) for each observation.</p></li>
-<li><p>3. The true process has multiple states, but we incorrectly
+    likely) for each observation.</p></dd>
+
+    <dt>3. </dt>
+<dd><p>The true process has multiple states, but we incorrectly
     assume the true process has one single states. In this case, MSAD-PCA
     should outperform AD-PCA in false alarm rates and waiting time to the
     first alarm. Draw observations from this state by setting the "multiState"
     argument to TRUE and the "adpcaTest" argument to TRUE. The "state" label
-    will be identical for each observation.</p></li>
-<li><p>4. The true process has multiple states, and we correctly assume
+    will be identical for each observation.</p></dd>
+
+    <dt>4. </dt>
+<dd><p>The true process has multiple states, and we correctly assume
     the true process has multiple states. In this case, MSAD-PCA
     should outperform AD-PCA in false alarm rates and waiting time to the
     first alarm. Draw observations from this state by setting the "multiState"
     argument to TRUE. The "state" label will correctly mark each observation
-    as from the same state.</p></li>
-</ul></div>
+    as from the same state.</p></dd>
+
+  
+</dl></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>Calls: <code><a href="processNOCdata.html">processNOCdata</a></code>, <code><a href="faultSwitch.html">faultSwitch</a></code>,
@@ -212,12 +234,12 @@ true single-state model. Defaults to FALSE.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="co"># cut down on R CMD check time</span></span>
-<span class="r-in"></span>
-<span class="r-in">   <span class="fu">mspProcessData</span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"All"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="co"># cut down on R CMD check time</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>   <span class="fu">mspProcessData</span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"All"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

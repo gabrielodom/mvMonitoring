@@ -11,7 +11,7 @@
 #'
 #' @return A named 1 x 4 matrix with the following entries for the single row
 #'   observation passed to this function:
-#'   \itemize{
+#'   \describe{
 #'     \item{SPE -- }{the SPE statistic value}
 #'     \item{SPE_Flag -- }{the SPE fault indicator, where 1 represents a flag and
 #'       0 marks that the observation is within the normal operating conditions}

@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mvMonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -96,52 +96,52 @@
 <div class="section level2">
 <h2 id="installation-from-cran">Installation from CRAN<a class="anchor" aria-label="anchor" href="#installation-from-cran"></a>
 </h2>
-<p>As of 18 October, 2017, we have submitted this package to CRAN. Shortly thereafter, you will be able to install the stable version of the package via</p>
-<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mvMonitoring"</span><span class="op">)</span></code></pre>
+<p>Install the stable version of this package via</p>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mvMonitoring"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="installation-of-development-version">Installation of Development Version<a class="anchor" aria-label="anchor" href="#installation-of-development-version"></a>
 </h2>
-<p>Make sure you have the latest version of the <code>devtools</code> package, and pull the package from GitHub. Remember, if you can read this file, you are one of the few people who have access to this package. In addition, you can also run the following:</p>
-<pre><code><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"gabrielodom/mvMonitoring"</span>, auth_token <span class="op">=</span> <span class="st">"tokenHere"</span><span class="op">)</span></code></pre>
-<p>where you create the value of “tokenHere” by generating a personal access token (PAT) at <a href="https://github.com/settings/tokens" class="external-link uri">https://github.com/settings/tokens</a> and copying the quoted string to this argument. Load the library after installation by</p>
-<pre><code><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gabrielodom/mvMonitoring" class="external-link">mvMonitoring</a></span><span class="op">)</span></code></pre>
+<p>Make sure you have the latest version of the <code>devtools</code> package, and pull the package from GitHub.</p>
+<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"gabrielodom/mvMonitoring"</span><span class="op">)</span></span></code></pre>
+<p>Load the library after installation by</p>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gabrielodom/mvMonitoring" class="external-link">mvMonitoring</a></span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
 <p>These are the examples shown in the help files for the mspProcessData(), mspTrain(), mspMonitor(), and mspWarning() functions.</p>
-<pre><code><span class="co"># Generate one week's worth of normal operating (NOC) data recorded at the one-</span>
-<span class="co"># minute level</span>
-<span class="va">nrml</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"NOC"</span><span class="op">)</span>
-<span class="co"># The state values are recorded in the first column.</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">)</span>
-
-<span class="co"># Calculate the training summary, but save five observations for monitoring.</span>
-<span class="co"># This function will treat the first 3 days as in control (IC), and then update</span>
-<span class="co"># the training window each day.</span>
-<span class="va">trainResults_ls</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mspTrain.html">mspTrain</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,
-  labelVector <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span>, <span class="fl">1</span><span class="op">]</span>,
-  trainObs <span class="op">=</span> <span class="fl">4320</span>
-<span class="op">)</span>
-
-<span class="co"># While training, we included 1 lag (the default), so we will also lag the</span>
-<span class="co"># observations we will test.</span>
-<span class="va">testObs</span> <span class="op">&lt;-</span> <span class="va">nrml</span><span class="op">[</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">6</span><span class="op">)</span><span class="op">:</span><span class="va">n</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>
-<span class="va">testObs</span> <span class="op">&lt;-</span> <span class="fu">xts</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/pkg/xts/man/diff.html" class="external-link">lag.xts</a></span><span class="op">(</span><span class="va">testObs</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">testObs</span> <span class="op">&lt;-</span> <span class="va">testObs</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span>
-<span class="va">testObs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">[</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span><span class="op">:</span><span class="va">n</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">testObs</span><span class="op">)</span>
-
-<span class="co"># Run the monitoring function.</span>
-<span class="va">dataAndFlags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mspMonitor.html">mspMonitor</a></span><span class="op">(</span>
-  observations <span class="op">=</span> <span class="va">testObs</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,
-  labelVector <span class="op">=</span> <span class="va">testObs</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,
-  trainingSummary <span class="op">=</span> <span class="va">trainResults_ls</span><span class="op">$</span><span class="va">TrainingSpecs</span>
-<span class="op">)</span>
-
-<span class="co"># Alarm check the last row of the matrix returned by the mspMonitor function</span>
-<span class="fu"><a href="reference/mspWarning.html">mspWarning</a></span><span class="op">(</span><span class="va">dataAndFlags</span><span class="op">)</span></code></pre>
+<pre><code><span><span class="co"># Generate one week's worth of normal operating (NOC) data recorded at the one-</span></span>
+<span><span class="co"># minute level</span></span>
+<span><span class="va">nrml</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mspProcessData.html">mspProcessData</a></span><span class="op">(</span>faults <span class="op">=</span> <span class="st">"NOC"</span><span class="op">)</span></span>
+<span><span class="co"># The state values are recorded in the first column.</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Calculate the training summary, but save five observations for monitoring.</span></span>
+<span><span class="co"># This function will treat the first 3 days as in control (IC), and then update</span></span>
+<span><span class="co"># the training window each day.</span></span>
+<span><span class="va">trainResults_ls</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mspTrain.html">mspTrain</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  labelVector <span class="op">=</span> <span class="va">nrml</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span>, <span class="fl">1</span><span class="op">]</span>,</span>
+<span>  trainObs <span class="op">=</span> <span class="fl">4320</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># While training, we included 1 lag (the default), so we will also lag the</span></span>
+<span><span class="co"># observations we will test.</span></span>
+<span><span class="va">testObs</span> <span class="op">&lt;-</span> <span class="va">nrml</span><span class="op">[</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">6</span><span class="op">)</span><span class="op">:</span><span class="va">n</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">testObs</span> <span class="op">&lt;-</span> <span class="fu">xts</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/pkg/xts/man/diff.html" class="external-link">lag.xts</a></span><span class="op">(</span><span class="va">testObs</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">testObs</span> <span class="op">&lt;-</span> <span class="va">testObs</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>,<span class="op">]</span></span>
+<span><span class="va">testObs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">nrml</span><span class="op">[</span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">5</span><span class="op">)</span><span class="op">:</span><span class="va">n</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">testObs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run the monitoring function.</span></span>
+<span><span class="va">dataAndFlags</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mspMonitor.html">mspMonitor</a></span><span class="op">(</span></span>
+<span>  observations <span class="op">=</span> <span class="va">testObs</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  labelVector <span class="op">=</span> <span class="va">testObs</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span>
+<span>  trainingSummary <span class="op">=</span> <span class="va">trainResults_ls</span><span class="op">$</span><span class="va">TrainingSpecs</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Alarm check the last row of the matrix returned by the mspMonitor function</span></span>
+<span><span class="fu"><a href="reference/mspWarning.html">mspWarning</a></span><span class="op">(</span><span class="va">dataAndFlags</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="paper-graphics">Paper Graphics<a class="anchor" aria-label="anchor" href="#paper-graphics"></a>
@@ -198,7 +198,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/gabrielodom/mvMonitoring" class="external-link"><img src="https://travis-ci.org/gabrielodom/mvMonitoring.svg?branch=master" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://app.travis-ci.com/github/gabrielodom/mvMonitoring" class="external-link"><img src="https://travis-ci.org/gabrielodom/mvMonitoring.svg?branch=master" alt="Travis-CI Build Status"></a></li>
 <li><a href="https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mvMonitoring" alt="CRAN Downloads"></a></li>
 </ul>
 </div>
