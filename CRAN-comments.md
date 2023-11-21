@@ -1,3 +1,8 @@
+## V. 0.2.3
+
+Updating mvMonitoring.R package overview help file per instruction from K. Hornik. See <https://github.com/gabrielodom/mvMonitoring/issues/31>
+
+
 ## UPDATE 2023-06-29
 We are resubmitting the mvMonitoring package after resolving bugs related to breaking changes documented in <https://bugs.r-project.org/show_bug.cgi?id=18337>.
 

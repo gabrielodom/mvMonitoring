@@ -20,7 +20,6 @@ Authors@R:
       "Amanda", "Hering", email = "mandy_hering@baylor.edu", role = c("aut")
     )
   )
-Maintainer: Gabriel Odom <gabriel.odom@fiu.edu>
 Description: Use multi-state splitting to apply Adaptive-Dynamic PCA (ADPCA) to
     data generated from a continuous-time multivariate industrial or natural
     process. Employ PCA-based dimension reduction to extract linear combinations
